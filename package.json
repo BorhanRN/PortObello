@@ -1,11 +1,11 @@
 {
-  "name": "portobello",
+  "name": "node_demo_project",
   "version": "1.0.0",
-  "description": "Smart Port Management.",
+  "description": "The sample Node.js project for CPSC304.",
   "main": "server.js",
   "keywords": [],
   "author": {
-    "name": "Martin Janzen"
+    "name": "Zoe Yuan"
   },
   "license": "ISC",
   "dependencies": {
