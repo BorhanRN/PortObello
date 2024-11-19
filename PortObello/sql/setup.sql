@@ -407,8 +407,9 @@ VALUES ('John Shipping Co.', 'Ocean Breeze', 'Electronics', 45.0, 300.0, 1001, '
 
 INSERT INTO Company
     (CEO, Name, Industry, YearlyRevenue, CountryName)
-VALUES ('Alice Johnson', 'TechCo', 'Technology', 5000.0, 'Canada'),
-       ('Bob Smith', 'AutoInc', 'Automobile', 3200.0, 'USA'),
-       ('Charlie Williams', 'TextileCorp', 'Textiles', 1800.0, China),
-       ('David Brown', 'FurnitureMakers', 'Furniture', 2500.0, Netherlands),
-       ('Eve Davis', 'HeavyMachines', 'Machinery', 3500.0, 'Japan');
+VALUES ('Wang Chuanfu', 'BYD Auto', 'Automotive', 112000.0, 'USA'),
+       ('Elliot Hill', 'Nike', 'Sportswear', 37200.0, 'USA'),
+       ('Kevin Plank', 'UnderArmour', 'Sportswear', 5000.0, 'USA'),
+       ('Christophe Fouquet', 'ASML Holdings', 'Technology', 29800.0, 'Netherlands'),
+       ('Shuntaro Furakawa', 'Nintendo', 'Entertainment', 14000.0, 'Japan'),
+       ('Mark Bristow', 'Berrick Gold', 'Mining', 11400.0, 'Canada');
