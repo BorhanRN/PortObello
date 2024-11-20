@@ -1,7 +1,7 @@
 -- Table Creation
 CREATE TABLE Country
 (
-    Name        VARCHAR2(100) UNIQUE NOT NULL,
+    Name        VARCHAR2(100) NOT NULL,
     Population  NUMBER,
     Government  VARCHAR2(100),
     PortAddress VARCHAR2(200) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE Warehouse
 
 CREATE TABLE HomeCountry
 (
-    Name       VARCHAR2(100) UNIQUE NOT NULL,
+    Name       VARCHAR2(100) NOT NULL,
     Population NUMBER,
     GDP        FLOAT,
     Government VARCHAR2(100),
@@ -41,7 +41,7 @@ CREATE TABLE HomeCountry
 
 CREATE TABLE ForeignCountry
 (
-    Name       VARCHAR2(100) UNIQUE NOT NULL,
+    Name       VARCHAR2(100) NOT NULL,
     Population NUMBER,
     GDP        FLOAT,
     Government VARCHAR2(100),
@@ -64,7 +64,7 @@ CREATE TABLE Tariff
 
 CREATE TABLE ShippingRoute
 (
-    Name                VARCHAR2(100) UNIQUE NOT NULL,
+    Name                VARCHAR2(100) NOT NULL,
     Length              FLOAT,
     OriginCountryName   VARCHAR2(100) NOT NULL,
     TerminalPortAddress VARCHAR2(200) NOT NULL,
