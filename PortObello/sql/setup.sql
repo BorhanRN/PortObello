@@ -165,7 +165,7 @@ CREATE TABLE ShipmentContainer2
     FOREIGN KEY (ShipOwner, ShipName) REFERENCES Ship1 (Owner, ShipName) ON DELETE CASCADE, -- ON UPDATE CASCADE,
     --FOREIGN KEY (TrackingNumber) REFERENCES ShipmentContainer1 (TrackingNumber) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (TradeAgreement) REFERENCES Tariff1 (TradeAgreement) ON DELETE CASCADE, -- ON UPDATE CASCADE,
-    FOREIGN KEY (CompanyName, CompanyCEO) REFERENCES Company (Name, CEO) ON DELETE CASCADE, -- ON UPDATE CASCADE
+    FOREIGN KEY (CompanyName, CompanyCEO) REFERENCES Company (Name, CEO) ON DELETE CASCADE -- ON UPDATE CASCADE
 );
 
 CREATE TABLE Company
@@ -176,7 +176,7 @@ CREATE TABLE Company
     YearlyRevenue FLOAT,
     CountryName   VARCHAR2(100) NOT NULL,
     PRIMARY KEY (CEO, Name),
-    FOREIGN KEY (CountryName) REFERENCES Country (Name) ON DELETE CASCADE, -- ON UPDATE CASCADE
+    FOREIGN KEY (CountryName) REFERENCES Country (Name) ON DELETE CASCADE -- ON UPDATE CASCADE
 );
 
 
@@ -265,27 +265,27 @@ VALUES (9, 10, 220,'4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan');
 
 
 INSERT INTO Tariff1 (TradeAgreement, TariffRate, HomeName, ForeignName, EnactmentDate)
-VALUES ('China - USA Agreement', 12,'China','USA', 2024 - 01 - 15);
+VALUES ('China - USA Agreement', 12,'China','USA', 15-JAN-24);
 INSERT INTO Tariff1 (TradeAgreement, TariffRate, HomeName, ForeignName, EnactmentDate)
-VALUES ('Canada - China Agreement', 9,'Canada','China', 2020 - 10 - 25);
+VALUES ('Canada - China Agreement', 9,'Canada','China', 25-OCT-24);
 INSERT INTO Tariff1 (TradeAgreement, TariffRate, HomeName, ForeignName, EnactmentDate)
-VALUES ('Canada - Netherlands Agreement', 8,'Canada','Netherlands', 2008 - 06 - 12);
+VALUES ('Canada - Netherlands Agreement', 8,'Canada','Netherlands', 12-JUN-08);
 INSERT INTO Tariff1 (TradeAgreement, TariffRate, HomeName, ForeignName, EnactmentDate)
-VALUES ('Canada - USA Agreement', 5,'Canada','USA', 2020 - 01 - 30);
+VALUES ('Canada - USA Agreement', 5,'Canada','USA', 30-JAN-20);
 INSERT INTO Tariff1 (TradeAgreement, TariffRate, HomeName, ForeignName, EnactmentDate)
-VALUES ('Canada - Japan Agreement', 6,'Canada','Japan', 1998 - 04 - 09);
+VALUES ('Canada - Japan Agreement', 6,'Canada','Japan', 09-APR-98);
 
 
 INSERT INTO Tariff2 (TariffRate, AffectedGoods, HomeName, ForeignName, EnactmentDate)
-VALUES (12,'Solar Panels','China','USA', 2024 - 01 - 15);
+VALUES (12,'Solar Panels','China','USA', 15-JAN-24);
 INSERT INTO Tariff2 (TariffRate, AffectedGoods, HomeName, ForeignName, EnactmentDate)
-VALUES (9,'Lumber','Canada','China', 2020 - 10 - 25);
+VALUES (9,'Lumber','Canada','China', 25-OCT-24);
 INSERT INTO Tariff2 (TariffRate, AffectedGoods, HomeName, ForeignName, EnactmentDate)
-VALUES (8,'Maple Syrup','Canada','Netherlands', 2008 - 06 - 12);
+VALUES (8,'Maple Syrup','Canada','Netherlands', 12-JUN-08);
 INSERT INTO Tariff2 (TariffRate, AffectedGoods, HomeName, ForeignName, EnactmentDate)
-VALUES (5,'Oil','Canada','USA', 2020 - 01 - 30);
+VALUES (5,'Oil','Canada','USA', 30-JAN-20);
 INSERT INTO Tariff2 (TariffRate, AffectedGoods, HomeName, ForeignName, EnactmentDate)
-VALUES (6,'Wheat','Canada','Japan', 1998 - 04 - 09);
+VALUES (6,'Wheat','Canada','Japan', 09-APR-98);
 
 
 
