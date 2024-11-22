@@ -78,7 +78,7 @@ async function testOracleConnection() {
 
 async function fetchDemotableFromDb() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT * FROM DEMOTABLE');
+        const result = await connection.execute('SELECT * FROM COUNTRY');
         return result.rows;
     }).catch(() => {
         return [];
@@ -88,13 +88,13 @@ async function fetchDemotableFromDb() {
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
-            await connection.execute(`DROP TABLE DEMOTABLE`);
+            await connection.execute(`DROP TABLE DEOMTABLE`);
         } catch(err) {
             console.log('Table might not exist, proceeding to create...');
         }
 
         const result = await connection.execute(`
-            CREATE TABLE DEMOTABLE (
+            CREATE TABLE COUNTRY (
                 id NUMBER PRIMARY KEY,
                 name VARCHAR2(20)
             )
@@ -135,7 +135,7 @@ async function updateNameDemotable(oldName, newName) {
 
 async function countDemotable() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT Count(*) FROM DEMOTABLE');
+        const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
         return result.rows[0][0];
     }).catch(() => {
         return -1;
