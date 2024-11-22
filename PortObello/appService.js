@@ -79,6 +79,7 @@ async function testOracleConnection() {
 async function fetchCountryFromDb() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT * FROM COUNTRY');
+        console.log('Query result:', result.rows);
         return result.rows;
     }).catch(() => {
         return [];
@@ -94,8 +95,7 @@ async function initiateCountry() {
         }
 
         const result = await connection.execute(`
-        BEGIN
-            EXECUTE IMMEDIATE 'CREATE TABLE Country
+         CREATE TABLE Country
             (
                 Name        VARCHAR2(100) NOT NULL,
                 Population  NUMBER,
@@ -103,7 +103,7 @@ async function initiateCountry() {
                 PortAddress VARCHAR2(200) NOT NULL,
                 GDP         NUMBER,
                 PRIMARY KEY (Name)
-            )';
+            );
 
             INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
             VALUES ('Canada', 38930000, 'Liberal Party - Justin Trudeau', '999 Canada Pl, Vancouver, BC V6C 3T4', 2.14);
@@ -124,7 +124,7 @@ async function initiateCountry() {
             INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
             VALUES ('UK', 67000000, 'Conservative Party - Rishi Sunak', 'xyz', 3031.0);
             
-            END;
+            
         `);
 
 
