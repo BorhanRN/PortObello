@@ -169,13 +169,17 @@ async function updateNameCountry(oldName, newName) {
 async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
         const result = await connection.execute(
-            `UPDATE SHIPS 
+            `UPDATE Ship h 
              SET PortAddress = (
-                 SELECT DestinationAddress
-                 FROM ShippingRoute2 s, SHIPS h
-                 WHERE s.Name = h.ShippingRoute
+                 SELECT s.DestinationAddress
+                 FROM ShippingRoute2 s
+                 JOIN Ship h2
+                 ON s.Name = h2.ShippingRoute
+                 WHERE h2.Owner =:Owner AND h2.ShipName =: ShipName
                  )
-             WHERE Owner=:Owner & ShipName=:ShipName:`,
+             WHERE Owner= :Owner AND ShipName= :ShipName`,
+            [Owner, ShipName],
+            { autoCommit: true }
         )
 
         return result.rowsAffected && result.rowsAffected > 0;
