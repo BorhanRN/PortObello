@@ -66,46 +66,39 @@ async function checkDbConnection() {
 async function fetchAndDisplayCountry() {
     try {
         console.log('Fetching country data...');
-        const response = await fetch('/country', {
-            method: 'GET'
-        });
-
+        const response = await fetch('/country', { method: 'GET' });
         console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const responseData = await response.json();
-        console.log('Received data:', responseData);
+        console.log('Response JSON:', responseData);
 
         const tableElement = document.getElementById('country');
-        if (!tableElement) {
-            console.error('Could not find table element with id "country"');
-            return;
-        }
+        if (!tableElement) throw new Error('Table element with id "country" not found');
 
         const tableBody = tableElement.querySelector('tbody');
-        if (!tableBody) {
-            console.error('Could not find tbody in table');
-            return;
-        }
+        if (!tableBody) throw new Error('No <tbody> found in table');
 
-        // Clear existing table content
+        // Clear old content
         tableBody.innerHTML = '';
 
         if (!responseData.data || !Array.isArray(responseData.data)) {
-            console.error('Invalid data format received:', responseData);
-            return;
+            throw new Error('Data format error: data is not an array');
         }
 
         responseData.data.forEach(country => {
             const row = tableBody.insertRow();
-            // Explicitly specify the columns in the order we want
             const columns = ['NAME', 'POPULATION', 'GOVERNMENT', 'PORTADDRESS', 'GDP'];
-            columns.forEach(column => {
+            columns.forEach(col => {
                 const cell = row.insertCell();
-                cell.textContent = country[column] || '';
-                console.log(`Setting ${column} to:`, country[column]);
+                cell.textContent = country[col] || 'N/A';
             });
         });
 
-        console.log('Table updated successfully');
+        console.log('Table populated successfully');
     } catch (error) {
         console.error('Error in fetchAndDisplayCountry:', error);
     }
