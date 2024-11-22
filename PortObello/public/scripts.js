@@ -36,8 +36,8 @@ async function checkDbConnection() {
         });
 }
 
-// Fetches data from the demotable and displays it.
-async function fetchAndDisplayUsers() {
+// Fetches data from COUNTRY and displays it.
+async function fetchAndDisplayCountry() {
     const tableElement = document.getElementById('country');
     const tableBody = tableElement.querySelector('tbody');
 
@@ -46,53 +46,59 @@ async function fetchAndDisplayUsers() {
     });
 
     const responseData = await response.json();
-    const demotableContent = responseData.data;
+    const countryContent = responseData.data;
 
     // Always clear old, already fetched data before new fetching process.
     if (tableBody) {
         tableBody.innerHTML = '';
     }
 
-    demotableContent.forEach(user => {
+    countryContent.forEach(country => {
         const row = tableBody.insertRow();
-        user.forEach((field, index) => {
+        Object.values(country).forEach((field, index) => {
             const cell = row.insertCell(index);
             cell.textContent = field;
         });
     });
 }
 
-// This function resets or initializes the demotable.
-async function resetDemotable() {
-    const response = await fetch("/initiate-demotable", {
+// This function resets or initializes COUNTRY.
+async function resetCountry() {
+    const response = await fetch("/initiate-country", {
         method: 'POST'
     });
     const responseData = await response.json();
 
     if (responseData.success) {
         const messageElement = document.getElementById('resetResultMsg');
-        messageElement.textContent = "demotable initiated successfully!";
+        messageElement.textContent = "country initiated successfully!";
         fetchTableData();
     } else {
         alert("Error initiating table!");
     }
 }
 
-// Inserts new records into the demotable.
-async function insertDemotable(event) {
+// Inserts new records into COUNTRY.
+async function insertCountry(event) {
     event.preventDefault();
 
-    const idValue = document.getElementById('insertId').value;
-    const nameValue = document.getElementById('insertName').value;
+    const name = document.getElementById('insertCountryName').value;
+    const population = document.getElementById('insertCountryPopulation').value;
+    const government = document.getElementById('insertCountryGovernment').value;
+    const portAddress = document.getElementById('insertCountryPortAddress').value;
+    const gdp = document.getElementById('insertCountryGDP').value;
 
-    const response = await fetch('/insert-demotable', {
+    const response = await fetch('/insert-country', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            id: idValue,
-            name: nameValue
+            name: name,
+            population: population,
+            government: government,
+            portAddress: portAddress,
+            gdp: gdp
         })
     });
 
@@ -107,14 +113,14 @@ async function insertDemotable(event) {
     }
 }
 
-// Updates names in the demotable.
-async function updateNameDemotable(event) {
+// Updates names in country.
+async function updateNameCountry(event) {
     event.preventDefault();
 
     const oldNameValue = document.getElementById('updateOldName').value;
     const newNameValue = document.getElementById('updateNewName').value;
 
-    const response = await fetch('/update-name-demotable', {
+    const response = await fetch('/update-name-country', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -136,10 +142,10 @@ async function updateNameDemotable(event) {
     }
 }
 
-// Counts rows in the demotable.
+// Counts rows in country.
 // Modify the function accordingly if using different aggregate functions or procedures.
-async function countDemotable() {
-    const response = await fetch("/count-demotable", {
+async function countCountry() {
+    const response = await fetch("/count-country", {
         method: 'GET'
     });
 
@@ -148,9 +154,9 @@ async function countDemotable() {
 
     if (responseData.success) {
         const tupleCount = responseData.count;
-        messageElement.textContent = `The number of tuples in demotable: ${tupleCount}`;
+        messageElement.textContent = `The number of tuples in country: ${tupleCount}`;
     } else {
-        alert("Error in count demotable!");
+        alert("Error in count country!");
     }
 }
 
@@ -161,14 +167,14 @@ async function countDemotable() {
 window.onload = function() {
     checkDbConnection();
     fetchTableData();
-    document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
-    document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
-    document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
-    document.getElementById("countDemotable").addEventListener("click", countDemotable);
+    document.getElementById("resetCountry").addEventListener("click", resetCountry);
+    document.getElementById("insertCountry").addEventListener("submit", insertCountry);
+    document.getElementById("updataNameCountry").addEventListener("submit", updateNameCountry);
+    document.getElementById("countCountry").addEventListener("click", countCountry);
 };
 
 // General function to refresh the displayed table data.
 // You can invoke this after any table-modifying operation to keep consistency.
 function fetchTableData() {
-    fetchAndDisplayUsers();
+    fetchAndDisplayCountry();
 }

@@ -76,40 +76,72 @@ async function testOracleConnection() {
     });
 }
 
-async function fetchDemotableFromDb() {
+async function fetchCountryFromDb() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT * FROM COUNTRY');
+        console.log('Query result:', result.rows);
         return result.rows;
     }).catch(() => {
         return [];
     });
 }
 
-async function initiateDemotable() {
+async function initiateCountry() {
     return await withOracleDB(async (connection) => {
         try {
-            await connection.execute(`DROP TABLE DEOMTABLE`);
+            // await connection.execute(`DROP TABLE COUNTRY`);
+            await connection.execute('SELECT * FROM COUNTRY');
         } catch(err) {
             console.log('Table might not exist, proceeding to create...');
         }
 
-        const result = await connection.execute(`
-            CREATE TABLE COUNTRY (
-                id NUMBER PRIMARY KEY,
-                name VARCHAR2(20)
-            )
-        `);
-        return true;
-    }).catch(() => {
-        return false;
-    });
+    //     const result = await connection.execute(`
+    //      CREATE TABLE Country
+    //         (
+    //             Name        VARCHAR2(100) NOT NULL,
+    //             Population  NUMBER,
+    //             Government  VARCHAR2(100),
+    //             PortAddress VARCHAR2(200) NOT NULL,
+    //             GDP         NUMBER,
+    //             PRIMARY KEY (Name)
+    //         );
+    //
+    //         INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+    //         VALUES ('Canada', 38930000, 'Liberal Party - Justin Trudeau', '999 Canada Pl, Vancouver, BC V6C 3T4', 2.14);
+    //         INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+    //         VALUES ('USA', 333300000, 'Democratic Party - Joe Biden', 'Signal St, San Pedro, CA 90731, United States', 27.36);
+    //         INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+    //         VALUES ('China', 1412000000, 'Chinese Communist Party - Xi Jinping', 'Shengsi County, Zhoushan, China, 202461', 17.79);
+    //         INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+    //         VALUES ('Japan', 125100000, 'Liberal Democratic Party - Shigeru Ishiba', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 4.21);
+    //         INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+    //         VALUES ('Netherlands', 177000000, 'Independent - Dick Schoof', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 1.12);
+    //         INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+    //         VALUES ('Russia', 146000000, 'United Russia - Vladimir Putin', 'xxx', 1680.0);
+    //         INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+    //         VALUES ('India', 1390000000, 'Bharatiya Janata Party - Narendra Modi', 'yyy', 2875.0);
+    //         INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+    //         VALUES ('Brazil', 213000000, 'Workers Party - Luiz Inácio Lula da Silva', 'zzz', 1505.0);
+    //         INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+    //         VALUES ('UK', 67000000, 'Conservative Party - Rishi Sunak', 'xyz', 3031.0);
+    //
+    //
+    //     `);
+    //
+    //
+    //     console.log("Table creation and data insertion result:", result);
+    //     return true;
+    // }).catch((err) => {
+    //     console.error("Error during table creation or data insertion:", err);
+    //     return false;
+     });
 }
 
-async function insertDemotable(id, name) {
+async function insertCountry(name, population, government, portaddress, gdp) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `INSERT INTO DEMOTABLE (id, name) VALUES (:id, :name)`,
-            [id, name],
+            `INSERT INTO COUNTRY (name, population, government, portaddress, gdp) VALUES (:name, :population, :government, :portaddress, :gdp)`,
+            [name, population, government, portaddress, gdp],
             { autoCommit: true }
         );
 
@@ -119,10 +151,10 @@ async function insertDemotable(id, name) {
     });
 }
 
-async function updateNameDemotable(oldName, newName) {
+async function updateNameCountry(oldName, newName) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `UPDATE DEMOTABLE SET name=:newName where name=:oldName`,
+            `UPDATE COUNTRY SET name=:newName where name=:oldName`,
             [newName, oldName],
             { autoCommit: true }
         );
@@ -133,7 +165,7 @@ async function updateNameDemotable(oldName, newName) {
     });
 }
 
-async function countDemotable() {
+async function countCountry() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
         return result.rows[0][0];
@@ -144,9 +176,9 @@ async function countDemotable() {
 
 module.exports = {
     testOracleConnection,
-    fetchDemotableFromDb,
-    initiateDemotable, 
-    insertDemotable, 
-    updateNameDemotable, 
-    countDemotable
+    fetchCountryFromDb,
+    initiateCountry,
+    insertCountry,
+    updateNameCountry,
+    countCountry
 };
