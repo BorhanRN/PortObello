@@ -107,6 +107,7 @@ async function fetchCountryFromDb() {
     });
 }
 
+// OG
 // async function initiateCountry() {
 //     return await withOracleDB(async (connection) => {
 //         try {
@@ -158,15 +159,94 @@ async function fetchCountryFromDb() {
 //      });
 // }
 
+// CL1
+// async function initiateCountry() {
+//     return await withOracleDB(async (connection) => {
+//         try {
+//             // First try to drop the existing table
+//             try {
+//                 await connection.execute('DROP TABLE COUNTRY');
+//                 console.log('Existing COUNTRY table dropped');
+//             } catch (err) {
+//                 console.log('Table might not exist, proceeding to create...', err.message);
+//             }
+//
+//             // Create the table
+//             await connection.execute(`
+//                 CREATE TABLE Country (
+//                     Name        VARCHAR2(100) NOT NULL,
+//                     Population  NUMBER,
+//                     Government  VARCHAR2(100),
+//                     PortAddress VARCHAR2(200) NOT NULL,
+//                     GDP         NUMBER,
+//                     PRIMARY KEY (Name)
+//                 )`);
+//
+//             console.log('COUNTRY table created');
+//
+//             // Insert initial data
+//             const insertStatements = [
+//                 `INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+//                  VALUES ('Canada', 38930000, 'Liberal Party - Justin Trudeau', '999 Canada Pl, Vancouver, BC V6C 3T4', 2.14)`,
+//                 `INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+//                  VALUES ('USA', 333300000, 'Democratic Party - Joe Biden', 'Signal St, San Pedro, CA 90731, United States', 27.36)`,
+//                 `INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+//                  VALUES ('China', 1412000000, 'Chinese Communist Party - Xi Jinping', 'Shengsi County, Zhoushan, China, 202461', 17.79)`,
+//                 `INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+//                  VALUES ('Japan', 125100000, 'Liberal Democratic Party - Shigeru Ishiba', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 4.21)`,
+//                 `INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
+//                  VALUES ('Netherlands', 177000000, 'Independent - Dick Schoof', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 1.12)`
+//             ];
+//
+//             for (const statement of insertStatements) {
+//                 await connection.execute(statement);
+//                 console.log('Executed:', statement);
+//             }
+//
+//             await connection.commit();
+//             console.log('All data inserted and committed');
+//             return true;
+//         } catch (err) {
+//             console.error('Error in initiateCountry:', err);
+//             return false;
+//         }
+//     });
+// }
+
 async function initiateCountry() {
     return await withOracleDB(async (connection) => {
         try {
-            // First try to drop the existing table
+            // First, try to find any foreign key constraints referencing COUNTRY
+            const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE table_name = 'COUNTRY' 
+                    AND constraint_type = 'P'
+                )`;
+
+            console.log('Checking for foreign key constraints...');
+            const fkResult = await connection.execute(findFKsQuery);
+
+            // Drop any foreign key constraints found
+            for (let fk of fkResult.rows || []) {
+                try {
+                    const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                    await connection.execute(dropFKQuery);
+                    console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+                } catch (err) {
+                    console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+                }
+            }
+
+            // Now try to drop the COUNTRY table
             try {
-                await connection.execute('DROP TABLE COUNTRY');
+                await connection.execute('DROP TABLE COUNTRY PURGE');
                 console.log('Existing COUNTRY table dropped');
             } catch (err) {
-                console.log('Table might not exist, proceeding to create...', err.message);
+                console.log('Error dropping COUNTRY table:', err.message);
             }
 
             // Create the table
@@ -184,21 +264,21 @@ async function initiateCountry() {
 
             // Insert initial data
             const insertStatements = [
-                `INSERT INTO Country (Name, Population, Government, PortAddress, GDP) 
-                 VALUES ('Canada', 38930000, 'Liberal Party - Justin Trudeau', '999 Canada Pl, Vancouver, BC V6C 3T4', 2.14)`,
-                `INSERT INTO Country (Name, Population, Government, PortAddress, GDP) 
-                 VALUES ('USA', 333300000, 'Democratic Party - Joe Biden', 'Signal St, San Pedro, CA 90731, United States', 27.36)`,
-                `INSERT INTO Country (Name, Population, Government, PortAddress, GDP) 
-                 VALUES ('China', 1412000000, 'Chinese Communist Party - Xi Jinping', 'Shengsi County, Zhoushan, China, 202461', 17.79)`,
-                `INSERT INTO Country (Name, Population, Government, PortAddress, GDP) 
-                 VALUES ('Japan', 125100000, 'Liberal Democratic Party - Shigeru Ishiba', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 4.21)`,
-                `INSERT INTO Country (Name, Population, Government, PortAddress, GDP) 
-                 VALUES ('Netherlands', 177000000, 'Independent - Dick Schoof', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 1.12)`
+                ['Canada', 38930000, 'Liberal Party - Justin Trudeau', '999 Canada Pl, Vancouver, BC V6C 3T4', 2.14],
+                ['USA', 333300000, 'Democratic Party - Joe Biden', 'Signal St, San Pedro, CA 90731, United States', 27.36],
+                ['China', 1412000000, 'Chinese Communist Party - Xi Jinping', 'Shengsi County, Zhoushan, China, 202461', 17.79],
+                ['Japan', 125100000, 'Liberal Democratic Party - Shigeru Ishiba', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 4.21],
+                ['Netherlands', 177000000, 'Independent - Dick Schoof', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 1.12]
             ];
 
-            for (const statement of insertStatements) {
-                await connection.execute(statement);
-                console.log('Executed:', statement);
+            // Use bind variables for safer insertion
+            const insertSQL = `
+                INSERT INTO Country (Name, Population, Government, PortAddress, GDP) 
+                VALUES (:1, :2, :3, :4, :5)`;
+
+            for (const data of insertStatements) {
+                await connection.execute(insertSQL, data);
+                console.log('Inserted data for:', data[0]);
             }
 
             await connection.commit();
@@ -206,8 +286,12 @@ async function initiateCountry() {
             return true;
         } catch (err) {
             console.error('Error in initiateCountry:', err);
-            return false;
+            await connection.rollback();
+            throw err;
         }
+    }).catch((err) => {
+        console.error('Failed to initiate country:', err);
+        return false;
     });
 }
 
