@@ -133,27 +133,6 @@ async function updateNameDemotable(oldName, newName) {
     });
 }
 
-//sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
-async function shipToPort(Owner, ShipName) {
-    return await  withOracleDB( async (connection) => {
-        const result = await connection.execute(
-            `UPDATE SHIPS 
-             SET PortAddress = (
-                 SELECT DestinationAddress
-                 FROM ShippingRoute2 s, SHIPS h
-                 WHERE s.Name = h.ShippingRoute
-                 )
-             WHERE Owner=:Owner & ShipName=:ShipName:`,
-        )
-
-    return result.rowsAffected && result.rowsAffected > 0;
-    }).catch((error) => {
-        console.error("Error updating ship's port:", error);
-        return false; // Return false if an error occurs
-    });
-
-}
-
 async function countDemotable() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
