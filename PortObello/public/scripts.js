@@ -38,10 +38,10 @@ async function checkDbConnection() {
 
 // Fetches data from the demotable and displays it.
 async function fetchAndDisplayUsers() {
-    const tableElement = document.getElementById('demotable');
+    const tableElement = document.getElementById('country');
     const tableBody = tableElement.querySelector('tbody');
 
-    const response = await fetch('/demotable', {
+    const response = await fetch('/country', {
         method: 'GET'
     });
 
