@@ -328,7 +328,7 @@ async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
         const result = await connection.execute(
             `UPDATE Ship h 
-             SET PortAddress = (
+             SET DockedAtPortAddress = (
                  SELECT s.DestinationAddress
                  FROM ShippingRoute2 s
                  JOIN Ship h2
