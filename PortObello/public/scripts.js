@@ -87,7 +87,7 @@ async function resetCountry() {
     const responseData = await response.json();
 
     if (responseData.success) {
-        const messageElement = document.getElementById('resetResultMsg');
+        const messageElement = document.getElementById('resetCountryResultMsg');
         messageElement.textContent = "country initiated successfully!";
         fetchTableData();
     } else {
@@ -219,6 +219,22 @@ async function fetchAndDisplayWarehouse() {
         console.error('Error in fetchAndDisplayWarehouse:', error);
     }
 
+}
+
+// This function resets or initializes WAREHOUSE.
+async function resetWarehouse() {
+    const response = await fetch("/initiate-warehouse", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetWarehouseResultMsg');
+        messageElement.textContent = "warehouse initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
 }
 
 // ---------------------------------------------------------------

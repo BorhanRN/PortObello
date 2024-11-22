@@ -310,16 +310,12 @@ async function initiateWarehouse() {
             await connection.execute(`
                 CREATE TABLE Warehouse
                 (
-                    PortAddress   VARCHAR NOT NULL,
-                    Section       INT,
-                    NumContainers INT,
-                    Capacity      INT,
+                    PortAddress   VARCHAR2(200) NOT NULL,
+                    Section       NUMBER,
+                    NumContainers NUMBER,
+                    Capacity      NUMBER,
                     PRIMARY KEY (PortAddress, Section),
-                    UNIQUE (PortAddress),
-                    FOREIGN KEY (PortAddress) REFERENCES
-                        Port (Address),
-                    ON DELETE CASCADE,
-                    ON UPDATE CASCADE
+                    FOREIGN KEY (PortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE
                 )`);
 
             console.log('WAREHOUSE table created');
@@ -335,7 +331,7 @@ async function initiateWarehouse() {
 
             // Use bind variables for safer insertion
             const insertSQL = `
-                INSERT INTO COUNTRY (Section, NumContainers, Capacity, PortAddress) 
+                INSERT INTO WAREHOUSE (Section, NumContainers, Capacity, PortAddress) 
                 VALUES (:1, :2, :3, :4)`;
 
             for (const data of insertStatements) {
