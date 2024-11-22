@@ -95,9 +95,10 @@ async function fetchCountryFromDb() {
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
 
-            )
+            );
+            console.log('Query result:', result);
             return result.rows;
-            //console.log('Query result:', result);
+
 
 
         } catch (err) {
