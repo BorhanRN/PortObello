@@ -141,7 +141,7 @@ async function insertCountry(event) {
             population: population,
             government: government,
             gdp: gdp,
-            portAddress: portaddress
+            portaddress: portaddress
         })
     });
 
