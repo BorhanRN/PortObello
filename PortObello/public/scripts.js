@@ -36,79 +36,30 @@ async function checkDbConnection() {
         });
 }
 
-// // Fetches data from COUNTRY and displays it.
-// async function fetchAndDisplayCountry() {
-//     const tableElement = document.getElementById('country');
-//     const tableBody = tableElement.querySelector('tbody');
-//
-//     const response = await fetch('/country', {
-//         method: 'GET'
-//     });
-//
-//     const responseData = await response.json();
-//     const countryContent = responseData.data;
-//
-//     // Always clear old, already fetched data before new fetching process.
-//     if (tableBody) {
-//         tableBody.innerHTML = '';
-//     }
-//
-//     countryContent.forEach(country => {
-//         const row = tableBody.insertRow();
-//         Object.values(country).forEach((field, index) => {
-//             const cell = row.insertCell(index);
-//             cell.textContent = field;
-//         });
-//     });
-// }
-
-// CL1
+// Fetches data from COUNTRY and displays it.
 async function fetchAndDisplayCountry() {
-    try {
-        console.log('Fetching country data...');
-        const response = await fetch('/country', {
-            method: 'GET'
-        });
+    const tableElement = document.getElementById('country');
+    const tableBody = tableElement.querySelector('tbody');
 
-        console.log('Response status:', response.status);
-        const responseData = await response.json();
-        console.log('Received data:', responseData);
+    const response = await fetch('/country', {
+        method: 'GET'
+    });
 
-        const tableElement = document.getElementById('country');
-        if (!tableElement) {
-            console.error('Could not find table element with id "country"');
-            return;
-        }
+    const responseData = await response.json();
+    const countryContent = responseData.data;
 
-        const tableBody = tableElement.querySelector('tbody');
-        if (!tableBody) {
-            console.error('Could not find tbody in table');
-            return;
-        }
-
-        // Clear existing table content
+    // Always clear old, already fetched data before new fetching process.
+    if (tableBody) {
         tableBody.innerHTML = '';
-
-        if (!responseData.data || !Array.isArray(responseData.data)) {
-            console.error('Invalid data format received:', responseData);
-            return;
-        }
-
-        responseData.data.forEach(country => {
-            const row = tableBody.insertRow();
-            // Explicitly specify the columns in the order we want
-            const columns = ['NAME', 'POPULATION', 'GOVERNMENT', 'PORTADDRESS', 'GDP'];
-            columns.forEach(column => {
-                const cell = row.insertCell();
-                cell.textContent = country[column] || '';
-                console.log(`Setting ${column} to:`, country[column]);
-            });
-        });
-
-        console.log('Table updated successfully');
-    } catch (error) {
-        console.error('Error in fetchAndDisplayCountry:', error);
     }
+
+    countryContent.forEach(country => {
+        const row = tableBody.insertRow();
+        Object.values(country).forEach((field, index) => {
+            const cell = row.insertCell(index);
+            cell.textContent = field;
+        });
+    });
 }
 
 // This function resets or initializes COUNTRY.
@@ -213,34 +164,14 @@ async function countCountry() {
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
-// window.onload = function() {
-//     checkDbConnection();
-//     fetchTableData();
-//     document.getElementById("resetCountry").addEventListener("click", resetCountry);
-//     document.getElementById("insertCountry").addEventListener("submit", insertCountry);
-//     document.getElementById("updataNameCountry").addEventListener("submit", updateNameCountry);
-//     document.getElementById("countCountry").addEventListener("click", countCountry);
-// };
 window.onload = function() {
-    console.log('Page loaded, initializing...');
     checkDbConnection();
-    fetchAndDisplayCountry();  // Initial fetch
-
-    // Add event listeners
-    document.getElementById("resetCountry").addEventListener("click", async () => {
-        await resetCountry();
-        await fetchAndDisplayCountry();  // Refresh table after reset
-    });
-    document.getElementById("insertCountry").addEventListener("submit", async (e) => {
-        await insertCountry(e);
-        await fetchAndDisplayCountry();  // Refresh table after insert
-    });
-    document.getElementById("updataNameCountry").addEventListener("submit", async (e) => {
-        await updateNameCountry(e);
-        await fetchAndDisplayCountry();  // Refresh table after update
-    });
+    fetchTableData();
+    document.getElementById("resetCountry").addEventListener("click", resetCountry);
+    document.getElementById("insertCountry").addEventListener("submit", insertCountry);
+    document.getElementById("updataNameCountry").addEventListener("submit", updateNameCountry);
     document.getElementById("countCountry").addEventListener("click", countCountry);
-}
+};
 
 // General function to refresh the displayed table data.
 // You can invoke this after any table-modifying operation to keep consistency.
