@@ -62,7 +62,7 @@ async function checkDbConnection() {
 //     });
 // }
 
-// CL1
+// Fetches data from COUNTRY and displays it. CL1
 async function fetchAndDisplayCountry() {
     try {
         console.log('Fetching country data...');

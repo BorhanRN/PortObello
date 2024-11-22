@@ -30,6 +30,7 @@ router.post("/initiate-country", async (req, res) => {
 });
 
 router.post("/insert-country", async (req, res) => {
+    console.log('Received request:', req.body);
     const { name, population, government, gdp, portaddress } = req.body;
     const insertResult = await appService.insertCountry(name, population, government, gdp, portaddress);
     if (insertResult) {
