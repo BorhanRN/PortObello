@@ -259,8 +259,8 @@ async function initiateCountry() {
                     Name        VARCHAR2(100) NOT NULL,
                     Population  NUMBER,
                     Government  VARCHAR2(100),
-                    PortAddress VARCHAR2(200) NOT NULL,
                     GDP         NUMBER,
+                    PortAddress VARCHAR2(200) NOT NULL,
                     PRIMARY KEY (Name)
                 )`);
 
@@ -277,7 +277,7 @@ async function initiateCountry() {
 
             // Use bind variables for safer insertion
             const insertSQL = `
-                INSERT INTO COUNTRY (Name, Population, Government, PortAddress, GDP) 
+                INSERT INTO COUNTRY (Name, Population, Government, GDP, PortAddress) 
                 VALUES (:1, :2, :3, :4, :5)`;
 
             for (const data of insertStatements) {
@@ -299,11 +299,11 @@ async function initiateCountry() {
     });
 }
 
-async function insertCountry(name, population, government, portaddress, gdp) {
+async function insertCountry(name, population, government, gdp, portaddress) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `INSERT INTO COUNTRY (name, population, government, portaddress, gdp) VALUES (:name, :population, :government, :portaddress, :gdp)`,
-            [name, population, government, portaddress, gdp],
+            `INSERT INTO COUNTRY (name, population, government, gdp, PortAddress) VALUES (:name, :population, :government, :gdp, :PortAddress)`,
+            [name, population, government, gdp, portaddress],
             { autoCommit: true }
         );
 

@@ -30,8 +30,8 @@ router.post("/initiate-country", async (req, res) => {
 });
 
 router.post("/insert-country", async (req, res) => {
-    const { name, population, government, portaddress, gdp } = req.body;
-    const insertResult = await appService.insertCountry(name, population, government, portaddress, gdp);
+    const { name, population, government, gdp, portaddress } = req.body;
+    const insertResult = await appService.insertCountry(name, population, government, gdp, portaddress);
     if (insertResult) {
         res.json({ success: true });
     } else {

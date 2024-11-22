@@ -91,7 +91,7 @@ async function fetchAndDisplayCountry() {
 
         responseData.data.forEach(country => {
             const row = tableBody.insertRow();
-            const columns = ['NAME', 'POPULATION', 'GOVERNMENT', 'PORTADDRESS', 'GDP'];
+            const columns = ['NAME', 'POPULATION', 'GOVERNMENT', 'GDP', 'PORTADDRESS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
                 cell.textContent = country[col] || 'N/A';
@@ -128,8 +128,8 @@ async function insertCountry(event) {
     const name = document.getElementById('insertCountryName').value;
     const population = document.getElementById('insertCountryPopulation').value;
     const government = document.getElementById('insertCountryGovernment').value;
-    const portAddress = document.getElementById('insertCountryPortAddress').value;
     const gdp = document.getElementById('insertCountryGDP').value;
+    const portAddress = document.getElementById('insertCountryPortAddress').value;
 
     const response = await fetch('/insert-country', {
         method: 'POST',
@@ -140,8 +140,8 @@ async function insertCountry(event) {
             name: name,
             population: population,
             government: government,
-            portAddress: portAddress,
-            gdp: gdp
+            gdp: gdp,
+            portAddress: portAddress
         })
     });
 
