@@ -94,7 +94,8 @@ async function initiateCountry() {
         }
 
         const result = await connection.execute(`
-            CREATE TABLE Country
+        BEGIN
+            EXECUTE IMMEDIATE 'CREATE TABLE Country
             (
                 Name        VARCHAR2(100) NOT NULL,
                 Population  NUMBER,
@@ -102,7 +103,7 @@ async function initiateCountry() {
                 PortAddress VARCHAR2(200) NOT NULL,
                 GDP         NUMBER,
                 PRIMARY KEY (Name)
-            );
+            )';
 
             INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
             VALUES ('Canada', 38930000, 'Liberal Party - Justin Trudeau', '999 Canada Pl, Vancouver, BC V6C 3T4', 2.14);
@@ -121,10 +122,16 @@ async function initiateCountry() {
             INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
             VALUES ('Brazil', 213000000, 'Workers Party - Luiz Inácio Lula da Silva', 'zzz', 1505.0);
             INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
-            VALUES ('UK', 67000000, 'Conservative Party - Rishi Sunak', 'xyz', 3031.0)
+            VALUES ('UK', 67000000, 'Conservative Party - Rishi Sunak', 'xyz', 3031.0);
+            
+            END;
         `);
+
+
+        console.log("Table creation and data insertion result:", result);
         return true;
-    }).catch(() => {
+    }).catch((err) => {
+        console.error("Error during table creation or data insertion:", err);
         return false;
     });
 }
