@@ -252,6 +252,11 @@ window.onload = function() {
         await resetCountry();
         await fetchAndDisplayCountry();  // Refresh table after reset
     });
+    document.getElementById("resetWarehouse").addEventListener("click", async () => {
+        await resetWarehouse();
+        await fetchAndDisplayWarehouse();  // Refresh table after reset
+    });
+
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
         await insertCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after insert

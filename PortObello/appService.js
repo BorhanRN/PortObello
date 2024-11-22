@@ -156,8 +156,13 @@ async function initiateCountry() {
                 ['USA', 333300000, 'Democratic Party - Joe Biden', 27.36, 'Signal St, San Pedro, CA 90731, United States'],
                 ['China', 1412000000, 'Chinese Communist Party - Xi Jinping',17.79, 'Shengsi County, Zhoushan, China, 202461'],
                 ['Japan', 125100000, 'Liberal Democratic Party - Shigeru Ishiba', 4.21, '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan'],
-                ['Netherlands', 177000000, 'Independent - Dick Schoof',1.12, 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands']
-            ];
+                ['Netherlands', 177000000, 'Independent - Dick Schoof',1.12, 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands'],
+                ['Russia', 146000000, 'United Russia - Vladimir Putin', 'xxx', 1680.0],
+                ['India', 1390000000, 'Bharatiya Janata Party - Narendra Modi', 'yyy', 2875.0],
+                ['Brazil', 213000000, 'Workers Party - Luiz Inácio Lula da Silva', 'zzz', 1505.0],
+                ['UK', 67000000, 'Conservative Party - Rishi Sunak', 'xyz', 3031.0]
+
+        ];
 
             // Use bind variables for safer insertion
             const insertSQL = `
@@ -357,10 +362,11 @@ module.exports = {
     testOracleConnection,
 
     fetchCountryFromDb,
-    fetchWarehouseFromDb,
-
     initiateCountry,
+
+    fetchWarehouseFromDb,
     initiateWarehouse,
+
 
     insertCountry,
     updateNameCountry,
