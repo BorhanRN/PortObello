@@ -212,7 +212,7 @@ async function countCountry() {
 //     fetchTableData();
 //     document.getElementById("resetCountry").addEventListener("click", resetCountry);
 //     document.getElementById("insertCountry").addEventListener("submit", insertCountry);
-//     document.getElementById("updataNameCountry").addEventListener("submit", updateNameCountry);
+//     document.getElementById("updateNameCountry").addEventListener("submit", updateNameCountry);
 //     document.getElementById("countCountry").addEventListener("click", countCountry);
 // };
 window.onload = function() {
@@ -229,7 +229,7 @@ window.onload = function() {
         await insertCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after insert
     });
-    document.getElementById("updataNameCountry").addEventListener("submit", async (e) => {
+    document.getElementById("updateNameCountry").addEventListener("submit", async (e) => {
         await updateNameCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after update
     });
