@@ -251,7 +251,7 @@ async function initiateCountry() {
 
             // Create the table
             await connection.execute(`
-                CREATE TABLE Country (
+                CREATE TABLE COUNTRY (
                     Name        VARCHAR2(100) NOT NULL,
                     Population  NUMBER,
                     Government  VARCHAR2(100),
@@ -273,7 +273,7 @@ async function initiateCountry() {
 
             // Use bind variables for safer insertion
             const insertSQL = `
-                INSERT INTO Country (Name, Population, Government, PortAddress, GDP) 
+                INSERT INTO COUNTRY (Name, Population, Government, PortAddress, GDP) 
                 VALUES (:1, :2, :3, :4, :5)`;
 
             for (const data of insertStatements) {
