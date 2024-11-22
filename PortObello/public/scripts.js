@@ -66,43 +66,49 @@ async function checkDbConnection() {
 async function fetchAndDisplayCountry() {
     try {
         console.log('Fetching country data...');
-        const response = await fetch('/country', { method: 'GET' });
+        const response = await fetch('/country', {
+            method: 'GET'
+        });
+
         console.log('Response status:', response.status);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const responseData = await response.json();
-        console.log('Response JSON:', responseData);
+        console.log('Received data:', responseData);
 
         const tableElement = document.getElementById('country');
-        if (!tableElement) throw new Error('Table element with id "country" not found');
+        if (!tableElement) {
+            console.error('Could not find table element with id "country"');
+            return;
+        }
 
         const tableBody = tableElement.querySelector('tbody');
-        if (!tableBody) throw new Error('No <tbody> found in table');
+        if (!tableBody) {
+            console.error('Could not find tbody in table');
+            return;
+        }
 
-        // Clear old content
+        // Clear existing table content
         tableBody.innerHTML = '';
 
         if (!responseData.data || !Array.isArray(responseData.data)) {
-            throw new Error('Data format error: data is not an array');
+            console.error('Invalid data format received:', responseData);
+            return;
         }
 
         responseData.data.forEach(country => {
             const row = tableBody.insertRow();
+            // Explicitly specify the columns in the order we want
             const columns = ['NAME', 'POPULATION', 'GOVERNMENT', 'PORTADDRESS', 'GDP'];
-            columns.forEach(col => {
+            columns.forEach(column => {
                 const cell = row.insertCell();
-                cell.textContent = country[col] || 'N/A';
+                cell.textContent = country[column] || '';
+                console.log(`Setting ${column} to:`, country[column]);
             });
         });
 
-        console.log('Table populated successfully');
+        console.log('Table updated successfully');
     } catch (error) {
         console.error('Error in fetchAndDisplayCountry:', error);
     }
-
 }
 
 // This function resets or initializes COUNTRY.
