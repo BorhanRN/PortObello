@@ -65,5 +65,19 @@ router.get('/count-country', async (req, res) => {
     }
 });
 
+router.get('/warehouse', async (req, res) => {
+    const tableContent = await appService.fetchWarehouseFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-warehouse", async (req, res) => {
+    const initiateResult = await appService.initiateWarehouse();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 
 module.exports = router;

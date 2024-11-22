@@ -36,32 +36,6 @@ async function checkDbConnection() {
         });
 }
 
-// // Fetches data from COUNTRY and displays it.
-// async function fetchAndDisplayCountry() {
-//     const tableElement = document.getElementById('country');
-//     const tableBody = tableElement.querySelector('tbody');
-//
-//     const response = await fetch('/country', {
-//         method: 'GET'
-//     });
-//
-//     const responseData = await response.json();
-//     const countryContent = responseData.data;
-//
-//     // Always clear old, already fetched data before new fetching process.
-//     if (tableBody) {
-//         tableBody.innerHTML = '';
-//     }
-//
-//     countryContent.forEach(country => {
-//         const row = tableBody.insertRow();
-//         Object.values(country).forEach((field, index) => {
-//             const cell = row.insertCell(index);
-//             cell.textContent = field;
-//         });
-//     });
-// }
-
 // Fetches data from COUNTRY and displays it. CL1
 async function fetchAndDisplayCountry() {
     try {
@@ -204,21 +178,58 @@ async function countCountry() {
 }
 
 
+// Fetches data from WAREHOUSE and displays it. CL1
+async function fetchAndDisplayWarehouse() {
+    try {
+        console.log('Fetching warehouse data...');
+        const response = await fetch('/warehouse', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('warehouse');
+        if (!tableElement) throw new Error('Table element with id "warehouse" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(warehouse => {
+            const row = tableBody.insertRow();
+            const columns = ['PORTADDRESS', 'SECTION', 'NUMCONTAINERS', 'CAPACITY'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = warehouse[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayWarehouse:', error);
+    }
+
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
-// window.onload = function() {
-//     checkDbConnection();
-//     fetchTableData();
-//     document.getElementById("resetCountry").addEventListener("click", resetCountry);
-//     document.getElementById("insertCountry").addEventListener("submit", insertCountry);
-//     document.getElementById("updateNameCountry").addEventListener("submit", updateNameCountry);
-//     document.getElementById("countCountry").addEventListener("click", countCountry);
-// };
 window.onload = function() {
     console.log('Page loaded, initializing...');
     checkDbConnection();
-    fetchAndDisplayCountry();  // Initial fetch
+
+    fetchAndDisplayCountry();  // Initial fetches
+    fetchAndDisplayWarehouse();
 
     // Add event listeners
     document.getElementById("resetCountry").addEventListener("click", async () => {
@@ -240,4 +251,5 @@ window.onload = function() {
 // You can invoke this after any table-modifying operation to keep consistency.
 function fetchTableData() {
     fetchAndDisplayCountry();
+    fetchAndDisplayWarehouse();
 }
