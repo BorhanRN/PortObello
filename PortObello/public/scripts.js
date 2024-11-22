@@ -129,7 +129,7 @@ async function insertCountry(event) {
     const population = document.getElementById('insertCountryPopulation').value;
     const government = document.getElementById('insertCountryGovernment').value;
     const gdp = document.getElementById('insertCountryGDP').value;
-    const portAddress = document.getElementById('insertCountryPortAddress').value;
+    const portaddress = document.getElementById('insertCountryPortAddress').value;
 
     const response = await fetch('/insert-country', {
         method: 'POST',
@@ -141,7 +141,7 @@ async function insertCountry(event) {
             population: population,
             government: government,
             gdp: gdp,
-            portAddress: portAddress
+            portAddress: portaddress
         })
     });
 
