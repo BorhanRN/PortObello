@@ -74,20 +74,6 @@ router.get('/count-country', async (req, res) => {
     }
 });
 
-router.get('/port', async (req, res) => {
-    const tableContent = await appService.fetchPortFromDb();
-    res.json({data: tableContent});
-});
-
-router.post("/initiate-port", async (req, res) => {
-    const initiateResult = await appService.initiatePort();
-    if (initiateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
-});
-
 router.get('/warehouse', async (req, res) => {
     const tableContent = await appService.fetchWarehouseFromDb();
     res.json({data: tableContent});
@@ -102,13 +88,13 @@ router.post("/initiate-warehouse", async (req, res) => {
     }
 });
 
-router.get('/homecountry', async (req, res) => {
-    const tableContent = await appService.fetchHomeCountryFromDb();
+router.get('/port', async (req, res) => {
+    const tableContent = await appService.fetchPortFromDb();
     res.json({data: tableContent});
 });
 
-router.post("/initiate-homecountry", async (req, res) => {
-    const initiateResult = await appService.initiateHomeCountry();
+router.post("/initiate-port", async (req, res) => {
+    const initiateResult = await appService.initiatePort();
     if (initiateResult) {
         res.json({ success: true });
     } else {
@@ -129,8 +115,6 @@ router.post("/initiate-foreigncountry", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
-
-
 
 
 module.exports = router;
