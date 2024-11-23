@@ -216,30 +216,6 @@ async function updateNameCountry(oldName, newName) {
     });
 }
 
-//sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
-async function shipToPort(Owner, ShipName) {
-    return await  withOracleDB( async (connection) => {
-        const result = await connection.execute(
-            `UPDATE Ship h 
-             SET DockedAtPortAddress = (
-                 SELECT s.DestinationAddress
-                 FROM ShippingRoute2 s
-                 JOIN Ship h2
-                 ON s.Name = h2.ShippingRoute
-                 WHERE h2.Owner =:Owner AND h2.ShipName =: ShipName
-                 )
-             WHERE Owner= :Owner AND ShipName= :ShipName`,
-            [Owner, ShipName],
-            { autoCommit: true }
-        )
-
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch((error) => {
-        console.error("Error updating ship's port:", error);
-        return false; // Return false if an error occurs
-    });
-
-}
 
 async function countCountry() {
     return await withOracleDB(async (connection) => {
@@ -471,11 +447,11 @@ async function initiatePort() {
 async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
         const shipUpdate = await connection.execute(
-            `UPDATE Ship h 
+            `UPDATE Ship1 h 
              SET DockedAtPortAddress = (
                  SELECT s.DestinationAddress
                  FROM ShippingRoute2 s
-                 JOIN Ship h2
+                 JOIN Ship1 h2
                  ON s.Name = h2.ShippingRoute
                  WHERE h2.Owner =:Owner AND h2.ShipName =: ShipName
                  )
@@ -495,7 +471,7 @@ async function shipToPort(Owner, ShipName) {
              WHERE PortAddress= (                 
                          SELECT s.DestinationAddress
                          FROM ShippingRoute2 s
-                         JOIN Ship h2
+                         JOIN Ship1 h2
                          ON s.Name = h2.ShippingRoute
                          WHERE h2.Owner =:Owner AND h2.ShipName =: ShipName)`,
             [Owner, ShipName],
