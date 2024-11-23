@@ -102,6 +102,37 @@ router.post("/initiate-port", async (req, res) => {
     }
 });
 
+router.get('/homecountry', async (req, res) => {
+    const tableContent = await appService.fetchHomeCountryFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-homecountry", async (req, res) => {
+    const initiateResult = await appService.initiateHomeCountry();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.get('/foreigncountry', async (req, res) => {
+    const tableContent = await appService.fetchForeignCountryFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-foreigncountry", async (req, res) => {
+    const initiateResult = await appService.initiateForeignCountry();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+
+module.exports = router;
+
 router.post("/delete-port", async (req, res) => {
     const { addy } = req.body;
     const initiateResult = await appService.deletePort(addy);

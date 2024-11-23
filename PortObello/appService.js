@@ -556,6 +556,119 @@ async function initiateHomeCountry() {
     });
 }
 
+async function fetchForeignCountryFromDb() {
+    return await withOracleDB(async (connection) => {
+        try {
+            console.log('Executing SELECT query on FOREIGNCOUNTRY table...');
+            const result = await connection.execute(
+                'SELECT * FROM FOREIGNCOUNTRY',
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+
+            );
+            console.log('Query result:', result);
+            return result.rows;
+
+
+
+        } catch (err) {
+            console.error('Error fetching foreigncountry data:', err);
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Error in fetchForeignCountryFromDb:', err);
+        return [];
+    });
+}
+
+async function initiateForeignCountry() {
+    return await withOracleDB(async (connection) => {
+        try {
+            // First, try to find any foreign key constraints referencing FOREIGNCOUNTRY
+            const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE table_name = 'FOREIGNCOUNTRY' 
+                    AND constraint_type = 'P'
+                )`;
+
+            console.log('Checking for foreign key constraints...');
+            const fkResult = await connection.execute(findFKsQuery);
+
+            // Drop any foreign key constraints found
+            for (let fk of fkResult.rows || []) {
+                try {
+                    const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                    await connection.execute(dropFKQuery);
+                    console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+                } catch (err) {
+                    console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+                }
+            }
+
+            // Now try to drop the PORT table
+            try {
+                await connection.execute('DROP TABLE FOREIGNCOUNTRY PURGE');
+                console.log('Existing FOREIGNCOUNTRY table dropped');
+            } catch (err) {
+                console.log('Error dropping FOREIGNCOUNTRY table:', err.message);
+            }
+
+            // Create the table
+            await connection.execute(`
+                CREATE TABLE ForeignCountry
+                (
+                    Name       VARCHAR2(100) NOT NULL,
+                    Population NUMBER,
+                    GDP        FLOAT,
+                    Government VARCHAR2(100),
+                    DockingFee FLOAT,
+                    PRIMARY KEY (Name),
+                    FOREIGN KEY (Name) REFERENCES Country (Name) ON DELETE CASCADE
+                )`);
+
+            console.log('FOREIGNCOUNTRY table created');
+
+            // Insert initial data
+            const insertStatements = [
+                ['Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', 500.0],
+                ['Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0],
+                ['India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0],
+                ['Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0],
+                ['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0],
+                ['USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0],
+                ['China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0],
+                ['Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0],
+                ['Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0]
+            ];
+
+            // Use bind variables for safer insertion
+            const insertSQL = `
+                INSERT INTO FOREIGNCOUNTRY (Name, Population, GDP, Government, DockingFee) 
+                VALUES (:1, :2, :3, :4, :5)`;
+
+            for (const data of insertStatements) {
+                await connection.execute(insertSQL, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            await connection.commit();
+            console.log('All data inserted and committed');
+            return true;
+        } catch (err) {
+            console.error('Error in initiateForeignCountry:', err);
+            await connection.rollback();
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Failed to initiate foreigncountry:', err);
+        return false;
+    });
+}
+
 //sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
 async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
@@ -755,6 +868,9 @@ module.exports = {
 
     fetchHomeCountryFromDb,
     initiateHomeCountry,
+
+    fetchForeignCountryFromDb,
+    initiateForeignCountry,
 
 
 
