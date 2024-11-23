@@ -322,12 +322,12 @@ async function fetchAndDisplayHomeCountry() {
             throw new Error('Data format error: data is not an array');
         }
 
-        responseData.data.forEach(port => {
+        responseData.data.forEach(homecountry => {
             const row = tableBody.insertRow();
             const columns = ['NAME', 'POPULATION', 'GDP', 'GOVERNMENT', 'DOCKINGFEE'];
             columns.forEach(col => {
                 const cell = row.insertCell();
-                cell.textContent = port[col] || 'N/A';
+                cell.textContent = homecountry[col] || 'N/A';
             });
         });
 
@@ -346,8 +346,68 @@ async function resetHomeCountry() {
     const responseData = await response.json();
 
     if (responseData.success) {
-        const messageElement = document.getElementById('resetHCResultMsg');
+        const messageElement = document.getElementById('resetHomeCountryResultMsg');
         messageElement.textContent = "homecountry initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
+
+// Fetches data from FOREIGNCOUNTRY and displays it. CL1
+async function fetchAndDisplayForeignCountry() {
+    try {
+        console.log('Fetching foreigncountry data...');
+        const response = await fetch('/foreigncountry', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('foreigncountry');
+        if (!tableElement) throw new Error('Table element with id "foreigncountry" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(foreigncountry => {
+            const row = tableBody.insertRow();
+            const columns = ['NAME', 'POPULATION', 'GDP', 'GOVERNMENT', 'DOCKINGFEE'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = foreigncountry[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayHomeCountry:', error);
+    }
+
+}
+
+// This function resets or initializes FOREIGNCOUNTRY.
+async function resetForeignCountry() {
+    const response = await fetch("/initiate-foreigncountry", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetForeignCountryResultMsg');
+        messageElement.textContent = "foreigncountry initiated successfully!";
         fetchTableData();
     } else {
         alert("Error initiating table!");
@@ -367,6 +427,7 @@ window.onload = function() {
     fetchAndDisplayPort();
     fetchAndDisplayWarehouse();
     fetchAndDisplayHomeCountry();
+    fetchAndDisplayForeignCountry();
 
     // Add event listeners
     document.getElementById("resetCountry").addEventListener("click", async () => {
@@ -384,6 +445,10 @@ window.onload = function() {
     document.getElementById("resetHomeCountry").addEventListener("click", async () => {
         await resetHomeCountry();
         await fetchAndDisplayHomeCountry();  // Refresh table after reset
+    });
+    document.getElementById("resetForeignCountry").addEventListener("click", async () => {
+        await resetForeignCountry();
+        await fetchAndDisplayForeignCountry();  // Refresh table after reset
     });
 
 
@@ -403,4 +468,6 @@ window.onload = function() {
 function fetchTableData() {
     fetchAndDisplayCountry();
     fetchAndDisplayWarehouse();
+    fetchAndDisplayHomeCountry();
+    fetchAndDisplayForeignCountry();
 }

@@ -116,6 +116,20 @@ router.post("/initiate-homecountry", async (req, res) => {
     }
 });
 
+router.get('/foreigncountry', async (req, res) => {
+    const tableContent = await appService.fetchForeignCountryFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-foreigncountry", async (req, res) => {
+    const initiateResult = await appService.initiateForeignCountry();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 
 
 
