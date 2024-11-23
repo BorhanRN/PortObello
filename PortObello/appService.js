@@ -748,11 +748,11 @@ async function initiateTariff1() {
 
             // Insert initial data
             const insertStatements = [
-                ['China - USA Agreement', 12,'China','USA', TO_DATE('2024-01-15', 'YYYY-MM-DD')],
-                ['Canada - China Agreement', 9,'Canada','China', TO_DATE('2024-10-25', 'YYYY-MM-DD')],
-                ['Canada - Netherlands Agreement', 8,'Canada','Netherlands', TO_DATE('2020-06-12', 'YYYY-MM-DD')],
-                ['Canada - USA Agreement', 5,'Canada','USA', TO_DATE('2020-01-30', 'YYYY-MM-DD')],
-                ['Canada - Japan Agreement', 6,'Canada','Japan', TO_DATE('1998-04-09', 'YYYY-MM-DD')]
+                ['China - USA Agreement', 12,'China','USA', new Date('2024-01-15')],
+                ['Canada - China Agreement', 9,'Canada','China', new Date('2024-10-25')],
+                ['Canada - Netherlands Agreement', 8,'Canada','Netherlands', new Date('2020-06-12')],
+                ['Canada - USA Agreement', 5,'Canada','USA', new Date('2020-01-30')],
+                ['Canada - Japan Agreement', 6,'Canada','Japan', new Date('1998-04-09')]
             ];
 
             // Use bind variables for safer insertion
