@@ -783,17 +783,26 @@ async function initiateTariff1() {
 async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
         const shipUpdate = await connection.execute(
-            `UPDATE Ship1 h 
+            `UPDATE Ship1 h
              SET DockedAtPortAddress = (
-                 SELECT s.DestinationAddress
+                 SELECT c.portAddress
                  FROM ShippingRoute2 s
-                 JOIN Ship1 h2
-                 ON s.Name = h2.ShippingRoute
-                 WHERE h2.Owner =:Owner AND h2.ShipName =:ShipName
-                 )
-             WHERE Owner= :Owner AND ShipName= :ShipName`,
-            [Owner, ShipName],
-        )
+                          JOIN Country c ON s.DestinationCountry = c.Country
+                          JOIN Ship1 h2 ON s.Name = c.ShippingRoute
+                 WHERE h2.Owner = :Owner
+                   AND h2.ShipName = :ShipName
+                   AND h2.Owner = :Owner
+             )
+             WHERE Owner = :Owner AND ShipName = :ShipName`,
+            [Owner, ShipName]
+        );
+
+        await connection.execute(
+            `UPDATE Ship1
+             SET DockedAtPortAddress = 'Ship is currently at sea.'
+             WHERE DocketAtPortAddress = 'No ports from this country are currently monitored.'
+            `
+        );
 
 
         if (shipUpdate.rowsAffected === 0) {
@@ -801,17 +810,19 @@ async function shipToPort(Owner, ShipName) {
         }
 
         const portUpdate = await connection.execute(
-            `UPDATE Port p 
-             SET NumDockedShips = (NumDockedShips+1
-                 )
-             WHERE PortAddress= (                 
-                         SELECT s.DestinationAddress
-                         FROM ShippingRoute2 s
-                         JOIN Ship1 h2
-                         ON s.Name = h2.ShippingRoute
-                         WHERE h2.Owner =:Owner AND h2.ShipName =:ShipName)`,
-            [Owner, ShipName],
-        )
+            `UPDATE Port p
+             SET NumDockedShips = (NumDockedShips + 1)
+             WHERE PortAddress = (
+                 SELECT c.portAddress
+                 FROM ShippingRoute2 s
+                          JOIN Country c ON s.DestinationCountry = c.Country
+                          JOIN Ship1 h2 ON s.Name = h2.ShippingRoute
+                 WHERE h2.Owner = :Owner
+                   AND h2.ShipName = :ShipName
+             )`,
+            [Owner, ShipName]
+        );
+
         if (portUpdate.rowsAffected === 0) {
             throw new Error("Port update failed: No rows affected.");
         }
@@ -822,26 +833,59 @@ async function shipToPort(Owner, ShipName) {
         return true; // Both updates succeeded
     }).catch((error) => {
         console.error("Error updating ship's port:", error);
-        return false; // Return false if an error occurs
+        return false;
     });
 
 }
 
 async function deletePort(addy) {
     return await withOracleDB(async (connection) =>  {
+        await connection.execute( `
+                    DELETE FROM Warehouse
+                    WHERE PortAddress =:addy
+            `,
+            { addy },
+        );
+
+        await connection.execute( `
+                    UPDATE Country
+                    SET portAddress = 'No ports from this country are currently monitored.'
+                    WHERE portAddress =:addy
+            `,
+            { addy },
+        );
+
+        await connection.execute( `
+                    UPDATE ForeignCountry
+                    SET portAddress = 'No ports from this country are currently monitored.'
+                    WHERE portAddress =:addy
+            `,
+            { addy },
+        );
+
+        await connection.execute( `
+                    UPDATE HomeCountry
+                    SET portAddress = 'No ports from this country are currently monitored.'
+                    WHERE portAddress =:addy
+            `,
+            { addy },
+        );
+
         const deletion = await connection.execute( `
         DELETE FROM Port WHERE PortAddress =:addy
         `,
-        { addy },
-        { autoCommit: true }
-         );
+            { addy },
+        );
+
+        // Commit both updates
+        await connection.commit();
+
         return deletion.rowsAffected && deletion.rowsAffected > 0;
     })
-    .catch((error) => {
-        console.error("Error deleting port:", error);
-        return false;
-    });
-
+        .catch((error) => {
+            console.error("Error deleting port:", error);
+            return false;
+        });
 }
 
 async function deleteShippingRoute(sName) {
