@@ -159,6 +159,32 @@ async function updateNameCountry(event) {
     }
 }
 
+//Deletes a port
+async function deletePort(event) {
+    event.preventDefault();
+    const portToDelete = document.getElementById('PortAddress').value;
+
+    const response = await fetch( '/delete-port', {
+        method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            addy: portToDelete,
+        })
+    });
+
+    const responseData = await response.json();
+    const messageElement = document.getElementById('deletePortResultsMsg');
+
+    if (responseData.success) {
+        messageElement.textContent = "Port deleted successfully!";
+        fetchTableData();
+    } else {
+        messageElement.textContent = "Error deleting port!";
+    }
+}
+
 // Counts rows in country.
 // Modify the function accordingly if using different aggregate functions or procedures.
 async function countCountry() {
