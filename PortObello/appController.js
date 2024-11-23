@@ -15,7 +15,7 @@ router.get('/check-db-connection', async (req, res) => {
     }
 });
 
-router.get('country', async (req, res) => {
+router.get('/country', async (req, res) => {
     const tableContent = await appService.fetchCountryFromDb();
     res.json({data: tableContent});
 });
@@ -30,6 +30,7 @@ router.post("/initiate-country", async (req, res) => {
 });
 
 router.post("/insert-country", async (req, res) => {
+    console.log('Received request:', req.body);
     const { name, population, government, gdp, portaddress } = req.body;
     const insertResult = await appService.insertCountry(name, population, government, gdp, portaddress);
     if (insertResult) {
@@ -61,6 +62,34 @@ router.get('/count-country', async (req, res) => {
             success: false, 
             count: tableCount
         });
+    }
+});
+
+router.get('/warehouse', async (req, res) => {
+    const tableContent = await appService.fetchWarehouseFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-warehouse", async (req, res) => {
+    const initiateResult = await appService.initiateWarehouse();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.get('/port', async (req, res) => {
+    const tableContent = await appService.fetchPortFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-port", async (req, res) => {
+    const initiateResult = await appService.initiatePort();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
     }
 });
 

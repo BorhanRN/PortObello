@@ -36,33 +36,7 @@ async function checkDbConnection() {
         });
 }
 
-// // Fetches data from COUNTRY and displays it.
-// async function fetchAndDisplayCountry() {
-//     const tableElement = document.getElementById('country');
-//     const tableBody = tableElement.querySelector('tbody');
-//
-//     const response = await fetch('/country', {
-//         method: 'GET'
-//     });
-//
-//     const responseData = await response.json();
-//     const countryContent = responseData.data;
-//
-//     // Always clear old, already fetched data before new fetching process.
-//     if (tableBody) {
-//         tableBody.innerHTML = '';
-//     }
-//
-//     countryContent.forEach(country => {
-//         const row = tableBody.insertRow();
-//         Object.values(country).forEach((field, index) => {
-//             const cell = row.insertCell(index);
-//             cell.textContent = field;
-//         });
-//     });
-// }
-
-// CL1
+// Fetches data from COUNTRY and displays it. CL1
 async function fetchAndDisplayCountry() {
     try {
         console.log('Fetching country data...');
@@ -113,7 +87,7 @@ async function resetCountry() {
     const responseData = await response.json();
 
     if (responseData.success) {
-        const messageElement = document.getElementById('resetResultMsg');
+        const messageElement = document.getElementById('resetCountryResultMsg');
         messageElement.textContent = "country initiated successfully!";
         fetchTableData();
     } else {
@@ -129,7 +103,7 @@ async function insertCountry(event) {
     const population = document.getElementById('insertCountryPopulation').value;
     const government = document.getElementById('insertCountryGovernment').value;
     const gdp = document.getElementById('insertCountryGDP').value;
-    const portAddress = document.getElementById('insertCountryPortAddress').value;
+    const portaddress = document.getElementById('insertCountryPortAddress').value;
 
     const response = await fetch('/insert-country', {
         method: 'POST',
@@ -141,7 +115,7 @@ async function insertCountry(event) {
             population: population,
             government: government,
             gdp: gdp,
-            portAddress: portAddress
+            portaddress: portaddress
         })
     });
 
@@ -204,32 +178,154 @@ async function countCountry() {
 }
 
 
+// Fetches data from WAREHOUSE and displays it. CL1
+async function fetchAndDisplayWarehouse() {
+    try {
+        console.log('Fetching warehouse data...');
+        const response = await fetch('/warehouse', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('warehouse');
+        if (!tableElement) throw new Error('Table element with id "warehouse" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(warehouse => {
+            const row = tableBody.insertRow();
+            const columns = ['PORTADDRESS', 'SECTION', 'NUMCONTAINERS', 'CAPACITY'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = warehouse[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayWarehouse:', error);
+    }
+
+}
+
+// This function resets or initializes WAREHOUSE.
+async function resetWarehouse() {
+    const response = await fetch("/initiate-warehouse", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetWarehouseResultMsg');
+        messageElement.textContent = "warehouse initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
+// Fetches data from PORT and displays it. CL1
+async function fetchAndDisplayPort() {
+    try {
+        console.log('Fetching port data...');
+        const response = await fetch('/port', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('port');
+        if (!tableElement) throw new Error('Table element with id "port" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(port => {
+            const row = tableBody.insertRow();
+            const columns = ['PORTADDRESS', 'NUMWORKERS', 'DOCKEDSHIPS', 'COUNTRYNAME'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = port[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayCountry:', error);
+    }
+
+}
+
+// This function resets or initializes PORT.
+async function resetPort() {
+    const response = await fetch("/initiate-port", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetPortResultMsg');
+        messageElement.textContent = "port initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
-// window.onload = function() {
-//     checkDbConnection();
-//     fetchTableData();
-//     document.getElementById("resetCountry").addEventListener("click", resetCountry);
-//     document.getElementById("insertCountry").addEventListener("submit", insertCountry);
-//     document.getElementById("updataNameCountry").addEventListener("submit", updateNameCountry);
-//     document.getElementById("countCountry").addEventListener("click", countCountry);
-// };
 window.onload = function() {
     console.log('Page loaded, initializing...');
     checkDbConnection();
-    fetchAndDisplayCountry();  // Initial fetch
+
+    fetchAndDisplayCountry();  // Initial fetches
+    fetchAndDisplayPort();
+    fetchAndDisplayWarehouse();
 
     // Add event listeners
     document.getElementById("resetCountry").addEventListener("click", async () => {
         await resetCountry();
         await fetchAndDisplayCountry();  // Refresh table after reset
     });
+    document.getElementById("resetWarehouse").addEventListener("click", async () => {
+        await resetWarehouse();
+        await fetchAndDisplayWarehouse();  // Refresh table after reset
+    });
+    document.getElementById("resetPort").addEventListener("click", async () => {
+        await resetPort();
+        await fetchAndDisplayPort();  // Refresh table after reset
+    });
+
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
         await insertCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after insert
     });
-    document.getElementById("updataNameCountry").addEventListener("submit", async (e) => {
+    document.getElementById("updateNameCountry").addEventListener("submit", async (e) => {
         await updateNameCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after update
     });
@@ -240,4 +336,5 @@ window.onload = function() {
 // You can invoke this after any table-modifying operation to keep consistency.
 function fetchTableData() {
     fetchAndDisplayCountry();
+    fetchAndDisplayWarehouse();
 }

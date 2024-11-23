@@ -34,8 +34,8 @@
         <th>Name</th>
         <th>Population</th>
         <th>Government</th>
-        <th>PortAddress</th>
         <th>GDP</th>
+        <th>PortAddress</th>
 
     </tr>
     </thead>
@@ -49,7 +49,7 @@
 <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
 <button id="resetCountry"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
-<div id="resetResultMsg"></div>
+<div id="resetCountryResultMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
 
@@ -58,8 +58,9 @@
     Name: <input type="text" id="insertCountryName" placeholder="Enter Name" maxlength="20"> <br><br>
     Population: <input type="number" id="insertCountryPopulation" placeholder="Enter Population" required> <br><br>
     Government: <input type="text" id="insertCountryGovernment" placeholder="Enter Government" maxlength="20"> <br><br>
-    PortAddress: <input type="text" id="insertCountryPortAddress" placeholder="Enter Port Address" maxlength="20"> <br><br>
     GDP: <input type="number" id="insertCountryGDP" placeholder="Enter GDP" required> <br><br>
+    PortAddress: <input type="text" id="insertCountryPortAddress" placeholder="Enter Port Address" maxlength="20"> <br><br>
+
 
 
     <button type="submit"> insert </button> <br>
@@ -85,6 +86,64 @@
 <button id="countCountry"> count </button> <br><br>
 <!-- A placeholder to display the count result. -->
 <div id="countResultMsg"></div> <br>
+
+<br><hr><br> <!-- ========================================================================= -->
+
+<!-- Show 'Port'.
+    Data will be fetched and inserted here dynamically using JavaScript. -->
+<h2>Show Port</h2>
+<table id="port" border="1">
+    <thead>
+    <tr>
+        <!--Table head, need to be adjusted accordingly to align with your own.-->
+        <th>PortAddress</th>
+        <th>NumWorkers</th>
+        <th>DockedShips</th>
+        <th>CountryName</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<br><hr><br> <!-- ========================================================================= -->
+
+<h2>Reset Port</h2>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<button id="resetPort"> reset </button> <br>
+<!-- A placeholder to display messages related to the reset operation. -->
+<div id="resetPortResultMsg"></div>
+
+<br><hr><br> <!-- ========================================================================= -->
+
+<!-- Show 'Warehouse'.
+    Data will be fetched and inserted here dynamically using JavaScript. -->
+<h2>Show Warehouse</h2>
+<table id="warehouse" border="1">
+    <thead>
+    <tr>
+        <!--Table head, need to be adjusted accordingly to align with your own.-->
+        <th>PortAddress</th>
+        <th>Section</th>
+        <th>NumContainers</th>
+        <th>Capacity</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<br><hr><br> <!-- ========================================================================= -->
+
+<h2>Reset Warehouse</h2>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<button id="resetWarehouse"> reset </button> <br>
+<!-- A placeholder to display messages related to the reset operation. -->
+<div id="resetWarehouseResultMsg"></div>
+
+
 
 <!-- ===================================================================================== -->
 <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
