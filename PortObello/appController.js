@@ -20,15 +20,6 @@ router.get('country', async (req, res) => {
     res.json({data: tableContent});
 });
 
-router.post("/ship-to-port", async (req, res) => {
-    const initiateResult = await appService.shipToPort();
-    if (initiateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
-});
-
 router.post("/initiate-country", async (req, res) => {
     const initiateResult = await appService.initiateCountry();
     if (initiateResult) {
