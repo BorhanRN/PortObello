@@ -226,6 +226,114 @@ async function countCountry() {
     });
 }
 
+async function fetchPortFromDb() {
+    return await withOracleDB(async (connection) => {
+        try {
+            console.log('Executing SELECT query on PORT table...');
+            const result = await connection.execute(
+                'SELECT * FROM PORT',
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+
+            );
+            console.log('Query result:', result);
+            return result.rows;
+
+
+
+        } catch (err) {
+            console.error('Error fetching port data:', err);
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Error in fetchPortFromDb:', err);
+        return [];
+    });
+}
+
+async function initiatePort() {
+    return await withOracleDB(async (connection) => {
+        try {
+            // First, try to find any foreign key constraints referencing WAREHOUSE
+            const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE table_name = 'PORT' 
+                    AND constraint_type = 'P'
+                )`;
+
+            console.log('Checking for foreign key constraints...');
+            const fkResult = await connection.execute(findFKsQuery);
+
+            // Drop any foreign key constraints found
+            for (let fk of fkResult.rows || []) {
+                try {
+                    const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                    await connection.execute(dropFKQuery);
+                    console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+                } catch (err) {
+                    console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+                }
+            }
+
+            // Now try to drop the PORT table
+            try {
+                await connection.execute('DROP TABLE PORT PURGE');
+                console.log('Existing PORT table dropped');
+            } catch (err) {
+                console.log('Error dropping PORT table:', err.message);
+            }
+
+            // Create the table
+            await connection.execute(`
+                CREATE TABLE Port
+                (
+                    PortAddress VARCHAR2(200) NOT NULL,
+                    NumWorkers  NUMBER,
+                    DockedShips NUMBER,
+                    CountryName VARCHAR2(100),
+                    PRIMARY KEY (PortAddress),
+                    FOREIGN KEY (CountryName) REFERENCES Country (Name) ON DELETE CASCADE
+                )`);
+
+            console.log('PORT table created');
+
+            // Insert initial data
+            const insertStatements = [
+                ['999 Canada Pl, Vancouver, BC V6C 3T4', 523, 53, 'Canada'],
+                ['Shengsi County, Zhoushan, China, 202461', 13546, 123,'China'],
+                ['Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 1270, 225,'Netherlands'],
+                ['Signal St, San Pedro, CA 90731, United States', 1230, 67,'USA'],
+                ['4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 30000, 44,'Japan']
+            ];
+
+            // Use bind variables for safer insertion
+            const insertSQL = `
+                INSERT INTO PORT (PortAddress, NumWorkers, DockedShips, CountryName) 
+                VALUES (:1, :2, :3, :4)`;
+
+            for (const data of insertStatements) {
+                await connection.execute(insertSQL, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            await connection.commit();
+            console.log('All data inserted and committed');
+            return true;
+        } catch (err) {
+            console.error('Error in initiatePort:', err);
+            await connection.rollback();
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Failed to initiate port:', err);
+        return false;
+    });
+}
+
 async function fetchWarehouseFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -335,12 +443,12 @@ async function initiateWarehouse() {
 }
 
 
-async function fetchPortFromDb() {
+async function fetchHomeCountryFromDb() {
     return await withOracleDB(async (connection) => {
         try {
-            console.log('Executing SELECT query on PORT table...');
+            console.log('Executing SELECT query on HOMECOUNTRY table...');
             const result = await connection.execute(
-                'SELECT * FROM PORT',
+                'SELECT * FROM HOMECOUNTRY',
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
 
@@ -351,16 +459,16 @@ async function fetchPortFromDb() {
 
 
         } catch (err) {
-            console.error('Error fetching port data:', err);
+            console.error('Error fetching homecountry data:', err);
             throw err;
         }
     }).catch((err) => {
-        console.error('Error in fetchPortFromDb:', err);
+        console.error('Error in fetchHomeCountryFromDb:', err);
         return [];
     });
 }
 
-async function initiatePort() {
+async function initiateHomeCountry() {
     return await withOracleDB(async (connection) => {
         try {
             // First, try to find any foreign key constraints referencing WAREHOUSE
@@ -370,7 +478,7 @@ async function initiatePort() {
                 WHERE r_constraint_name IN (
                     SELECT constraint_name 
                     FROM user_constraints 
-                    WHERE table_name = 'PORT' 
+                    WHERE table_name = 'HOMECOUNTRY' 
                     AND constraint_type = 'P'
                 )`;
 
@@ -390,39 +498,44 @@ async function initiatePort() {
 
             // Now try to drop the PORT table
             try {
-                await connection.execute('DROP TABLE PORT PURGE');
-                console.log('Existing PORT table dropped');
+                await connection.execute('DROP TABLE HOMECOUNTRY PURGE');
+                console.log('Existing HOMECOUNTRY table dropped');
             } catch (err) {
-                console.log('Error dropping PORT table:', err.message);
+                console.log('Error dropping HOMECOUNTRY table:', err.message);
             }
 
             // Create the table
             await connection.execute(`
-                CREATE TABLE Port
+                CREATE TABLE HomeCountry
                 (
-                    PortAddress VARCHAR2(200) NOT NULL,
-                    NumWorkers  NUMBER,
-                    DockedShips NUMBER,
-                    CountryName VARCHAR2(100),
-                    PRIMARY KEY (PortAddress),
-                    FOREIGN KEY (CountryName) REFERENCES Country (Name) ON DELETE CASCADE
+                    Name       VARCHAR2(100) NOT NULL,
+                    Population NUMBER,
+                    GDP        FLOAT,
+                    Government VARCHAR2(100),
+                    DockingFee FLOAT,
+                    PRIMARY KEY (Name),
+                    FOREIGN KEY (Name) REFERENCES Country (Name) ON DELETE CASCADE
                 )`);
 
-            console.log('PORT table created');
+            console.log('HOMECOUNTRY table created');
 
             // Insert initial data
             const insertStatements = [
-                ['999 Canada Pl, Vancouver, BC V6C 3T4', 523, 53, 'Canada'],
-                ['Shengsi County, Zhoushan, China, 202461', 13546, 123,'China'],
-                ['Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 1270, 225,'Netherlands'],
-                ['Signal St, San Pedro, CA 90731, United States', 1230, 67,'USA'],
-                ['4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 30000, 44,'Japan']
-        ];
+                ['Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', 500.0],
+                ['USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0],
+                ['China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0],
+                ['Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0],
+                ['Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0],
+                ['Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0],
+                ['India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0],
+                ['Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0],
+                ['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0]
+            ];
 
             // Use bind variables for safer insertion
             const insertSQL = `
-                INSERT INTO PORT (PortAddress, NumWorkers, DockedShips, CountryName) 
-                VALUES (:1, :2, :3, :4)`;
+                INSERT INTO PORT (Name, Population, GDP, Government, DockingFee) 
+                VALUES (:1, :2, :3, :4. :5)`;
 
             for (const data of insertStatements) {
                 await connection.execute(insertSQL, data);
@@ -498,11 +611,16 @@ module.exports = {
     fetchCountryFromDb,
     initiateCountry,
 
+    fetchPortFromDb,
+    initiatePort,
+
     fetchWarehouseFromDb,
     initiateWarehouse,
 
-    fetchPortFromDb,
-    initiatePort,
+    fetchHomeCountryFromDb,
+    initiateHomeCountry,
+
+
 
     insertCountry,
     updateNameCountry,
