@@ -757,7 +757,7 @@ async function initiateTariff1() {
 
             // Use bind variables for safer insertion
             const insertSQL = `
-                INSERT INTO FOREIGNCOUNTRY (TradeAgreement, TariffRate, HomeName, ForeignName, EnactmentDate) 
+                INSERT INTO TARIFF1 (TradeAgreement, TariffRate, HomeName, ForeignName, EnactmentDate) 
                 VALUES (:1, :2, :3, :4, :5)`;
 
             for (const data of insertStatements) {
