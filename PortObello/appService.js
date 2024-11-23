@@ -471,7 +471,7 @@ async function fetchHomeCountryFromDb() {
 async function initiateHomeCountry() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing WAREHOUSE
+            // First, try to find any foreign key constraints referencing HOMECOUNTRY
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -535,7 +535,7 @@ async function initiateHomeCountry() {
             // Use bind variables for safer insertion
             const insertSQL = `
                 INSERT INTO HOMECOUNTRY (Name, Population, GDP, Government, DockingFee) 
-                VALUES (:1, :2, :3, :4. :5)`;
+                VALUES (:1, :2, :3, :4, :5)`;
 
             for (const data of insertStatements) {
                 await connection.execute(insertSQL, data);
