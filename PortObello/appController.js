@@ -41,7 +41,8 @@ router.post("/insert-country", async (req, res) => {
 });
 
 router.post("/ship-to-port", async (req, res) => {
-    const initiateResult = await appService.shipToPort();
+    const { Owner, shipName } = req.body;
+    const initiateResult = await appService.shipToPort(Owner, shipName);
     if (initiateResult) {
         res.json({ success: true });
     } else {
@@ -95,6 +96,66 @@ router.get('/port', async (req, res) => {
 
 router.post("/initiate-port", async (req, res) => {
     const initiateResult = await appService.initiatePort();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/delete-port", async (req, res) => {
+    const { addy } = req.body;
+    const initiateResult = await appService.deletePort(addy);
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/delete-warehouse", async (req, res) => {
+    const { pAddy, wSection } = req.body;
+    const initiateResult = await appService.deleteWarehouse(pAddy, wSection);
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/delete-tariff", async (req, res) => {
+    const { tName } = req.body;
+    const initiateResult = await appService.deleteTariff(tName);
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/delete-company", async (req, res) => {
+    const { cName, ceo } = req.body;
+    const initiateResult = await appService.deleteCompany(cName, ceo);
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/delete-ship", async (req, res) => {
+    const { sOwner, sName } = req.body;
+    const initiateResult = await appService.deleteShip(sOwner, sName);
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/delete-shipping-route", async (req, res) => {
+    const { sName } = req.body;
+    const initiateResult = await appService.deleteShippingRoute(sName);
     if (initiateResult) {
         res.json({ success: true });
     } else {

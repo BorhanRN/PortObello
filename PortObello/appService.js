@@ -453,7 +453,7 @@ async function shipToPort(Owner, ShipName) {
                  FROM ShippingRoute2 s
                  JOIN Ship1 h2
                  ON s.Name = h2.ShippingRoute
-                 WHERE h2.Owner =:Owner AND h2.ShipName =: ShipName
+                 WHERE h2.Owner =:Owner AND h2.ShipName =:ShipName
                  )
              WHERE Owner= :Owner AND ShipName= :ShipName`,
             [Owner, ShipName],
@@ -473,7 +473,7 @@ async function shipToPort(Owner, ShipName) {
                          FROM ShippingRoute2 s
                          JOIN Ship1 h2
                          ON s.Name = h2.ShippingRoute
-                         WHERE h2.Owner =:Owner AND h2.ShipName =: ShipName)`,
+                         WHERE h2.Owner =:Owner AND h2.ShipName =:ShipName)`,
             [Owner, ShipName],
         )
         if (portUpdate.rowsAffected === 0) {
@@ -491,7 +491,143 @@ async function shipToPort(Owner, ShipName) {
 
 }
 
+async function deletePort(addy) {
+    return await withOracleDB(async (connection) =>  {
+        const deletion = await connection.execute( `
+        DELETE FROM Port WHERE PortAddress =:addy
+        `,
+        { addy },
+        { autoCommit: true }
+         );
+        return deletion.rowsAffected && deletion.rowsAffected > 0;
+    })
+    .catch((error) => {
+        console.error("Error deleting port:", error);
+        return false;
+    });
 
+}
+
+async function deleteShippingRoute(sName) {
+    return await withOracleDB(async (connection) =>  {
+        const deletion = await connection.execute( `
+        DELETE FROM ShippingRoute WHERE name =:sName
+        `,
+            { addy },
+            { autoCommit: true }
+        );
+        return deletion.rowsAffected && deletion.rowsAffected > 0;
+    })
+        .catch((error) => {
+            console.error("Error deleting Shipping Route:", error);
+            return false;
+        });
+
+}
+
+async function deleteShip(sOwner, sName) {
+    return await withOracleDB(async (connection) =>  {
+        const deletion1 = await connection.execute( `
+        DELETE FROM Ship2 
+               WHERE ShipSize = (
+                   SELECT ShipSize
+                   FROM Ship1 s
+                   WHERE s.Owner =:sOwner AND s.ShipName=:sName
+                   )
+        `,
+        { sOwner, sName },
+        );
+        if (deletion1.rowsAffected == 0) {
+         throw new Error("No ship with this owner/name");
+        }
+
+        const deletion2 = await connection.execute( `
+        DELETE FROM Ship1 WHERE Owner =:sOwner AND ShipName=:sName
+        `,
+        { sOwner, sName });
+
+        // Commit both updates
+        await connection.commit();
+
+        return deletion2.rowsAffected && deletion2.rowsAffected > 0;
+    })
+        .catch((error) => {
+            console.error("Error deleting port:", error);
+            return false;
+        });
+
+}
+
+async function deleteWarehouse(pAddy, wSection) {
+    return await withOracleDB(async (connection) =>  {
+        const deletion = await connection.execute( `
+        DELETE FROM Warehouse WHERE PortAddress =:pAddy AND Section=:wSection
+        `,
+            { pAddy, wSection },
+            { autoCommit: true }
+        );
+        return deletion.rowsAffected && deletion.rowsAffected > 0;
+    })
+        .catch((error) => {
+            console.error("Error deleting Warehouse:", error);
+            return false;
+        });
+
+}
+
+async function deleteCompany(cName, ceo) {
+    return await withOracleDB(async (connection) =>  {
+        const deletion = await connection.execute( `
+        DELETE FROM Company WHERE CompanyName =:cName AND CompanyCEO =:ceo
+        `,
+            { cName, ceo },
+            { autoCommit: true }
+        );
+        return deletion.rowsAffected && deletion.rowsAffected > 0;
+    })
+        .catch((error) => {
+            console.error("Error deleting Company:", error);
+            return false;
+        });
+
+}
+
+async function deleteTariff(tName) {
+    return await withOracleDB(async (connection) =>  {
+        const deletion1 = await connection.execute( `
+                    DELETE FROM Tariff2 t2
+                    WHERE EXISTS (
+                        SELECT 1
+                        FROM Tariff1 t1
+                        WHERE t1.TradeAgreement =: tName
+                        AND t1.EnactmentDate = t2.EnactmentDate
+                        AND t1.HomeName = t2.HomeName
+                        AND t1.ForeignName = t2.ForeignName
+                        AND t1.TariffRate = t2.TariffRate
+                    )
+            `,
+            { sOwner, sName },
+        );
+        if (deletion1.rowsAffected == 0) {
+            throw new Error("No Tariff with this Trade Agreement");
+        }
+
+        const deletion2 = await connection.execute( `
+        DELETE FROM Tariff1 WHERE TradeAgreement =:tName
+        `,
+            { sOwner, sName });
+
+        // Commit both updates
+        await connection.commit();
+
+        return deletion2.rowsAffected && deletion2.rowsAffected > 0;
+    })
+        .catch((error) => {
+            console.error("Error deleting port:", error);
+            return false;
+        });
+
+}
 module.exports = {
     testOracleConnection,
 
@@ -506,5 +642,14 @@ module.exports = {
 
     insertCountry,
     updateNameCountry,
-    countCountry
+    countCountry,
+
+    shipToPort,
+
+    deleteCompany,
+    deleteShippingRoute,
+    deleteShip,
+    deletePort,
+    deleteTariff,
+    deleteWarehouse
 };
