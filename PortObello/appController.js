@@ -40,6 +40,15 @@ router.post("/insert-country", async (req, res) => {
     }
 });
 
+router.post("/ship-to-port", async (req, res) => {
+    const initiateResult = await appService.shipToPort();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 router.post("/update-name-country", async (req, res) => {
     const { oldName, newName } = req.body;
     const updateResult = await appService.updateNameCountry(oldName, newName);
