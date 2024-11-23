@@ -669,6 +669,116 @@ async function initiateForeignCountry() {
     });
 }
 
+async function fetchTariff1FromDb() {
+    return await withOracleDB(async (connection) => {
+        try {
+            console.log('Executing SELECT query on TARIFF1 table...');
+            const result = await connection.execute(
+                'SELECT * FROM TARIFF1',
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+
+            );
+            console.log('Query result:', result);
+            return result.rows;
+
+
+
+        } catch (err) {
+            console.error('Error fetching tariff1 data:', err);
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Error in fetchTariff1FromDb:', err);
+        return [];
+    });
+}
+
+async function initiateTariff1() {
+    return await withOracleDB(async (connection) => {
+        try {
+            // First, try to find any foreign key constraints referencing TARIFF1
+            const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE table_name = 'TARIFF1' 
+                    AND constraint_type = 'P'
+                )`;
+
+            console.log('Checking for foreign key constraints...');
+            const fkResult = await connection.execute(findFKsQuery);
+
+            // Drop any foreign key constraints found
+            for (let fk of fkResult.rows || []) {
+                try {
+                    const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                    await connection.execute(dropFKQuery);
+                    console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+                } catch (err) {
+                    console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+                }
+            }
+
+            // Now try to drop the PORT table
+            try {
+                await connection.execute('DROP TABLE TARIFF1 PURGE');
+                console.log('Existing TARIFF1 table dropped');
+            } catch (err) {
+                console.log('Error dropping TARIFF1 table:', err.message);
+            }
+
+            // Create the table
+            await connection.execute(`
+                CREATE TABLE Tariff1
+                (
+                    TradeAgreement VARCHAR2(100) NOT NULL,
+                    TariffRate     FLOAT,
+                    HomeName       VARCHAR2(100),
+                    ForeignName    VARCHAR2(100),
+                    EnactmentDate  DATE,
+                    PRIMARY KEY (TradeAgreement),
+                    FOREIGN KEY (ForeignName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE, --ON UPDATE CASCADE,
+                    FOREIGN KEY (HomeName) REFERENCES HomeCountry (Name) ON DELETE CASCADE --ON UPDATE CASCADE
+                )`);
+
+            console.log('TARIFF1 table created');
+
+            // Insert initial data
+            const insertStatements = [
+                ['China - USA Agreement', 12,'China','USA', TO_DATE('2024-01-15', 'YYYY-MM-DD')],
+                ['Canada - China Agreement', 9,'Canada','China', TO_DATE('2024-10-25', 'YYYY-MM-DD')],
+                ['Canada - Netherlands Agreement', 8,'Canada','Netherlands', TO_DATE('2020-06-12', 'YYYY-MM-DD')],
+                ['Canada - USA Agreement', 5,'Canada','USA', TO_DATE('2020-01-30', 'YYYY-MM-DD')],
+                ['Canada - Japan Agreement', 6,'Canada','Japan', TO_DATE('1998-04-09', 'YYYY-MM-DD')]
+            ];
+
+            // Use bind variables for safer insertion
+            const insertSQL = `
+                INSERT INTO FOREIGNCOUNTRY (TradeAgreement, TariffRate, HomeName, ForeignName, EnactmentDate) 
+                VALUES (:1, :2, :3, :4, :5)`;
+
+            for (const data of insertStatements) {
+                await connection.execute(insertSQL, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            await connection.commit();
+            console.log('All data inserted and committed');
+            return true;
+        } catch (err) {
+            console.error('Error in initiateTariff1:', err);
+            await connection.rollback();
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Failed to initiate tarrif1:', err);
+        return false;
+    });
+}
+
 //sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
 async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
@@ -871,6 +981,9 @@ module.exports = {
 
     fetchForeignCountryFromDb,
     initiateForeignCountry,
+
+    fetchTariff1FromDb,
+    initiateTariff1,
 
 
 
