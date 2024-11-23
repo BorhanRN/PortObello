@@ -415,6 +415,65 @@ async function resetForeignCountry() {
 }
 
 
+// Fetches data from TARIFF1 and displays it. CL1
+async function fetchAndDisplayTariff1() {
+    try {
+        console.log('Fetching tariff1 data...');
+        const response = await fetch('/tariff1', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('tariff1');
+        if (!tableElement) throw new Error('Table element with id "tariff1" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(tariff1 => {
+            const row = tableBody.insertRow();
+            const columns = ['TRADEAGREEMENT', 'TARIFFRATE', 'HOMENAME', 'FOREIGNNAME', 'ENACTMENTDATE'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = tariff1[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayTariff1:', error);
+    }
+
+}
+
+// This function resets or initializes TARIFF1.
+async function resetTariff1() {
+    const response = await fetch("/initiate-tariff1", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetTarrif1ResultMsg');
+        messageElement.textContent = "tariff1 initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
 
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
@@ -428,6 +487,7 @@ window.onload = function() {
     fetchAndDisplayWarehouse();
     fetchAndDisplayHomeCountry();
     fetchAndDisplayForeignCountry();
+    fetchAndDisplayTariff1();
 
     // Add event listeners
     document.getElementById("resetCountry").addEventListener("click", async () => {
@@ -450,6 +510,10 @@ window.onload = function() {
         await resetForeignCountry();
         await fetchAndDisplayForeignCountry();  // Refresh table after reset
     });
+    document.getElementById("resetTariff1").addEventListener("click", async () => {
+        await resetTariff1();
+        await fetchAndDisplayTariff1();  // Refresh table after reset
+    });
 
 
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
@@ -470,4 +534,5 @@ function fetchTableData() {
     fetchAndDisplayWarehouse();
     fetchAndDisplayHomeCountry();
     fetchAndDisplayForeignCountry();
+    fetchAndDisplayTariff1();
 }

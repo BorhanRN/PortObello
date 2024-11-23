@@ -130,5 +130,18 @@ router.post("/initiate-foreigncountry", async (req, res) => {
     }
 });
 
+router.get('/tariff1', async (req, res) => {
+    const tableContent = await appService.fetchTariff1FromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-tariff1", async (req, res) => {
+    const initiateResult = await appService.initiateTariff1();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
 
 module.exports = router;
