@@ -330,7 +330,7 @@ async function updateNameCountry(oldName, newName) {
 //sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
 async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
-        const result = await connection.execute(
+        const shipUpdate = await connection.execute(
             `UPDATE Ship h 
              SET DockedAtPortAddress = (
                  SELECT s.DestinationAddress
@@ -341,10 +341,33 @@ async function shipToPort(Owner, ShipName) {
                  )
              WHERE Owner= :Owner AND ShipName= :ShipName`,
             [Owner, ShipName],
-            { autoCommit: true }
         )
 
-        return result.rowsAffected && result.rowsAffected > 0;
+
+        if (shipUpdate.rowsAffected === 0) {
+            throw new Error("Ship update failed: No rows affected.");
+        }
+
+        const portUpdate = await connection.execute(
+            `UPDATE Port p 
+             SET NumDockedShips = (NumDockedShips+1
+                 )
+             WHERE PortAddress= (                 
+                         SELECT s.DestinationAddress
+                         FROM ShippingRoute2 s
+                         JOIN Ship h2
+                         ON s.Name = h2.ShippingRoute
+                         WHERE h2.Owner =:Owner AND h2.ShipName =: ShipName)`,
+            [Owner, ShipName],
+        )
+        if (portUpdate.rowsAffected === 0) {
+            throw new Error("Port update failed: No rows affected.");
+        }
+
+        // Commit both updates
+        await connection.commit();
+
+        return true; // Both updates succeeded
     }).catch((error) => {
         console.error("Error updating ship's port:", error);
         return false; // Return false if an error occurs
