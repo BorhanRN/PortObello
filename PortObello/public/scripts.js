@@ -550,6 +550,10 @@ window.onload = function() {
         await updateNameCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after update
     });
+    document.getElementById("deletePort").addEventListener("submit", async (e) => {
+        await deletePort(e);
+        await fetchAndDisplayPort();
+    });
     document.getElementById("countCountry").addEventListener("click", countCountry);
 }
 
