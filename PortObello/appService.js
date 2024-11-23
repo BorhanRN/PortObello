@@ -534,7 +534,7 @@ async function initiateHomeCountry() {
 
             // Use bind variables for safer insertion
             const insertSQL = `
-                INSERT INTO PORT (Name, Population, GDP, Government, DockingFee) 
+                INSERT INTO HOMECOUNTRY (Name, Population, GDP, Government, DockingFee) 
                 VALUES (:1, :2, :3, :4. :5)`;
 
             for (const data of insertStatements) {
@@ -546,12 +546,12 @@ async function initiateHomeCountry() {
             console.log('All data inserted and committed');
             return true;
         } catch (err) {
-            console.error('Error in initiatePort:', err);
+            console.error('Error in initiateHomeCountry:', err);
             await connection.rollback();
             throw err;
         }
     }).catch((err) => {
-        console.error('Failed to initiate port:', err);
+        console.error('Failed to initiate homecountry:', err);
         return false;
     });
 }
