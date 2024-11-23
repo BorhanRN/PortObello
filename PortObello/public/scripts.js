@@ -393,7 +393,7 @@ async function fetchAndDisplayForeignCountry() {
 
         console.log('Table populated successfully');
     } catch (error) {
-        console.error('Error in fetchAndDisplayHomeCountry:', error);
+        console.error('Error in fetchAndDisplayForeignCountry:', error);
     }
 
 }
