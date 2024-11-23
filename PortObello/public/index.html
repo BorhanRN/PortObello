@@ -115,6 +115,34 @@
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetWarehouseResultMsg"></div>
 
+<br><hr><br> <!-- ========================================================================= -->
+
+<!-- Show 'Warehouse'.
+    Data will be fetched and inserted here dynamically using JavaScript. -->
+<h2>Show Port</h2>
+<table id="port" border="1">
+    <thead>
+    <tr>
+        <!--Table head, need to be adjusted accordingly to align with your own.-->
+        <th>PortAddress</th>
+        <th>NumWorkers</th>
+        <th>DockedShips</th>
+        <th>CountryName</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<br><hr><br> <!-- ========================================================================= -->
+
+<h2>Reset Port</h2>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<button id="resetPort"> reset </button> <br>
+<!-- A placeholder to display messages related to the reset operation. -->
+<div id="resetPortResultMsg"></div>
+
 <!-- ===================================================================================== -->
 <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
 <script src="scripts.js"></script>

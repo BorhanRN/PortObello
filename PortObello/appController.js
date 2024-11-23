@@ -79,5 +79,19 @@ router.post("/initiate-warehouse", async (req, res) => {
     }
 });
 
+router.get('/port', async (req, res) => {
+    const tableContent = await appService.fetchPortFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-port", async (req, res) => {
+    const initiateResult = await appService.initiatePort();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 
 module.exports = router;

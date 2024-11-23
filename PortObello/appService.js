@@ -157,10 +157,10 @@ async function initiateCountry() {
                 ['China', 1412000000, 'Chinese Communist Party - Xi Jinping',17.79, 'Shengsi County, Zhoushan, China, 202461'],
                 ['Japan', 125100000, 'Liberal Democratic Party - Shigeru Ishiba', 4.21, '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan'],
                 ['Netherlands', 177000000, 'Independent - Dick Schoof',1.12, 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands'],
-                ['Russia', 146000000, 'United Russia - Vladimir Putin', 'xxx', 1680.0],
-                ['India', 1390000000, 'Bharatiya Janata Party - Narendra Modi', 'yyy', 2875.0],
-                ['Brazil', 213000000, 'Workers Party - Luiz Inácio Lula da Silva', 'zzz', 1505.0],
-                ['UK', 67000000, 'Conservative Party - Rishi Sunak', 'xyz', 3031.0]
+                ['Russia', 146000000, 'United Russia - Vladimir Putin',  1680.0, 'xxx'],
+                ['India', 1390000000, 'Bharatiya Janata Party - Narendra Modi',  1680.0, 'yyy'],
+                ['Brazil', 213000000, 'Workers Party - Luiz Inácio Lula da Silva', 1505.0, 'zzz'],
+                ['UK', 67000000, 'Conservative Party - Rishi Sunak', 3031.0, 'xyz']
 
         ];
 
@@ -358,6 +358,115 @@ async function initiateWarehouse() {
     });
 }
 
+
+async function fetchPortFromDb() {
+    return await withOracleDB(async (connection) => {
+        try {
+            console.log('Executing SELECT query on PORT table...');
+            const result = await connection.execute(
+                'SELECT * FROM PORT',
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+
+            );
+            console.log('Query result:', result);
+            return result.rows;
+
+
+
+        } catch (err) {
+            console.error('Error fetching port data:', err);
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Error in fetchPortFromDb:', err);
+        return [];
+    });
+}
+
+async function initiatePort() {
+    return await withOracleDB(async (connection) => {
+        try {
+            // First, try to find any foreign key constraints referencing WAREHOUSE
+            const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE table_name = 'PORT' 
+                    AND constraint_type = 'P'
+                )`;
+
+            console.log('Checking for foreign key constraints...');
+            const fkResult = await connection.execute(findFKsQuery);
+
+            // Drop any foreign key constraints found
+            for (let fk of fkResult.rows || []) {
+                try {
+                    const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                    await connection.execute(dropFKQuery);
+                    console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+                } catch (err) {
+                    console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+                }
+            }
+
+            // Now try to drop the PORT table
+            try {
+                await connection.execute('DROP TABLE PORT PURGE');
+                console.log('Existing PORT table dropped');
+            } catch (err) {
+                console.log('Error dropping PORT table:', err.message);
+            }
+
+            // Create the table
+            await connection.execute(`
+                CREATE TABLE Port
+                (
+                    PortAddress VARCHAR2(200) NOT NULL,
+                    NumWorkers  NUMBER,
+                    DockedShips NUMBER,
+                    CountryName VARCHAR2(100),
+                    PRIMARY KEY (PortAddress),
+                    FOREIGN KEY (CountryName) REFERENCES Country (Name) ON DELETE CASCADE
+                )`);
+
+            console.log('PORT table created');
+
+            // Insert initial data
+            const insertStatements = [
+                ['999 Canada Pl, Vancouver, BC V6C 3T4', 523, 53, 'Canada'],
+                ['Shengsi County, Zhoushan, China, 202461', 13546, 123,'China'],
+                ['Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 1270, 225,'Netherlands'],
+                ['Signal St, San Pedro, CA 90731, United States', 1230, 67,'USA'],
+                ['4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 30000, 44,'Japan']
+        ];
+
+            // Use bind variables for safer insertion
+            const insertSQL = `
+                INSERT INTO PORT (PortAddress, NumWorkers, DockedShips, CountryName) 
+                VALUES (:1, :2, :3, :4)`;
+
+            for (const data of insertStatements) {
+                await connection.execute(insertSQL, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            await connection.commit();
+            console.log('All data inserted and committed');
+            return true;
+        } catch (err) {
+            console.error('Error in initiatePort:', err);
+            await connection.rollback();
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Failed to initiate port:', err);
+        return false;
+    });
+}
+
 module.exports = {
     testOracleConnection,
 
@@ -367,6 +476,8 @@ module.exports = {
     fetchWarehouseFromDb,
     initiateWarehouse,
 
+    fetchPortFromDb,
+    initiatePort,
 
     insertCountry,
     updateNameCountry,

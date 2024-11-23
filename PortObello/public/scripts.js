@@ -237,6 +237,65 @@ async function resetWarehouse() {
     }
 }
 
+// Fetches data from PORT and displays it. CL1
+async function fetchAndDisplayPort() {
+    try {
+        console.log('Fetching port data...');
+        const response = await fetch('/port', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('port');
+        if (!tableElement) throw new Error('Table element with id "port" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(port => {
+            const row = tableBody.insertRow();
+            const columns = ['PORTADDRESS', 'NUMWORKERS', 'DOCKEDSHIPS', 'COUNTRYNAME'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = port[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayCountry:', error);
+    }
+
+}
+
+// This function resets or initializes PORT.
+async function resetPort() {
+    const response = await fetch("/initiate-port", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetPortResultMsg');
+        messageElement.textContent = "port initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -245,6 +304,7 @@ window.onload = function() {
     checkDbConnection();
 
     fetchAndDisplayCountry();  // Initial fetches
+    fetchAndDisplayPort();
     fetchAndDisplayWarehouse();
 
     // Add event listeners
@@ -255,6 +315,10 @@ window.onload = function() {
     document.getElementById("resetWarehouse").addEventListener("click", async () => {
         await resetWarehouse();
         await fetchAndDisplayWarehouse();  // Refresh table after reset
+    });
+    document.getElementById("resetPort").addEventListener("click", async () => {
+        await resetPort();
+        await fetchAndDisplayPort();  // Refresh table after reset
     });
 
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
