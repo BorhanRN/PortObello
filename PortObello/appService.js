@@ -1096,6 +1096,7 @@ module.exports = {
 //PROJECTION -- Choose which attributes to view on this table --- PORT (using buttons on frontend)
 //JOIN -- Find all shipments from a specific COMPANY
 //AGGREGATION with GROUP BY -- for all ships, find average of good value, then find the max of these averages.
+//HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
 //FRONT END - SHIP, SHIPMENT, COMPANY, SHIPPING ROUTE
 
 //NICE-TO-HAVES:

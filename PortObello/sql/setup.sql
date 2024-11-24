@@ -126,6 +126,7 @@ CREATE TABLE Ship1
     ShipSize            FLOAT,
     ShippingRouteName   VARCHAR2(100),
     DockedAtPortAddress VARCHAR2(100),
+    TotalGoodValue FLOAT,
     PRIMARY KEY (Owner, ShipName),
     FOREIGN KEY (ShippingRouteName) REFERENCES ShippingRoute2 (Name) ON DELETE CASCADE, -- ON UPDATE CASCADE,
     FOREIGN KEY (DockedAtPortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE --ON UPDATE CASCADE
@@ -318,16 +319,16 @@ VALUES ('Rotterdam - Vancouver', 11564,'Netherlands','Canada');
 
 
 
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize)
-VALUES ('Maersk', 'Ocean Breeze', 'Great Circle','999 Canada Pl, Vancouver, BC V6C 3T4', 100.5);
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize)
-VALUES ('Mediterranean Shipping Company', 'Seawolf', 'PANZ Seattle Loop', 'Shengsi County, Zhoushan, China, 202461', 150.75);
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize)
-VALUES ('Atlantic Trade', 'Blue Horizon','Trans - Pacific Route', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 200.0);
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize)
-VALUES ('Pacific Vessels', 'Tidal Wave', 'Rotterdam - Vancouver', 'Signal St, San Pedro, CA 90731, United States', 175.4);
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize)
-VALUES ('Maritime Enterprises', 'Northern Star', 'PANZ Seattle Loop', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 225.6);
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES ('Maersk', 'Ocean Breeze', 'Great Circle','999 Canada Pl, Vancouver, BC V6C 3T4', 100.5, 120000000);
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES ('Mediterranean Shipping Company', 'Seawolf', 'PANZ Seattle Loop', 'Shengsi County, Zhoushan, China, 202461', 150.75,10000000), ;
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES ('Atlantic Trade', 'Blue Horizon','Trans - Pacific Route', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 200.0, 175000000);
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES ('Pacific Vessels', 'Tidal Wave', 'Rotterdam - Vancouver', 'Signal St, San Pedro, CA 90731, United States', 175.4, 1500000);
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES ('Maritime Enterprises', 'Northern Star', 'PANZ Seattle Loop', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 225.6, 300000000);
 
 
 INSERT INTO Ship2 (ShipSize, Capacity)
