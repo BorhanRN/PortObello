@@ -669,15 +669,25 @@ async function initiateForeignCountry() {
     });
 }
 
-async function fetchTariff1FromDb() {
+async function fetchTariffFromDb() {
     return await withOracleDB(async (connection) => {
         try {
-            console.log('Executing SELECT query on TARIFF1 table...');
+            console.log('Executing SELECT query on TARIFF1 and TARIFF2 table...');
             const result = await connection.execute(
-                'SELECT * FROM TARIFF1',
+                `SELECT t1.TradeAgreement,
+                        t1.TariffRate,
+                        t1.HomeName,
+                        t1.ForeignName,
+                        t1.EnactmentDate,
+                        t2.AffectedGoods 
+                 FROM TARIFF1 t1
+                 INNER JOIN TARIFF2 t2 
+                    ON t1.EnactmentDate = t2.EnactmentDate
+                    AND t1.TariffRate = t2.TariffRate
+                    AND t1.HomeName = t2.HomeName
+                    AND t1.ForeignName = t2.ForeignName`,
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
-
             );
             console.log('Query result:', result);
             return result.rows;
@@ -685,26 +695,26 @@ async function fetchTariff1FromDb() {
 
 
         } catch (err) {
-            console.error('Error fetching tariff1 data:', err);
+            console.error('Error fetching tariff data:', err);
             throw err;
         }
     }).catch((err) => {
-        console.error('Error in fetchTariff1FromDb:', err);
+        console.error('Error in fetchTariffFromDb:', err);
         return [];
     });
 }
 
-async function initiateTariff1() {
+async function initiateTariff() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing TARIFF1
+            // First, try to find any foreign key constraints referencing TARIFF1 or TARIFF2
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
                 WHERE r_constraint_name IN (
                     SELECT constraint_name 
                     FROM user_constraints 
-                    WHERE table_name = 'TARIFF1' 
+                    WHERE table_name = 'TARIFF1' OR table name = 'TARIFF2' 
                     AND constraint_type = 'P'
                 )`;
 
@@ -722,12 +732,19 @@ async function initiateTariff1() {
                 }
             }
 
-            // Now try to drop the PORT table
+            // Now try to drop the TARIFF tables
             try {
                 await connection.execute('DROP TABLE TARIFF1 PURGE');
                 console.log('Existing TARIFF1 table dropped');
             } catch (err) {
                 console.log('Error dropping TARIFF1 table:', err.message);
+            }
+
+            try {
+                await connection.execute('DROP TABLE TARIFF2 PURGE');
+                console.log('Existing TARIFF2 table dropped');
+            } catch (err) {
+                console.log('Error dropping TARIFF2 table:', err.message);
             }
 
             // Create the table
@@ -745,6 +762,22 @@ async function initiateTariff1() {
                 )`);
 
             console.log('TARIFF1 table created');
+
+            await connection.execute(`
+                CREATE TABLE Tariff2
+                (
+                    TariffRate    FLOAT,
+                    AffectedGoods VARCHAR2(100),
+                    HomeName      VARCHAR2(100),
+                    ForeignName   VARCHAR2(100),
+                    EnactmentDate DATE,
+                    PRIMARY KEY (EnactmentDate, TariffRate, HomeName, ForeignName),
+                    FOREIGN KEY (ForeignName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE, --ON UPDATE CASCADE,
+                    FOREIGN KEY (HomeName) REFERENCES HomeCountry (Name) ON DELETE CASCADE --ON UPDATE CASCADE
+                )`);
+
+            console.log('TARIFF2 table created');
+
 
             // Insert initial data
             const insertStatements = [
@@ -765,16 +798,34 @@ async function initiateTariff1() {
                 console.log('Inserted data for:', data[0]);
             }
 
+            const insertStatements2 = [
+                [12,'Solar Panels','China','USA', TO_DATE('2024-01-15', 'YYYY-MM-DD')],
+                [9,'Lumber','Canada','China', TO_DATE('2024-10-25', 'YYYY-MM-DD')],
+                [8,'Maple Syrup','Canada','Netherlands', TO_DATE('2020-06-12', 'YYYY-MM-DD')],
+                [5,'Oil','Canada','USA', TO_DATE('2020-01-30', 'YYYY-MM-DD')],
+                [6,'Wheat','Canada','Japan', TO_DATE('1998-04-09', 'YYYY-MM-DD')]
+        ];
+
+            // Use bind variables for safer insertion
+            const insertSQL2 = `
+                INSERT INTO TARIFF2 (TariffRate, AffectedGoods, HomeName, ForeignName, EnactmentDate) 
+                VALUES (:1, :2, :3, :4, :5)`;
+
+            for (const data of insertStatements2) {
+                await connection.execute(insertSQL2, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
             await connection.commit();
             console.log('All data inserted and committed');
             return true;
         } catch (err) {
-            console.error('Error in initiateTariff1:', err);
+            console.error('Error in initiateTariff:', err);
             await connection.rollback();
             throw err;
         }
     }).catch((err) => {
-        console.error('Failed to initiate tarrif1:', err);
+        console.error('Failed to initiate tariff:', err);
         return false;
     });
 }
@@ -1018,8 +1069,8 @@ module.exports = {
     fetchForeignCountryFromDb,
     initiateForeignCountry,
 
-    fetchTariff1FromDb,
-    initiateTariff1,
+    fetchTariffFromDb,
+    initiateTariff,
 
 
 

@@ -441,11 +441,11 @@ async function resetForeignCountry() {
 }
 
 
-// Fetches data from TARIFF1 and displays it. CL1
-async function fetchAndDisplayTariff1() {
+// Fetches data from TARIFF and displays it. CL1
+async function fetchAndDisplayTariff() {
     try {
-        console.log('Fetching tariff1 data...');
-        const response = await fetch('/tariff1', { method: 'GET' });
+        console.log('Fetching tariff data...');
+        const response = await fetch('/tariff', { method: 'GET' });
         console.log('Response status:', response.status);
 
         if (!response.ok) {
@@ -455,8 +455,8 @@ async function fetchAndDisplayTariff1() {
         const responseData = await response.json();
         console.log('Response JSON:', responseData);
 
-        const tableElement = document.getElementById('tariff1');
-        if (!tableElement) throw new Error('Table element with id "tariff1" not found');
+        const tableElement = document.getElementById('tariff');
+        if (!tableElement) throw new Error('Table element with id "tariff" not found');
 
         const tableBody = tableElement.querySelector('tbody');
         if (!tableBody) throw new Error('No <tbody> found in table');
@@ -468,32 +468,32 @@ async function fetchAndDisplayTariff1() {
             throw new Error('Data format error: data is not an array');
         }
 
-        responseData.data.forEach(tariff1 => {
+        responseData.data.forEach(tariff => {
             const row = tableBody.insertRow();
-            const columns = ['TRADEAGREEMENT', 'TARIFFRATE', 'HOMENAME', 'FOREIGNNAME', 'ENACTMENTDATE'];
+            const columns = ['TRADEAGREEMENT', 'TARIFFRATE', 'HOMENAME', 'FOREIGNNAME', 'ENACTMENTDATE', 'AFFECTEDGOODS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
-                cell.textContent = tariff1[col] || 'N/A';
+                cell.textContent = tariff[col] || 'N/A';
             });
         });
 
         console.log('Table populated successfully');
     } catch (error) {
-        console.error('Error in fetchAndDisplayTariff1:', error);
+        console.error('Error in fetchAndDisplayTariff:', error);
     }
 
 }
 
-// This function resets or initializes TARIFF1.
-async function resetTariff1() {
-    const response = await fetch("/initiate-tariff1", {
+// This function resets or initializes TARIFF.
+async function resetTariff() {
+    const response = await fetch("/initiate-tariff", {
         method: 'POST'
     });
     const responseData = await response.json();
 
     if (responseData.success) {
-        const messageElement = document.getElementById('resetTarrif1ResultMsg');
-        messageElement.textContent = "tariff1 initiated successfully!";
+        const messageElement = document.getElementById('resetTariffResultMsg');
+        messageElement.textContent = "tariff initiated successfully!";
         fetchTableData();
     } else {
         alert("Error initiating table!");
@@ -513,7 +513,7 @@ window.onload = function() {
     fetchAndDisplayWarehouse();
     fetchAndDisplayHomeCountry();
     fetchAndDisplayForeignCountry();
-    fetchAndDisplayTariff1();
+    fetchAndDisplayTariff();
 
     // Add event listeners
     document.getElementById("resetCountry").addEventListener("click", async () => {
@@ -536,9 +536,9 @@ window.onload = function() {
         await resetForeignCountry();
         await fetchAndDisplayForeignCountry();  // Refresh table after reset
     });
-    document.getElementById("resetTariff1").addEventListener("click", async () => {
-        await resetTariff1();
-        await fetchAndDisplayTariff1();  // Refresh table after reset
+    document.getElementById("resetTariff").addEventListener("click", async () => {
+        await resetTariff();
+        await fetchAndDisplayTariff();  // Refresh table after reset
     });
 
 
