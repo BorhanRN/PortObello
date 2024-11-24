@@ -849,24 +849,24 @@ async function deletePort(addy) {
 
         await connection.execute( `
                     UPDATE Country
-                    SET portAddress = 'No ports from this country are currently monitored.'
-                    WHERE portAddress =:addy
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
             `,
             { addy },
         );
 
         await connection.execute( `
                     UPDATE ForeignCountry
-                    SET portAddress = 'No ports from this country are currently monitored.'
-                    WHERE portAddress =:addy
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
             `,
             { addy },
         );
 
         await connection.execute( `
                     UPDATE HomeCountry
-                    SET portAddress = 'No ports from this country are currently monitored.'
-                    WHERE portAddress =:addy
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
             `,
             { addy },
         );
