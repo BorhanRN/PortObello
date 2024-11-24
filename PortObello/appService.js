@@ -714,7 +714,7 @@ async function initiateTariff() {
                 WHERE r_constraint_name IN (
                     SELECT constraint_name 
                     FROM user_constraints 
-                    WHERE table_name = 'TARIFF1' OR table name = 'TARIFF2' 
+                    WHERE (table_name = 'TARIFF1' OR table_name = 'TARIFF2') 
                     AND constraint_type = 'P'
                 )`;
 
