@@ -111,12 +111,12 @@ CREATE TABLE ShippingRoute2
     Name                VARCHAR2(100) NOT NULL,
     Length              FLOAT,
     OriginCountryName   VARCHAR2(100) NOT NULL,
-    TerminalPortAddress VARCHAR2(100) NOT NULL,
+    TerminalCountryName VARCHAR2(100) NOT NULL,
     PRIMARY KEY (Name),
     FOREIGN KEY (OriginCountryName) REFERENCES ForeignCountry (Name)
         ON DELETE CASCADE,
     --ON UPDATE CASCADE,
-    FOREIGN KEY (TerminalPortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE --ON UPDATE CASCADE
+    FOREIGN KEY (TerminalCountryName) REFERENCES Country (Name) ON DELETE CASCADE --ON UPDATE CASCADE
 );
 
 CREATE TABLE Ship1
@@ -291,26 +291,26 @@ VALUES (6,'Wheat','Canada','Japan', TO_DATE('1998-04-09', 'YYYY-MM-DD'));
 
 
 
-INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
+INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalCountryName)
 VALUES (12000,'Canada','USA');
-INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
+INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalCountryName)
 VALUES (45000,'USA','Canada');
-INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
+INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalCountryName)
 VALUES (80000,'China','Canada');
-INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
+INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalCountryName)
 VALUES (20000,'Netherlands','Canada');
-INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
+INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalCountryName)
 VALUES (60000,'Japan','Canada');
 
 
-INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalPortAddress)
-VALUES ('Great Circle', 4078,'Japan','999 Canada Pl, Vancouver, BC V6C 3T4');
-INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalPortAddress)
-VALUES ('PANZ Seattle Loop', 1319, 'USA','999 Canada Pl, Vancouver, BC V6C 3T4');
-INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalPortAddress)
-VALUES ('Trans - Pacific Route', 7838,'China','999 Canada Pl, Vancouver, BC V6C 3T4');
-INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalPortAddress)
-VALUES ('Rotterdam - Vancouver', 11564,'Netherlands','999 Canada Pl, Vancouver, BC V6C 3T4');
+INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalCountryName)
+VALUES ('Great Circle', 4078,'Japan','Canada');
+INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalCountryName)
+VALUES ('PANZ Seattle Loop', 1319, 'USA','Canada');
+INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalCountryName)
+VALUES ('Trans - Pacific Route', 7838,'China','Canada');
+INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalCountryName)
+VALUES ('Rotterdam - Vancouver', 11564,'Netherlands','Canada');
 --        ('Great Lakes-St Lawrence Seaway', 600,
 --         'Canada',
 --         'Signal St, San Pedro, CA 90731, United States');
