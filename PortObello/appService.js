@@ -1052,6 +1052,57 @@ async function deleteTariff(tName) {
         });
 
 }
+
+//group by
+async function maxAvgContainer() {
+    return await withOracleDB(async (connection) =>  {
+        const result = await connection.execute( `
+            SELECT ShipName, MAX(avg_value) AS result
+            FROM (
+                     SELECT s1.ShipName, AVG(s2.GoodValue) AS avg_value
+                     FROM Ship1 s1
+                              JOIN ShipmentContainer2 s2
+                                  ON s1.ShipName = s2.ShipName
+                     GROUP BY s1.ShipName
+                 ) AS temp;
+        `,
+            { autoCommit: true }
+            )
+
+        if (result.rows && result.rows.length > 0) {
+            const maxResult = result.rows[0];
+            return {
+                shipName: maxResult[0],
+                maxAvg: maxResult[1],
+            };
+        }
+
+        throw new Error("No averages found/No rows affected.");
+    })
+        .catch((error) => {
+            console.error("Error finding the max of averages", error);
+            return false;
+        });
+}
+
+//helper for updating the
+async function updateShipValues() {
+    return await withOracleDB(async (connection) => {
+        await connection.execute(`
+        UPDATE Ship1
+        SET value = (
+            SELECT SUM(s2.goodvalue)
+            FROM ShipmentContainer2 s2
+            WHERE Ship.Owner = s2.ShipOwner AND Ship.Name = s2.ShipName
+        `,
+        { autoCommit: true }
+        );
+    })
+        .catch((error) => {
+            console.error("Error finding", error);
+            return false;
+        });
+}
 module.exports = {
     testOracleConnection,
 
@@ -1073,7 +1124,8 @@ module.exports = {
     fetchTariffFromDb,
     initiateTariff,
 
-
+    maxAvgContainer,
+    updateShipValues,
 
     insertCountry,
     updateNameCountry,
@@ -1095,7 +1147,7 @@ module.exports = {
 //SELECT -- Search through all attributes --- SHIP
 //PROJECTION -- Choose which attributes to view on this table --- PORT (using buttons on frontend)
 //JOIN -- Find all shipments from a specific COMPANY
-//AGGREGATION with GROUP BY -- for all ships, find average of good value, then find the max of these averages.
+//AGGREGATION with GROUP BY -- DONE!!!!
 //HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
 //FRONT END - SHIP, SHIPMENT, COMPANY, SHIPPING ROUTE
 

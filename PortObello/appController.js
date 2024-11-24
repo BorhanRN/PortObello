@@ -206,5 +206,18 @@ router.post("/delete-shipping-route", async (req, res) => {
     }
 });
 
+router.get("/max-ship-average", async (req, res) => {
+    const initiateResult = await appService.maxAvgContainer();
+
+    if (initiateResult) {
+        res.json({
+            shipName: initiateResult.shipName,
+            maxAvg: initiateResult.maxAvg
+        });
+    } else {
+        res.json({ message: "ERROR: No data found for the max average." });
+    }
+});
+
 
 module.exports = router;
