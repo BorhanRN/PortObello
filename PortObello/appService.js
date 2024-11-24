@@ -799,11 +799,11 @@ async function initiateTariff() {
             }
 
             const insertStatements2 = [
-                [12,'Solar Panels','China','USA', TO_DATE('2024-01-15', 'YYYY-MM-DD')],
-                [9,'Lumber','Canada','China', TO_DATE('2024-10-25', 'YYYY-MM-DD')],
-                [8,'Maple Syrup','Canada','Netherlands', TO_DATE('2020-06-12', 'YYYY-MM-DD')],
-                [5,'Oil','Canada','USA', TO_DATE('2020-01-30', 'YYYY-MM-DD')],
-                [6,'Wheat','Canada','Japan', TO_DATE('1998-04-09', 'YYYY-MM-DD')]
+                [12,'Solar Panels','China','USA', new Date('2024-01-15')],
+                [9,'Lumber','Canada','China', new Date('2024-10-25')],
+                [8,'Maple Syrup','Canada','Netherlands', new Date('2020-06-12')],
+                [5,'Oil','Canada','USA', new Date('2020-01-30')],
+                [6,'Wheat','Canada','Japan', new Date('1998-04-09')]
         ];
 
             // Use bind variables for safer insertion
