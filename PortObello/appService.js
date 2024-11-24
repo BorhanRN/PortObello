@@ -76,8 +76,6 @@ async function testOracleConnection() {
     });
 }
 
-//COUNTRY FUNCTIONS
-
 async function fetchCountryFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -228,8 +226,6 @@ async function countCountry() {
     });
 }
 
-//PORT FUNCTIONS
-
 async function fetchPortFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -337,8 +333,6 @@ async function initiatePort() {
         return false;
     });
 }
-
-//WAREHOUSE FUNCTIONS
 
 async function fetchWarehouseFromDb() {
     return await withOracleDB(async (connection) => {
@@ -448,7 +442,6 @@ async function initiateWarehouse() {
     });
 }
 
-//HOME COUNTRY FUNCTIONS
 
 async function fetchHomeCountryFromDb() {
     return await withOracleDB(async (connection) => {
@@ -562,8 +555,6 @@ async function initiateHomeCountry() {
         return false;
     });
 }
-
-// FOREIGN COUNTRY FUNCTIONS
 
 async function fetchForeignCountryFromDb() {
     return await withOracleDB(async (connection) => {
@@ -839,12 +830,6 @@ async function initiateTariff() {
     });
 }
 
-//SHIP FUNCTIONS
-
-async function maxShipValue() {
-
-}
-
 //sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
 async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
@@ -904,41 +889,6 @@ async function shipToPort(Owner, ShipName) {
 
 }
 
-async function deleteShip(sOwner, sName) {
-    return await withOracleDB(async (connection) =>  {
-        const deletion1 = await connection.execute( `
-        DELETE FROM Ship2 
-               WHERE ShipSize = (
-                   SELECT ShipSize
-                   FROM Ship1 s
-                   WHERE s.Owner =:sOwner AND s.ShipName=:sName
-                   )
-        `,
-        { sOwner, sName },
-        );
-        if (deletion1.rowsAffected == 0) {
-         throw new Error("No ship with this owner/name");
-        }
-
-        const deletion2 = await connection.execute( `
-        DELETE FROM Ship1 WHERE Owner =:sOwner AND ShipName=:sName
-        `,
-        { sOwner, sName });
-
-        // Commit both updates
-        await connection.commit();
-
-        return deletion2.rowsAffected && deletion2.rowsAffected > 0;
-    })
-        .catch((error) => {
-            console.error("Error deleting port:", error);
-            return false;
-        });
-
-}
-
-//DELETION FUNCTIONS
-
 async function deletePort(addy) {
     return await withOracleDB(async (connection) =>  {
 
@@ -994,6 +944,39 @@ async function deleteShippingRoute(sName) {
     })
         .catch((error) => {
             console.error("Error deleting Shipping Route:", error);
+            return false;
+        });
+
+}
+
+async function deleteShip(sOwner, sName) {
+    return await withOracleDB(async (connection) =>  {
+        const deletion1 = await connection.execute( `
+        DELETE FROM Ship2 
+               WHERE ShipSize = (
+                   SELECT ShipSize
+                   FROM Ship1 s
+                   WHERE s.Owner =:sOwner AND s.ShipName=:sName
+                   )
+        `,
+        { sOwner, sName },
+        );
+        if (deletion1.rowsAffected == 0) {
+         throw new Error("No ship with this owner/name");
+        }
+
+        const deletion2 = await connection.execute( `
+        DELETE FROM Ship1 WHERE Owner =:sOwner AND ShipName=:sName
+        `,
+        { sOwner, sName });
+
+        // Commit both updates
+        await connection.commit();
+
+        return deletion2.rowsAffected && deletion2.rowsAffected > 0;
+    })
+        .catch((error) => {
+            console.error("Error deleting port:", error);
             return false;
         });
 
@@ -1089,6 +1072,8 @@ module.exports = {
 
     fetchTariffFromDb,
     initiateTariff,
+
+
 
     insertCountry,
     updateNameCountry,
