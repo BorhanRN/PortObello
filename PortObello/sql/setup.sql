@@ -99,10 +99,10 @@ CREATE TABLE ShippingRoute1
 (
     AnnualVolumeOfGoods FLOAT,
     OriginCountryName	VARCHAR2(100) NOT NULL,
-    TerminalPortAddress VARCHAR2(100) NOT NULL,
-    PRIMARY KEY (OriginCountryName, TerminalPortAddress),
+    TerminalCountryName VARCHAR2(100) NOT NULL,
+    PRIMARY KEY (OriginCountryName, TerminalCountryName),
     FOREIGN KEY (OriginCountryName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE, --ON UPDATE CASCADE,
-    FOREIGN KEY (TerminalPortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE --ON UPDATE CASCADE
+    FOREIGN KEY (TerminalCountryName) REFERENCES Country (Name) ON DELETE CASCADE --ON UPDATE CASCADE
 );
 
 
@@ -292,15 +292,15 @@ VALUES (6,'Wheat','Canada','Japan', TO_DATE('1998-04-09', 'YYYY-MM-DD'));
 
 
 INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
-VALUES (12000,'Canada','Signal St, San Pedro, CA 90731, United States');
+VALUES (12000,'Canada','USA');
 INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
-VALUES (45000,'USA','999 Canada Pl, Vancouver, BC V6C 3T4');
+VALUES (45000,'USA','Canada');
 INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
-VALUES (80000,'China','999 Canada Pl, Vancouver, BC V6C 3T4');
+VALUES (80000,'China','Canada');
 INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
-VALUES (20000,'Netherlands','999 Canada Pl, Vancouver, BC V6C 3T4');
+VALUES (20000,'Netherlands','Canada');
 INSERT INTO ShippingRoute1 (AnnualVolumeOfGoods, OriginCountryName, TerminalPortAddress)
-VALUES (60000,'Japan','999 Canada Pl, Vancouver, BC V6C 3T4');
+VALUES (60000,'Japan','Canada');
 
 
 INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalPortAddress)

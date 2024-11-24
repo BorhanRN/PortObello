@@ -840,6 +840,7 @@ async function shipToPort(Owner, ShipName) {
 
 async function deletePort(addy) {
     return await withOracleDB(async (connection) =>  {
+
         await connection.execute( `
                     DELETE FROM Warehouse
                     WHERE PortAddress =:addy
@@ -855,20 +856,11 @@ async function deletePort(addy) {
             { addy },
         );
 
-        await connection.execute( `
-                    UPDATE ForeignCountry
-                    SET PortAddress = 'No ports from this country are currently monitored.'
-                    WHERE PortAddress =:addy
-            `,
-            { addy },
-        );
-
-        await connection.execute( `
-                    UPDATE HomeCountry
-                    SET PortAddress = 'No ports from this country are currently monitored.'
-                    WHERE PortAddress =:addy
-            `,
-            { addy },
+        await connection.execute(
+            `UPDATE Ship1
+             SET DockedAtPortAddress = 'Ship is currently at sea.'
+             WHERE DocketAtPortAddress = 'No ports from this country are currently monitored.'
+            `
         );
 
         const deletion = await connection.execute( `
