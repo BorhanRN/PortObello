@@ -1088,3 +1088,15 @@ module.exports = {
     deleteTariff,
     deleteWarehouse
 };
+
+//!!TODO
+//REQUIRED:
+//HAVE ALL TABLES POPULATED USING A SINGLE SETUP.SQL FILE
+//SELECT -- Search through all attributes --- SHIP
+//PROJECTION -- Choose which attributes to view on this table --- PORT (using buttons on frontend)
+//JOIN -- Find all shipments from a specific COMPANY
+//AGGREGATION with GROUP BY -- for all ships, find average of good value, then find the max of these averages.
+//FRONT END - SHIP, SHIPMENT, COMPANY, SHIPPING ROUTE
+
+//NICE-TO-HAVES:
+//MAKE IT LOOK NOT ASS
