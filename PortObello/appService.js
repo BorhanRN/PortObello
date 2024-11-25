@@ -83,7 +83,7 @@ const path = require('path');
 async function initializeDatabase() {
     return await withOracleDB(async (connection) => {
         try {
-            const setupFilePath = path.resolve(__dirname, 'setup.sql');
+            const setupFilePath = path.resolve(__dirname, '../sql/setup.sql');
             const setupScript = fs.readFileSync(setupFilePath, 'utf8');
 
             const sqlStatements = setupScript
@@ -874,7 +874,7 @@ async function fetchShippingRouteFromDb() {
                  FROM SHIPPINGROUTE1 s1
                  INNER JOIN SHIPPINGROUTE2 s2 
                     ON s1.OriginCountryName = s2.OriginCountryName
-                    AND s1.TerminalCountryName= s2.TerminalCountryName`,
+                    AND s1.TerminalCountryName = s2.TerminalCountryName`,
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
@@ -996,7 +996,7 @@ async function initiateShippingRoute() {
 
             // Use bind variables for safer insertion
             const insertSQL2 = `
-                INSERT INTO TARIFF2 (Name, Length, OriginCountryName, TerminalCountryName) 
+                INSERT INTO SHIPPINGROUTE2 (Name, Length, OriginCountryName, TerminalCountryName) 
                 VALUES (:1, :2, :3, :4)`;
 
             for (const data of insertStatements2) {
