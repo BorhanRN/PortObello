@@ -1282,6 +1282,183 @@ async function initiateCompany() {
     });
 }
 
+async function fetchShipmentContainerFromDb() {
+    return await withOracleDB(async (connection) => {
+        try {
+            console.log('Executing SELECT query on SHIPMENTCONTAINER1 and SHIPMENTCONTAINER2 table...');
+            const result = await connection.execute(
+                `SELECT s2.ShipOwner,
+                        s2.ShipName,
+                        s2.GoodType,
+                        s2.GoodValue,
+                        s2.ContainerSize,
+                        s2.Weight,
+                        s2.TrackingNumber,
+                        s2.TradeAgreement,
+                        s2.CompanyName,
+                        s2.CompanyCEO,
+                        s1.PortAddress,
+                        s1.WarehouseSection
+                 FROM SHIPMENTCONTAINER1 s1
+                 INNER JOIN SHIPMENTCONTAINER2 s2 
+                    ON s1.ShipOwner = s2.ShipOwner
+                    AND s1.ShipName = s2.ShipName`,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            console.log('Query result:', result);
+            return result.rows;
+
+
+
+        } catch (err) {
+            console.error('Error fetching shipmentcontainer data:', err);
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Error in fetchShipmentContainerFromDb:', err);
+        return [];
+    });
+}
+
+async function initiateShipmentContainer() {
+    return await withOracleDB(async (connection) => {
+        try {
+            // First, try to find any foreign key constraints referencing SHIPMENTCONTAINER1 or SHIPMENTCONTAINER2
+            const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE (table_name = 'SHIPMENTCONTAINER1' OR table_name = 'SHIPMENTCONTAINER2') 
+                    AND constraint_type = 'P'
+                )`;
+
+            console.log('Checking for foreign key constraints...');
+            const fkResult = await connection.execute(findFKsQuery);
+
+            // Drop any foreign key constraints found
+            for (let fk of fkResult.rows || []) {
+                try {
+                    const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                    await connection.execute(dropFKQuery);
+                    console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+                } catch (err) {
+                    console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+                }
+            }
+
+            // Now try to drop the SHIPMENTCONTAINER tables
+            try {
+                await connection.execute('DROP TABLE SHIPMENTCONTAINER1 PURGE');
+                console.log('Existing SHIPMENTCONTAINER1 table dropped');
+            } catch (err) {
+                console.log('Error dropping SHIPMENTCONTAINER1 table:', err.message);
+            }
+
+            try {
+                await connection.execute('DROP TABLE SHIPMENTCONTAINER2 PURGE');
+                console.log('Existing SHIPMENTCONTAINER2 table dropped');
+            } catch (err) {
+                console.log('Error dropping SHIPMENTCONTAINER2 table:', err.message);
+            }
+
+            // Create the table
+            await connection.execute(`
+                CREATE TABLE ShipmentContainer1
+                (
+                    ShipOwner        VARCHAR2(100) NOT NULL,
+                    ShipName         VARCHAR2(100) NOT NULL,
+                    PortAddress      VARCHAR2(100) NOT NULL,
+                    WarehouseSection NUMBER,
+                    PRIMARY KEY (ShipOwner, ShipName),
+                    FOREIGN KEY (ShipOwner, ShipName) REFERENCES Ship1 (Owner, ShipName) ON DELETE CASCADE, -- ON UPDATE CASCADE,
+                    FOREIGN KEY (PortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE, -- ON UPDATE CASCADE,
+                    FOREIGN KEY (PortAddress, WarehouseSection) REFERENCES Warehouse (PortAddress, Section) ON DELETE CASCADE --ON UPDATE CASCADE
+                )`);
+
+            console.log('SHIPMENTCONTAINER1 table created');
+
+            await connection.execute(`
+                CREATE TABLE ShipmentContainer2
+                (
+                    ShipOwner      VARCHAR2(100),
+                    ShipName       VARCHAR2(100),
+                    GoodType       VARCHAR2(100),
+                    GoodValue      FLOAT,
+                    ContainerSize  FLOAT,
+                    Weight         FLOAT,
+                    TrackingNumber INTEGER NOT NULL,
+                    TradeAgreement VARCHAR2(100),
+                    CompanyName    VARCHAR2(100),
+                    CompanyCEO     VARCHAR2(100),
+                    PRIMARY KEY (TrackingNumber),
+                    FOREIGN KEY (ShipOwner, ShipName) REFERENCES Ship1 (Owner, ShipName) ON DELETE CASCADE, -- ON UPDATE CASCADE,
+                    --FOREIGN KEY (TrackingNumber) REFERENCES ShipmentContainer1 (TrackingNumber) ON DELETE CASCADE ON UPDATE CASCADE,
+                    FOREIGN KEY (TradeAgreement) REFERENCES Tariff1 (TradeAgreement) ON DELETE CASCADE, -- ON UPDATE CASCADE,
+                    FOREIGN KEY (CompanyName, CompanyCEO) REFERENCES Company (Name, CEO) ON DELETE CASCADE -- ON UPDATE CASCADE
+                )`);
+
+            console.log('SHIPMENTCONTAINER2 table created');
+
+
+            // Insert initial data
+            const insertStatements = [
+                ['Maersk', 'Ocean Breeze', '999 Canada Pl, Vancouver, BC V6C 3T4', 1],
+                ['Mediterranean Shipping Company', 'Seawolf', 'Shengsi County, Zhoushan, China, 202461', 2],
+                ['Atlantic Trade', 'Blue Horizon', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 3],
+                ['Pacific Vessels', 'Tidal Wave', 'Signal St, San Pedro, CA 90731, United States', 4],
+                ['Maritime Enterprises', 'Northern Star', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 9]
+            ];
+
+            // Use bind variables for safer insertion
+            const insertSQL = `
+                INSERT INTO SHIPMENTCONTAINER1 (ShipOwner, ShipName, PortAddress, WarehouseSection) 
+                VALUES (:1, :2, :3, :4)`;
+
+            for (const data of insertStatements) {
+                await connection.execute(insertSQL, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            const insertStatements2 = [
+                ['Maersk', 'Ocean Breeze', 'Automotive', 2000000,45.0, 300.0, 1001, 'China - USA Agreement', 'BYD Auto',
+                    'Wang Chuanfu'],
+                ['Mediterranean Shipping Company', 'Seawolf', 'Mining', 1300000,50.0, 450.0, 1002, 'Canada - China Agreement', 'Berrick Gold',
+                'Mark Bristow'],
+                ['Atlantic Trade', 'Blue Horizon', 'Sportswear', 600000,30.0, 200.0, 1003, 'Canada - Netherlands Agreement',
+                'Nike', 'Elliot Hill'],
+                ['Pacific Vessels', 'Tidal Wave', 'Sportswear', 400000,60.0, 500.0, 1004, 'Canada - USA Agreement', 'UnderArmour',
+                'Kevin Plank'],
+                ['Maritime Enterprises', 'Northern Star', 'Entertainment', 700000,55.0, 400.0, 1005, 'Canada - Japan Agreement',
+                'Nintendo', 'Shuntaro Furakawa']
+            ];
+
+            // Use bind variables for safer insertion
+            const insertSQL2 = `
+                INSERT INTO SHIPMENTCONTAINER2 (ShipOwner, ShipName, GoodType, GoodValue, ContainerSize, Weight, TrackingNumber, TradeAgreement, CompanyName, CompanyCEO) 
+                VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10)`;
+
+            for (const data of insertStatements2) {
+                await connection.execute(insertSQL2, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            await connection.commit();
+            console.log('All data inserted and committed');
+            return true;
+        } catch (err) {
+            console.error('Error in initiateShipmentContainer:', err);
+            await connection.rollback();
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Failed to initiate shipmentcontainer:', err);
+        return false;
+    });
+}
+
 //sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
 async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
@@ -1585,6 +1762,9 @@ module.exports = {
 
     fetchCompanyFromDb,
     initiateCompany,
+
+    fetchShipmentContainerFromDb,
+    initiateShipmentContainer,
 
     maxAvgContainer,
     updateShipValues,

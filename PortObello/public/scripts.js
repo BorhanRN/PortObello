@@ -694,6 +694,66 @@ async function resetCompany() {
     }
 }
 
+
+// Fetches data from SHIPMENTCONTAINER and displays it. CL1
+async function fetchAndDisplayShipmentContainer() {
+    try {
+        console.log('Fetching shipmentcontainer data...');
+        const response = await fetch('/shipmentcontainer', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('shipmentcontainer');
+        if (!tableElement) throw new Error('Table element with id "shipmentcontainer" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(shipmentcontainer => {
+            const row = tableBody.insertRow();
+            const columns = ['SHIPOWNER', 'SHIPNAME', 'GOODTYPE', 'GOODVALUE', 'CONTAINERSIZE', 'WEIGHT', 'TRACKINGNUMBER', 'TRADEAGREEMENT', 'COMPANYNAME', 'COMPANYCEO', 'PORTADDRESS', 'WAREHOUSESECTION'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = shipmentcontainer[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayShipmentContainer:', error);
+    }
+
+}
+
+// This function resets or initializes SHIPMENTCONTAINER.
+async function resetShipmentContainer() {
+    const response = await fetch("/initiate-shipmentcontainer", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetShipmentContainerResultMsg');
+        messageElement.textContent = "shipmentcontainer initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -711,6 +771,7 @@ window.onload = function() {
     fetchAndDisplayShippingRoute();
     fetchAndDisplayShip();
     fetchAndDisplayCompany();
+    fetchAndDisplayShipmentContainer();
 
     // Add event listeners
     document.getElementById("resetCountry").addEventListener("click", async () => {
@@ -749,6 +810,10 @@ window.onload = function() {
         await resetCompany();
         await fetchAndDisplayCompany();  // Refresh table after reset
     });
+    document.getElementById("resetShipmentContainer").addEventListener("click", async () => {
+        await resetShipmentContainer();
+        await fetchAndDisplayShipmentContainer();  // Refresh table after reset
+    });
 
 
 
@@ -778,4 +843,5 @@ function fetchTableData() {
     fetchAndDisplayShippingRoute();
     fetchAndDisplayShip();
     fetchAndDisplayCompany();
+    fetchAndDisplayShipmentContainer();
 }
