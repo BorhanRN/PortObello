@@ -36,6 +36,22 @@ async function checkDbConnection() {
         });
 }
 
+// Function to initialize the database
+async function initializeDatabase() {
+    try {
+        const response = await fetch('/initialize-db', { method: 'GET' });
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Database initialized successfully:', data.message);
+        } else {
+            console.error('Database initialization failed:', data.message);
+        }
+    } catch (error) {
+        console.error('Error initializing database:', error);
+    }
+}
+
 // Fetches data from COUNTRY and displays it. CL1
 async function fetchAndDisplayCountry() {
     try {
@@ -507,6 +523,7 @@ async function resetTariff() {
 window.onload = function() {
     console.log('Page loaded, initializing...');
     checkDbConnection();
+    initializeDatabase();
 
     fetchAndDisplayCountry();  // Initial fetches
     fetchAndDisplayPort();
@@ -564,5 +581,5 @@ function fetchTableData() {
     fetchAndDisplayWarehouse();
     fetchAndDisplayHomeCountry();
     fetchAndDisplayForeignCountry();
-    fetchAndDisplayTariff1();
+    fetchAndDisplayTariff();
 }
