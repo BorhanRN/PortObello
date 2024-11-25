@@ -307,7 +307,7 @@ async function fetchAndDisplayWarehouse() {
 
         responseData.data.forEach(warehouse => {
             const row = tableBody.insertRow();
-            const columns = ['PORTADDRESS', 'SECTION', 'NUMCONTAINERS', 'CAPACITY'];
+            const columns = ['PORTADDRESS', 'WAREHOUSESECTION', 'NUMCONTAINERS', 'CAPACITY'];
             columns.forEach(col => {
                 const cell = row.insertCell();
                 cell.textContent = warehouse[col] || 'N/A';

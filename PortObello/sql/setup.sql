@@ -42,10 +42,10 @@ CREATE TABLE Port
 CREATE TABLE Warehouse
 (
     PortAddress   VARCHAR2(200) NOT NULL,
-    Section       NUMBER,
+    WarehouseSection       NUMBER,
     NumContainers NUMBER,
     Capacity      NUMBER,
-    PRIMARY KEY (PortAddress, Section),
+    PRIMARY KEY (PortAddress, WarehouseSection),
     FOREIGN KEY (PortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE
 );
 
@@ -159,7 +159,7 @@ CREATE TABLE ShipmentContainer1
     PRIMARY KEY (ShipOwner, ShipName),
     FOREIGN KEY (ShipOwner, ShipName) REFERENCES Ship1 (Owner, ShipName) ON DELETE CASCADE, -- ON UPDATE CASCADE,
     FOREIGN KEY (PortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE, -- ON UPDATE CASCADE,
-    FOREIGN KEY (PortAddress, WarehouseSection) REFERENCES Warehouse (PortAddress, Section) ON DELETE CASCADE --ON UPDATE CASCADE
+    FOREIGN KEY (PortAddress, WarehouseSection) REFERENCES Warehouse (PortAddress, WarehouseSection) ON DELETE CASCADE --ON UPDATE CASCADE
 );
 
 CREATE TABLE ShipmentContainer2
@@ -256,15 +256,15 @@ INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
 VALUES ('Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0);
 
 
-INSERT INTO Warehouse (Section, NumContainers, Capacity, PortAddress)
+INSERT INTO Warehouse (WarehouseSection, NumContainers, Capacity, PortAddress)
 VALUES (1, 90, 100,'999 Canada Pl, Vancouver, BC V6C 3T4');
-INSERT INTO Warehouse (Section, NumContainers, Capacity, PortAddress)
+INSERT INTO Warehouse (WarehouseSection, NumContainers, Capacity, PortAddress)
 VALUES (2, 200, 300,'Shengsi County, Zhoushan, China, 202461');
-INSERT INTO Warehouse (Section, NumContainers, Capacity, PortAddress)
+INSERT INTO Warehouse (WarehouseSection, NumContainers, Capacity, PortAddress)
 VALUES (3, 200, 200,'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands');
-INSERT INTO Warehouse (Section, NumContainers, Capacity, PortAddress)
+INSERT INTO Warehouse (WarehouseSection, NumContainers, Capacity, PortAddress)
 VALUES (4, 631, 1000,'Signal St, San Pedro, CA 90731, United States');
-INSERT INTO Warehouse (Section, NumContainers, Capacity, PortAddress)
+INSERT INTO Warehouse (WarehouseSection, NumContainers, Capacity, PortAddress)
 VALUES (9, 10, 220,'4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan');
 
 

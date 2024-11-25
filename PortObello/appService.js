@@ -431,10 +431,10 @@ async function initiateWarehouse() {
                 CREATE TABLE Warehouse
                 (
                     PortAddress   VARCHAR2(200) NOT NULL,
-                    Section       NUMBER,
+                    WarehouseSection       NUMBER,
                     NumContainers NUMBER,
                     Capacity      NUMBER,
-                    PRIMARY KEY (PortAddress, Section),
+                    PRIMARY KEY (PortAddress, WarehouseSection),
                     FOREIGN KEY (PortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE
                 )`);
 
@@ -451,7 +451,7 @@ async function initiateWarehouse() {
 
             // Use bind variables for safer insertion
             const insertSQL = `
-                INSERT INTO WAREHOUSE (Section, NumContainers, Capacity, PortAddress) 
+                INSERT INTO WAREHOUSE (WarehouseSection, NumContainers, Capacity, PortAddress) 
                 VALUES (:1, :2, :3, :4)`;
 
             for (const data of insertStatements) {
@@ -1375,7 +1375,7 @@ async function initiateShipmentContainer() {
                     PRIMARY KEY (ShipOwner, ShipName),
                     FOREIGN KEY (ShipOwner, ShipName) REFERENCES Ship1 (Owner, ShipName) ON DELETE CASCADE, -- ON UPDATE CASCADE,
                     FOREIGN KEY (PortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE, -- ON UPDATE CASCADE,
-                    FOREIGN KEY (PortAddress, WarehouseSection) REFERENCES Warehouse (PortAddress, Section) ON DELETE CASCADE --ON UPDATE CASCADE
+                    FOREIGN KEY (PortAddress, WarehouseSection) REFERENCES Warehouse (PortAddress, WarehouseSection) ON DELETE CASCADE --ON UPDATE CASCADE
                 )`);
 
             console.log('SHIPMENTCONTAINER1 table created');
