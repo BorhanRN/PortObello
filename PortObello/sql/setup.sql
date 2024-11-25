@@ -318,6 +318,79 @@ VALUES ('Rotterdam - Vancouver', 11564,'Netherlands','Canada');
 --         'Signal St, San Pedro, CA 90731, United States');
 -- NEED TO ADD ONE MORE HERE BETWEEN EXISTING COUNTRIES
 
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES (
+           'Maersk',
+           'Ocean Breeze',
+           'Great Circle',
+           '999 Canada Pl, Vancouver, BC V6C 3T4',
+           100.5,
+           (SELECT SUM s.GoodValue
+            FROM ShipmentContainer2 s
+            WHERE s.Owner = 'Maersk' AND s.ShipName = 'Ocean Breeze'
+           )
+       );
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES (
+           'Mediterranean Shipping Company',
+           'Seawolf',
+           'PANZ Seattle Loop',
+           'Shengsi County, Zhoushan, China, 202461',
+           150.75,
+           (SELECT SUM s.GoodValue
+            FROM ShipmentContainer2 s
+            WHERE s.Owner = 'Mediterranean Shipping Company' AND s.ShipName = 'Seawolf'
+           )
+       );
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES (
+           'Atlantic Trade',
+           'Blue Horizon',
+           'Trans - Pacific Route',
+           'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands',
+           200.0,
+           (SELECT SUM s.GoodValue
+            FROM ShipmentContainer2 s
+            WHERE s.Owner = 'Atlantic Trade' AND s.ShipName = 'Blue Horizon'
+           )
+       );
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES (
+           'Pacific Vessels',
+           'Tidal Wave',
+           'Rotterdam - Vancouver',
+           'Signal St, San Pedro, CA 90731, United States',
+           175.4,
+           (SELECT SUM s.GoodValue
+            FROM ShipmentContainer2 s
+            WHERE s.Owner = 'Pacific Vessels' AND s.ShipName = 'Tidal Wave'
+           )
+       );
+INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
+VALUES (
+           'Maritime Enterprises',
+           'Northern Star',
+           'PANZ Seattle Loop',
+           '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan',
+           225.6,
+           (SELECT SUM s.GoodValue
+            FROM ShipmentContainer2 s
+            WHERE s.Owner = 'Maritime Enterprises' AND s.ShipName = 'Northern Star'
+           )
+       );
+
+
+INSERT INTO Ship2 (ShipSize, Capacity)
+VALUES (100.5, 500.0);
+INSERT INTO Ship2 (ShipSize, Capacity)
+VALUES (150.75, 800.0);
+INSERT INTO Ship2 (ShipSize, Capacity)
+VALUES (200.0, 1200.0);
+INSERT INTO Ship2 (ShipSize, Capacity)
+VALUES (175.4, 950.0);
+INSERT INTO Ship2 (ShipSize, Capacity)
+VALUES (225.6, 1400.0);
+
 INSERT INTO Company (CEO, Name, Industry, YearlyRevenue, CountryName)
 VALUES ('Wang Chuanfu', 'BYD Auto', 'Automotive', 112000.0, 'USA');
 INSERT INTO Company (CEO, Name, Industry, YearlyRevenue, CountryName)
@@ -358,76 +431,3 @@ VALUES ('Pacific Vessels', 'Tidal Wave', 'Sportswear', 400000,60.0, 500.0, 1004,
 INSERT INTO ShipmentContainer2 (ShipOwner, ShipName, GoodType, GoodValue, ContainerSize, Weight, TrackingNumber, TradeAgreement, CompanyName, CompanyCEO)
 VALUES ('Maritime Enterprises', 'Northern Star', 'Entertainment', 700000,55.0, 400.0, 1005, 'Canada - Japan Agreement',
         'Nintendo', 'Shuntaro Furakawa');
-
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
-VALUES (
-        'Maersk',
-        'Ocean Breeze',
-        'Great Circle',
-        '999 Canada Pl, Vancouver, BC V6C 3T4',
-        100.5,
-        (SELECT SUM s.GoodValue
-        FROM ShipmentContainer2 s
-        WHERE s.Owner = 'Maersk' AND s.ShipName = 'Ocean Breeze'
-        )
-       );
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
-VALUES (
-        'Mediterranean Shipping Company',
-        'Seawolf',
-        'PANZ Seattle Loop',
-        'Shengsi County, Zhoushan, China, 202461',
-        150.75,
-        (SELECT SUM s.GoodValue
-         FROM ShipmentContainer2 s
-         WHERE s.Owner = 'Mediterranean Shipping Company' AND s.ShipName = 'Seawolf'
-        )
-       );
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
-VALUES (
-        'Atlantic Trade',
-        'Blue Horizon',
-        'Trans - Pacific Route',
-        'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands',
-        200.0,
-        (SELECT SUM s.GoodValue
-         FROM ShipmentContainer2 s
-         WHERE s.Owner = 'Atlantic Trade' AND s.ShipName = 'Blue Horizon'
-        )
-       );
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
-VALUES (
-        'Pacific Vessels',
-        'Tidal Wave',
-        'Rotterdam - Vancouver',
-        'Signal St, San Pedro, CA 90731, United States',
-        175.4,
-        (SELECT SUM s.GoodValue
-         FROM ShipmentContainer2 s
-         WHERE s.Owner = 'Pacific Vessels' AND s.ShipName = 'Tidal Wave'
-        )
-       );
-INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
-VALUES (
-        'Maritime Enterprises',
-        'Northern Star',
-        'PANZ Seattle Loop',
-        '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan',
-        225.6,
-        (SELECT SUM s.GoodValue
-         FROM ShipmentContainer2 s
-         WHERE s.Owner = 'Maritime Enterprises' AND s.ShipName = 'Northern Star'
-        )
-       );
-
-
-INSERT INTO Ship2 (ShipSize, Capacity)
-VALUES (100.5, 500.0);
-INSERT INTO Ship2 (ShipSize, Capacity)
-VALUES (150.75, 800.0);
-INSERT INTO Ship2 (ShipSize, Capacity)
-VALUES (200.0, 1200.0);
-INSERT INTO Ship2 (ShipSize, Capacity)
-VALUES (175.4, 950.0);
-INSERT INTO Ship2 (ShipSize, Capacity)
-VALUES (225.6, 1400.0);
