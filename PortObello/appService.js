@@ -442,11 +442,11 @@ async function initiateWarehouse() {
 
             // Insert initial data
             const insertStatements = [
-                [1, 90, 100, '999 Canada Pl, Vancouver, BC V6C 3T4'],
-                [2, 200, 300, '999 Canada Pl, Vancouver, BC V6C 3T4'],
-                [3, 200, 200, '999 Canada Pl, Vancouver, BC V6C 3T4'],
-                [1, 631, 1000, 'Shengsi County, Zhoushan, China, 202461'],
-                [9, 10, 220, 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands']
+                [1, 90, 100,'999 Canada Pl, Vancouver, BC V6C 3T4'],
+                [2, 200, 300,'Shengsi County, Zhoushan, China, 202461'],
+                [3, 200, 200,'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands'],
+                [4, 631, 1000,'Signal St, San Pedro, CA 90731, United States'],
+                [9, 10, 220,'4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan']
             ];
 
             // Use bind variables for safer insertion
