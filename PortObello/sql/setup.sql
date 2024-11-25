@@ -313,6 +313,9 @@ INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalCountryName
 VALUES ('Trans - Pacific Route', 7838,'China','Canada');
 INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalCountryName)
 VALUES ('Rotterdam - Vancouver', 11564,'Netherlands','Canada');
+INSERT INTO ShippingRoute2 (Name, Length, OriginCountryName, TerminalCountryName)
+VALUES ('Toronto - Florida', 2343,'Canada','USA');
+
 --        ('Great Lakes-St Lawrence Seaway', 600,
 --         'Canada',
 --         'Signal St, San Pedro, CA 90731, United States');

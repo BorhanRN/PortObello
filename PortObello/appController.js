@@ -158,7 +158,19 @@ router.post("/initiate-tariff", async (req, res) => {
     }
 });
 
-module.exports = router;
+router.get('/shippingroute', async (req, res) => {
+    const tableContent = await appService.fetchShippingRouteFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-shippingroute", async (req, res) => {
+    const initiateResult = await appService.initiateShippingRoute();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
 
 router.post("/delete-port", async (req, res) => {
     const { addy } = req.body;

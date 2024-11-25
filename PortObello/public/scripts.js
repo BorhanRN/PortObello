@@ -516,6 +516,65 @@ async function resetTariff() {
     }
 }
 
+// Fetches data from SHIPPINGROUTE and displays it. CL1
+async function fetchAndDisplayShippingRoute() {
+    try {
+        console.log('Fetching shippingroute data...');
+        const response = await fetch('/shippingroute', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('shippingroute');
+        if (!tableElement) throw new Error('Table element with id "shippingroute" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(shippingroute => {
+            const row = tableBody.insertRow();
+            const columns = ['NAME', 'LENGTH', 'ORIGINCOUNTRYNAME', 'TERMINALCOUNTRYNAME', 'ANNUALVOLUMEOFGOODS'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = shippingroute[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayShippingRoute:', error);
+    }
+
+}
+
+// This function resets or initializes SHIPPINGROUTE.
+async function resetShippingRoute() {
+    const response = await fetch("/initiate-shippingroute", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetShippingRouteResultMsg');
+        messageElement.textContent = "shippingroute initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
 
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
@@ -531,6 +590,7 @@ window.onload = function() {
     fetchAndDisplayHomeCountry();
     fetchAndDisplayForeignCountry();
     fetchAndDisplayTariff();
+    fetchAndDisplayShippingRoute();
 
     // Add event listeners
     document.getElementById("resetCountry").addEventListener("click", async () => {
@@ -557,6 +617,10 @@ window.onload = function() {
         await resetTariff();
         await fetchAndDisplayTariff();  // Refresh table after reset
     });
+    document.getElementById("resetShippingRoute").addEventListener("click", async () => {
+        await resetShippingRoute();
+        await fetchAndDisplayShippingRoute();  // Refresh table after reset
+    });
 
 
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
@@ -582,4 +646,5 @@ function fetchTableData() {
     fetchAndDisplayHomeCountry();
     fetchAndDisplayForeignCountry();
     fetchAndDisplayTariff();
+    fetchAndDisplayShippingRoute();
 }

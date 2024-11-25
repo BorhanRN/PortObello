@@ -861,6 +861,164 @@ async function initiateTariff() {
     });
 }
 
+async function fetchShippingRouteFromDb() {
+    return await withOracleDB(async (connection) => {
+        try {
+            console.log('Executing SELECT query on SHIPPINGROUTE1 and SHIPPINGROUTE2 table...');
+            const result = await connection.execute(
+                `SELECT s1.OriginCountryName,
+                        s1.TerminalCountryName,
+                        s1.AnnualVolumeOfGoods,
+                        s2.Name,
+                        s2.Length
+                 FROM SHIPPINGROUTE1 s1
+                 INNER JOIN SHIPPINGROUTE2 s2 
+                    ON s1.OriginCountryName = s2.OriginCountryName
+                    AND s1.TerminalCountryName= s2.TerminalCountryName`,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            console.log('Query result:', result);
+            return result.rows;
+
+
+
+        } catch (err) {
+            console.error('Error fetching shippingroute data:', err);
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Error in fetchShippingRouteFromDb:', err);
+        return [];
+    });
+}
+
+async function initiateShippingRoute() {
+    return await withOracleDB(async (connection) => {
+        try {
+            // First, try to find any foreign key constraints referencing SHIPPINGROUTE1 or SHIPPINGROUTE2
+            const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE (table_name = 'SHIPPINGROUTE1' OR table_name = 'SHIPPINGROUTE2') 
+                    AND constraint_type = 'P'
+                )`;
+
+            console.log('Checking for foreign key constraints...');
+            const fkResult = await connection.execute(findFKsQuery);
+
+            // Drop any foreign key constraints found
+            for (let fk of fkResult.rows || []) {
+                try {
+                    const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                    await connection.execute(dropFKQuery);
+                    console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+                } catch (err) {
+                    console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+                }
+            }
+
+            // Now try to drop the TARIFF tables
+            try {
+                await connection.execute('DROP TABLE SHIPPINGROUTE1 PURGE');
+                console.log('Existing SHIPPINGROUTE1 table dropped');
+            } catch (err) {
+                console.log('Error dropping SHIPPINGROUTE1 table:', err.message);
+            }
+
+            try {
+                await connection.execute('DROP TABLE SHIPPINGROUTE2 PURGE');
+                console.log('Existing SHIPPINGROUTE2 table dropped');
+            } catch (err) {
+                console.log('Error dropping SHIPPINGROUTE2 table:', err.message);
+            }
+
+            // Create the table
+            await connection.execute(`
+                CREATE TABLE ShippingRoute1
+                (
+                    AnnualVolumeOfGoods FLOAT,
+                    OriginCountryName   VARCHAR2(100) NOT NULL,
+                    TerminalCountryName VARCHAR2(100) NOT NULL,
+                    PRIMARY KEY (OriginCountryName, TerminalCountryName),
+                    FOREIGN KEY (OriginCountryName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE, --ON UPDATE CASCADE,
+                    FOREIGN KEY (TerminalCountryName) REFERENCES Country (Name) ON DELETE CASCADE       --ON UPDATE CASCADE
+                )`);
+
+            console.log('SHIPPINGROUTE1 table created');
+
+            await connection.execute(`
+                CREATE TABLE ShippingRoute2
+                (
+                    Name                VARCHAR2(100) NOT NULL,
+                    Length              FLOAT,
+                    OriginCountryName   VARCHAR2(100) NOT NULL,
+                    TerminalCountryName VARCHAR2(100) NOT NULL,
+                    PRIMARY KEY (Name),
+                    FOREIGN KEY (OriginCountryName) REFERENCES ForeignCountry (Name)
+                        ON DELETE CASCADE,
+                    --ON UPDATE CASCADE,
+                    FOREIGN KEY (TerminalCountryName) REFERENCES Country (Name) ON DELETE CASCADE --ON UPDATE CASCADE
+                )`);
+
+            console.log('SHIPPINGROUTE2 table created');
+
+
+            // Insert initial data
+            const insertStatements = [
+                [12000,'Canada','USA'],
+                [45000,'USA','Canada'],
+                [80000,'China','Canada'],
+                [20000,'Netherlands','Canada'],
+                [60000,'Japan','Canada']
+            ];
+
+            // Use bind variables for safer insertion
+            const insertSQL = `
+                INSERT INTO SHIPPINGROUTE1 (AnnualVolumeOfGoods, OriginCountryName, TerminalCountryName) 
+                VALUES (:1, :2, :3)`;
+
+            for (const data of insertStatements) {
+                await connection.execute(insertSQL, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            const insertStatements2 = [
+                ['Great Circle', 4078,'Japan','Canada'],
+                ['PANZ Seattle Loop', 1319, 'USA','Canada'],
+                ['Trans - Pacific Route', 7838,'China','Canada'],
+                ['Rotterdam - Vancouver', 11564,'Netherlands','Canada'],
+                ['Toronto - Florida', 2343,'Canada','USA'],
+            ];
+
+            // Use bind variables for safer insertion
+            const insertSQL2 = `
+                INSERT INTO TARIFF2 (Name, Length, OriginCountryName, TerminalCountryName) 
+                VALUES (:1, :2, :3, :4)`;
+
+            for (const data of insertStatements2) {
+                await connection.execute(insertSQL2, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            await connection.commit();
+            console.log('All data inserted and committed');
+            return true;
+        } catch (err) {
+            console.error('Error in initiateShippingRoute:', err);
+            await connection.rollback();
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Failed to initiate shippingroute:', err);
+        return false;
+    });
+}
+
+
 //sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
 async function shipToPort(Owner, ShipName) {
     return await  withOracleDB( async (connection) => {
@@ -1155,6 +1313,9 @@ module.exports = {
 
     fetchTariffFromDb,
     initiateTariff,
+
+    fetchShippingRouteFromDb,
+    initiateShippingRoute,
 
     maxAvgContainer,
     updateShipValues,
