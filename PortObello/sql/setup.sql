@@ -79,8 +79,8 @@ CREATE TABLE Tariff1
     ForeignName    VARCHAR2(100),
     EnactmentDate  DATE,
     PRIMARY KEY (TradeAgreement),
-    FOREIGN KEY (ForeignName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE, --ON UPDATE CASCADE,
-    FOREIGN KEY (HomeName) REFERENCES HomeCountry (Name) ON DELETE CASCADE --ON UPDATE CASCADE
+    FOREIGN KEY (ForeignName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE,
+    FOREIGN KEY (HomeName) REFERENCES HomeCountry (Name) ON DELETE CASCADE
 );
 
 CREATE TABLE Tariff2
@@ -91,8 +91,8 @@ CREATE TABLE Tariff2
     ForeignName   VARCHAR2(100),
     EnactmentDate DATE,
     PRIMARY KEY (EnactmentDate, TariffRate, HomeName, ForeignName),
-    FOREIGN KEY (ForeignName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE, --ON UPDATE CASCADE,
-    FOREIGN KEY (HomeName) REFERENCES HomeCountry (Name) ON DELETE CASCADE --ON UPDATE CASCADE
+    FOREIGN KEY (ForeignName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE,
+    FOREIGN KEY (HomeName) REFERENCES HomeCountry (Name) ON DELETE CASCADE
 );
 
 CREATE TABLE ShippingRoute1
@@ -101,8 +101,8 @@ CREATE TABLE ShippingRoute1
     OriginCountryName	VARCHAR2(100) NOT NULL,
     TerminalCountryName VARCHAR2(100) NOT NULL,
     PRIMARY KEY (OriginCountryName, TerminalCountryName),
-    FOREIGN KEY (OriginCountryName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE, --ON UPDATE CASCADE,
-    FOREIGN KEY (TerminalCountryName) REFERENCES Country (Name) ON DELETE CASCADE --ON UPDATE CASCADE
+    FOREIGN KEY (OriginCountryName) REFERENCES ForeignCountry (Name) ON DELETE CASCADE,
+    FOREIGN KEY (TerminalCountryName) REFERENCES Country (Name) ON DELETE CASCADE
 );
 
 
@@ -115,8 +115,7 @@ CREATE TABLE ShippingRoute2
     PRIMARY KEY (Name),
     FOREIGN KEY (OriginCountryName) REFERENCES ForeignCountry (Name)
         ON DELETE CASCADE,
-    --ON UPDATE CASCADE,
-    FOREIGN KEY (TerminalCountryName) REFERENCES Country (Name) ON DELETE CASCADE --ON UPDATE CASCADE
+    FOREIGN KEY (TerminalCountryName) REFERENCES Country (Name) ON DELETE CASCADE
 );
 
 CREATE TABLE Ship1
@@ -126,10 +125,9 @@ CREATE TABLE Ship1
     ShipSize            FLOAT,
     ShippingRouteName   VARCHAR2(100),
     DockedAtPortAddress VARCHAR2(100),
-    --TotalGoodValue FLOAT,
     PRIMARY KEY (Owner, ShipName),
-    FOREIGN KEY (ShippingRouteName) REFERENCES ShippingRoute2 (Name) ON DELETE CASCADE, -- ON UPDATE CASCADE,
-    FOREIGN KEY (DockedAtPortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE --ON UPDATE CASCADE
+    FOREIGN KEY (ShippingRouteName) REFERENCES ShippingRoute2 (Name) ON DELETE CASCADE,
+    FOREIGN KEY (DockedAtPortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE
 );
 
 CREATE TABLE Ship2
@@ -147,7 +145,7 @@ CREATE TABLE Company
     YearlyRevenue FLOAT,
     CountryName   VARCHAR2(100) NOT NULL,
     PRIMARY KEY (CEO, Name),
-    FOREIGN KEY (CountryName) REFERENCES Country (Name) ON DELETE CASCADE -- ON UPDATE CASCADE
+    FOREIGN KEY (CountryName) REFERENCES Country (Name) ON DELETE CASCADE
 );
 
 CREATE TABLE ShipmentContainer1
@@ -157,9 +155,9 @@ CREATE TABLE ShipmentContainer1
     PortAddress      VARCHAR2(100) NOT NULL,
     WarehouseSection NUMBER,
     PRIMARY KEY (ShipOwner, ShipName),
-    FOREIGN KEY (ShipOwner, ShipName) REFERENCES Ship1 (Owner, ShipName) ON DELETE CASCADE, -- ON UPDATE CASCADE,
-    FOREIGN KEY (PortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE, -- ON UPDATE CASCADE,
-    FOREIGN KEY (PortAddress, WarehouseSection) REFERENCES Warehouse (PortAddress, WarehouseSection) ON DELETE CASCADE --ON UPDATE CASCADE
+    FOREIGN KEY (ShipOwner, ShipName) REFERENCES Ship1 (Owner, ShipName) ON DELETE CASCADE,
+    FOREIGN KEY (PortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE,
+    FOREIGN KEY (PortAddress, WarehouseSection) REFERENCES Warehouse (PortAddress, WarehouseSection) ON DELETE CASCADE
 );
 
 CREATE TABLE ShipmentContainer2
@@ -175,10 +173,9 @@ CREATE TABLE ShipmentContainer2
     CompanyName    VARCHAR2(100),
     CompanyCEO     VARCHAR2(100),
     PRIMARY KEY (TrackingNumber),
-    FOREIGN KEY (ShipOwner, ShipName) REFERENCES Ship1 (Owner, ShipName) ON DELETE CASCADE, -- ON UPDATE CASCADE,
-    --FOREIGN KEY (TrackingNumber) REFERENCES ShipmentContainer1 (TrackingNumber) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (TradeAgreement) REFERENCES Tariff1 (TradeAgreement) ON DELETE CASCADE, -- ON UPDATE CASCADE,
-    FOREIGN KEY (CompanyName, CompanyCEO) REFERENCES Company (Name, CEO) ON DELETE CASCADE -- ON UPDATE CASCADE
+    FOREIGN KEY (ShipOwner, ShipName) REFERENCES Ship1 (Owner, ShipName) ON DELETE CASCADE,
+    FOREIGN KEY (TradeAgreement) REFERENCES Tariff1 (TradeAgreement) ON DELETE CASCADE,
+    FOREIGN KEY (CompanyName, CompanyCEO) REFERENCES Company (Name, CEO) ON DELETE CASCADE
 );
 
 
@@ -326,69 +323,6 @@ INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, Ship
 VALUES ('Pacific Vessels', 'Tidal Wave', 'Rotterdam - Vancouver', 'Signal St, San Pedro, CA 90731, United States', 175.4);
 INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize)
 VALUES ('Maritime Enterprises', 'Northern Star', 'PANZ Seattle Loop', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 225.6);
-
-
--- IMPLEMENTATION WITH SUM OF GOOD VALUE
--- INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
--- VALUES (
---            'Maersk',
---            'Ocean Breeze',
---            'Great Circle',
---            '999 Canada Pl, Vancouver, BC V6C 3T4',
---            100.5,
---            (SELECT SUM s.GoodValue
---             FROM ShipmentContainer2 s
---             WHERE s.Owner = 'Maersk' AND s.ShipName = 'Ocean Breeze'
---            )
---        );
--- INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
--- VALUES (
---            'Mediterranean Shipping Company',
---            'Seawolf',
---            'PANZ Seattle Loop',
---            'Shengsi County, Zhoushan, China, 202461',
---            150.75,
---            (SELECT SUM(s.GoodValue)
---             FROM ShipmentContainer2 s
---             WHERE s.Owner = 'Mediterranean Shipping Company' AND s.ShipName = 'Seawolf'
---            )
---        );
--- INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
--- VALUES (
---            'Atlantic Trade',
---            'Blue Horizon',
---            'Trans - Pacific Route',
---            'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands',
---            200.0,
---            (SELECT SUM(s.GoodValue)
---             FROM ShipmentContainer2 s
---             WHERE s.Owner = 'Atlantic Trade' AND s.ShipName = 'Blue Horizon'
---            )
---        );
--- INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
--- VALUES (
---            'Pacific Vessels',
---            'Tidal Wave',
---            'Rotterdam - Vancouver',
---            'Signal St, San Pedro, CA 90731, United States',
---            175.4,
---            (SELECT SUM s.GoodValue
---             FROM ShipmentContainer2 s
---             WHERE s.Owner = 'Pacific Vessels' AND s.ShipName = 'Tidal Wave'
---            )
---        );
--- INSERT INTO Ship1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize, TotalGoodValue)
--- VALUES (
---            'Maritime Enterprises',
---            'Northern Star',
---            'PANZ Seattle Loop',
---            '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan',
---            225.6,
---            (SELECT SUM s.GoodValue
---             FROM ShipmentContainer2 s
---             WHERE s.Owner = 'Maritime Enterprises' AND s.ShipName = 'Northern Star'
---            )
---        );
 
 
 INSERT INTO Ship2 (ShipSize, Capacity)
