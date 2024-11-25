@@ -1605,7 +1605,7 @@ async function deleteShip(sOwner, sName) {
         return deletion2.rowsAffected && deletion2.rowsAffected > 0;
     })
         .catch((error) => {
-            console.error("Error deleting port:", error);
+            console.error("Error deleting Ship:", error);
             return false;
         });
 
@@ -1676,7 +1676,7 @@ async function deleteTariff(tName) {
         return deletion2.rowsAffected && deletion2.rowsAffected > 0;
     })
         .catch((error) => {
-            console.error("Error deleting port:", error);
+            console.error("Error deleting Tariff:", error);
             return false;
         });
 
