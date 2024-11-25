@@ -24,8 +24,16 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
+<!-- TAB HTML CODE FOUND USING (WE LOVE CITING SOURCES!) https://www.w3schools.com/howto/howto_js_tabs.asp -->
 <!-- Show 'Country'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
+<div class="tab">
+    <button class="countryTab" onclick="openCountry(event, 'Country Table')">Table</button>
+    <button class="countryTab" onclick="openCountry(event, 'Insert Country')">Insert</button>
+    <button class="countryTab" onclick="openCountry(event, 'Country Functions')">Function</button>
+</div>
+
+<div id="Country Table" class="countryContent">
 <h2>Show Country</h2>
 <table id="country" border="1">
     <thead>
@@ -50,9 +58,10 @@
 <button id="resetCountry"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetCountryResultMsg"></div>
-
 <br><hr><br> <!-- ========================================================================= -->
+</div>
 
+<div id="Insert Country" class="countryContent">
 <h2> Insert Values into Country </h2>
 <form id="insertCountry">
     Name: <input type="text" id="insertCountryName" placeholder="Enter Name" maxlength="20"> <br><br>
@@ -68,7 +77,9 @@
 <div id="insertResultMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
+</div>
 
+<div id="Country Functions" class="countryContent">
 <h2>Update Name in Country</h2>
 <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
 <form id="updateNameCountry">
@@ -86,11 +97,17 @@
 <button id="countCountry"> count </button> <br><br>
 <!-- A placeholder to display the count result. -->
 <div id="countResultMsg"></div> <br>
-
 <br><hr><br> <!-- ========================================================================= -->
+</div>
 
+<div class="tab">
+    <button class="portTab" onclick="openPort(event, 'Port Table')">Table</button>
+    <button class="portTab" onclick="openPort(event, 'Delete Port')">Delete</button>
+</div>
 <!-- Show 'Port'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
+
+<div id="Port Table" class="portContent">
 <h2>Show Port</h2>
 <table id="port" border="1">
     <thead>
@@ -116,18 +133,9 @@
 <div id="resetPortResultMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
-<!--
-<h2>Delete Port</h2>
-<p>Bomb a port LOL</p>
-<form id="deletePort">
-    <label for="Port Address">Choose a car:</label>
-    <select name="Port Address" id="Port Address">
-        I need to be able to get all port addresses from port table
-    </select>
-    <br><br>
-    <input type="submit" value="Submit">
-</form>
--->
+</div>
+
+<div id="Delete Port" class="portContent">
 <h2>Delete Port</h2>
 <p>Please be exact when typing the address of the port that you would like to bomb.</p>
 <form id="deletePort">
@@ -139,6 +147,7 @@
 <div id="deletePortResultsMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
+</div>
 
 <!-- Show 'Warehouse'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
@@ -255,9 +264,78 @@
 <div id="resetTariffResultMsg"></div>
 
 
-
 <!-- ===================================================================================== -->
 <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
 <script src="scripts.js"></script>
 </body>
 </html>
+
+<script>
+    function openCountry(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("countryContent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("countryTab");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    function openPort(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("portContent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("portTab");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelector(".countryTab").click();
+        document.querySelector(".portTab").click();
+    });
+</script>
+
+<style>
+    .portTab button.active {
+        background-color: #ccc;
+    }
+
+    .portContent {
+        display: none;
+        padding: 6px 12px;
+        -webkit-animation: fadeEffect 1s;
+        animation: fadeEffect 1s;
+    }
+
+    .countryTab button.active {
+        background-color: #ccc;
+    }
+
+    .countryContent {
+        display: none;
+        padding: 6px 12px;
+        -webkit-animation: fadeEffect 1s;
+        animation: fadeEffect 1s;
+    }
+
+    /* Fade in tabs */
+    @-webkit-keyframes fadeEffect {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
+
+    @keyframes fadeEffect {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
+</style>
