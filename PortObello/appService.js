@@ -83,7 +83,7 @@ const path = require('path');
 async function initializeDatabase() {
     return await withOracleDB(async (connection) => {
         try {
-            const setupFilePath = path.resolve(__dirname, '../sql/setup.sql');
+            const setupFilePath = path.resolve(__dirname, 'sql/setup.sql');
             const setupScript = fs.readFileSync(setupFilePath, 'utf8');
 
             const sqlStatements = setupScript
