@@ -1018,6 +1018,159 @@ async function initiateShippingRoute() {
     });
 }
 
+async function fetchShipFromDb() {
+    return await withOracleDB(async (connection) => {
+        try {
+            console.log('Executing SELECT query on SHIP1 and SHIP2 table...');
+            const result = await connection.execute(
+                `SELECT s1.Owner,
+                        s1.ShipName,
+                        s1.ShipSize,
+                        s1.ShippingRouteName,
+                        s1.DockedAtPortAddress,
+                        s2.Capacity
+                 FROM SHIP1 s1
+                 INNER JOIN SHIP2 s2 
+                    ON s1.ShipSize = s2.ShipSize`,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            console.log('Query result:', result);
+            return result.rows;
+
+
+
+        } catch (err) {
+            console.error('Error fetching ship data:', err);
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Error in fetchShipFromDb:', err);
+        return [];
+    });
+}
+
+async function initiateShip() {
+    return await withOracleDB(async (connection) => {
+        try {
+            // First, try to find any foreign key constraints referencing SHIP1 or SHIP2
+            const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE (table_name = 'SHIP1' OR table_name = 'SHIP2') 
+                    AND constraint_type = 'P'
+                )`;
+
+            console.log('Checking for foreign key constraints...');
+            const fkResult = await connection.execute(findFKsQuery);
+
+            // Drop any foreign key constraints found
+            for (let fk of fkResult.rows || []) {
+                try {
+                    const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                    await connection.execute(dropFKQuery);
+                    console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+                } catch (err) {
+                    console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+                }
+            }
+
+            // Now try to drop the SHIP tables
+            try {
+                await connection.execute('DROP TABLE SHIP1 PURGE');
+                console.log('Existing SHIP1 table dropped');
+            } catch (err) {
+                console.log('Error dropping SHIP1 table:', err.message);
+            }
+
+            try {
+                await connection.execute('DROP TABLE SHIP2 PURGE');
+                console.log('Existing SHIP2 table dropped');
+            } catch (err) {
+                console.log('Error dropping SHIP2 table:', err.message);
+            }
+
+            // Create the table
+            await connection.execute(`
+                CREATE TABLE Ship1
+                (
+                    Owner               VARCHAR2(100) NOT NULL,
+                    ShipName            VARCHAR2(100) NOT NULL,
+                    ShipSize            FLOAT,
+                    ShippingRouteName   VARCHAR2(100),
+                    DockedAtPortAddress VARCHAR2(100),
+                    --TotalGoodValue FLOAT,
+                    PRIMARY KEY (Owner, ShipName),
+                    FOREIGN KEY (ShippingRouteName) REFERENCES ShippingRoute2 (Name) ON DELETE CASCADE, -- ON UPDATE CASCADE,
+                    FOREIGN KEY (DockedAtPortAddress) REFERENCES Port (PortAddress) ON DELETE CASCADE --ON UPDATE CASCADE
+                )`);
+
+            console.log('SHIP1 table created');
+
+            await connection.execute(`
+                CREATE TABLE Ship2
+                (
+                    ShipSize FLOAT NOT NULL,
+                    Capacity FLOAT,
+                    PRIMARY KEY (ShipSize)
+                )`);
+
+            console.log('SHIP2 table created');
+
+
+            // Insert initial data
+            const insertStatements = [
+                ['Maersk', 'Ocean Breeze', 'Great Circle','999 Canada Pl, Vancouver, BC V6C 3T4', 100.5],
+                ['Mediterranean Shipping Company', 'Seawolf', 'PANZ Seattle Loop', 'Shengsi County, Zhoushan, China, 202461', 150.75],
+                ['Atlantic Trade', 'Blue Horizon','Trans - Pacific Route', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 200.0],
+                ['Pacific Vessels', 'Tidal Wave', 'Rotterdam - Vancouver', 'Signal St, San Pedro, CA 90731, United States', 175.4],
+                ['Maritime Enterprises', 'Northern Star', 'PANZ Seattle Loop', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 225.6]
+        ];
+
+            // Use bind variables for safer insertion
+            const insertSQL = `
+                INSERT INTO SHIP1 (Owner, ShipName, ShippingRouteName, DockedAtPortAddress, ShipSize) 
+                VALUES (:1, :2, :3, :4, :5)`;
+
+            for (const data of insertStatements) {
+                await connection.execute(insertSQL, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            const insertStatements2 = [
+                [100.5, 500.0],
+                [150.75, 800.0],
+                [200.0, 1200.0],
+                [175.4, 950.0],
+                [225.6, 1400.0]
+            ];
+
+            // Use bind variables for safer insertion
+            const insertSQL2 = `
+                INSERT INTO SHIPPINGROUTE2 (ShipSize, Capacity) 
+                VALUES (:1, :2)`;
+
+            for (const data of insertStatements2) {
+                await connection.execute(insertSQL2, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            await connection.commit();
+            console.log('All data inserted and committed');
+            return true;
+        } catch (err) {
+            console.error('Error in initiateShip:', err);
+            await connection.rollback();
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Failed to initiate ship:', err);
+        return false;
+    });
+}
 
 //sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
 async function shipToPort(Owner, ShipName) {
@@ -1316,6 +1469,9 @@ module.exports = {
 
     fetchShippingRouteFromDb,
     initiateShippingRoute,
+
+    fetchShipFromDb,
+    initiateShip,
 
     maxAvgContainer,
     updateShipValues,

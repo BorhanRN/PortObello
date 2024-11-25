@@ -575,6 +575,65 @@ async function resetShippingRoute() {
     }
 }
 
+// Fetches data from SHIP and displays it. CL1
+async function fetchAndDisplayShip() {
+    try {
+        console.log('Fetching ship data...');
+        const response = await fetch('/ship', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('ship');
+        if (!tableElement) throw new Error('Table element with id "ship" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(ship => {
+            const row = tableBody.insertRow();
+            const columns = ['OWNER', 'SHIPNAME', 'SHIPPINGROUTENAME', 'DOCKEDATPORTADDRESS', 'SHIPSIZE', 'CAPACITY'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = ship[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayShip:', error);
+    }
+
+}
+
+// This function resets or initializes SHIP.
+async function resetShip() {
+    const response = await fetch("/initiate-ship", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetShipResultMsg');
+        messageElement.textContent = "ship initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
 
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
@@ -591,6 +650,7 @@ window.onload = function() {
     fetchAndDisplayForeignCountry();
     fetchAndDisplayTariff();
     fetchAndDisplayShippingRoute();
+    fetchAndDisplayShip();
 
     // Add event listeners
     document.getElementById("resetCountry").addEventListener("click", async () => {
@@ -621,6 +681,10 @@ window.onload = function() {
         await resetShippingRoute();
         await fetchAndDisplayShippingRoute();  // Refresh table after reset
     });
+    document.getElementById("resetShip").addEventListener("click", async () => {
+        await resetShip();
+        await fetchAndDisplayShip();  // Refresh table after reset
+    });
 
 
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
@@ -647,4 +711,5 @@ function fetchTableData() {
     fetchAndDisplayForeignCountry();
     fetchAndDisplayTariff();
     fetchAndDisplayShippingRoute();
+    fetchAndDisplayShip();
 }
