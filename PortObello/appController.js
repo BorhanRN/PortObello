@@ -186,6 +186,20 @@ router.post("/initiate-ship", async (req, res) => {
     }
 });
 
+router.get('/company', async (req, res) => {
+    const tableContent = await appService.fetchCompanyFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-company", async (req, res) => {
+    const initiateResult = await appService.initiateCompany();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 router.post("/delete-port", async (req, res) => {
     const { addy } = req.body;
     const initiateResult = await appService.deletePort(addy);

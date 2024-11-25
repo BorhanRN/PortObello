@@ -635,6 +635,65 @@ async function resetShip() {
 }
 
 
+// Fetches data from COMPANY and displays it. CL1
+async function fetchAndDisplayCompany() {
+    try {
+        console.log('Fetching ship data...');
+        const response = await fetch('/company', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('company');
+        if (!tableElement) throw new Error('Table element with id "company" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(company => {
+            const row = tableBody.insertRow();
+            const columns = ['CEO', 'NAME', 'INDUSTRY', 'YEARLYREVENUE', 'COUNTRYNAME'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = company[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in fetchAndDisplayCompany:', error);
+    }
+
+}
+
+// This function resets or initializes COMPANY.
+async function resetCompany() {
+    const response = await fetch("/initiate-company", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetCompanyResultMsg');
+        messageElement.textContent = "company initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -651,6 +710,7 @@ window.onload = function() {
     fetchAndDisplayTariff();
     fetchAndDisplayShippingRoute();
     fetchAndDisplayShip();
+    fetchAndDisplayCompany();
 
     // Add event listeners
     document.getElementById("resetCountry").addEventListener("click", async () => {
@@ -685,6 +745,11 @@ window.onload = function() {
         await resetShip();
         await fetchAndDisplayShip();  // Refresh table after reset
     });
+    document.getElementById("resetCompany").addEventListener("click", async () => {
+        await resetCompany();
+        await fetchAndDisplayCompany();  // Refresh table after reset
+    });
+
 
 
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
@@ -712,4 +777,5 @@ function fetchTableData() {
     fetchAndDisplayTariff();
     fetchAndDisplayShippingRoute();
     fetchAndDisplayShip();
+    fetchAndDisplayCompany();
 }

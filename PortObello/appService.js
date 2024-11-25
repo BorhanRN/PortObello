@@ -1150,7 +1150,7 @@ async function initiateShip() {
 
             // Use bind variables for safer insertion
             const insertSQL2 = `
-                INSERT INTO SHIPPINGROUTE2 (ShipSize, Capacity) 
+                INSERT INTO SHIP2 (ShipSize, Capacity) 
                 VALUES (:1, :2)`;
 
             for (const data of insertStatements2) {
@@ -1168,6 +1168,116 @@ async function initiateShip() {
         }
     }).catch((err) => {
         console.error('Failed to initiate ship:', err);
+        return false;
+    });
+}
+
+async function fetchCompanyFromDb() {
+    return await withOracleDB(async (connection) => {
+        try {
+            console.log('Executing SELECT query on COMPANY table...');
+            const result = await connection.execute(
+                `SELECT * FROM COMPANY`,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            console.log('Query result:', result);
+            return result.rows;
+
+
+
+        } catch (err) {
+            console.error('Error fetching company data:', err);
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Error in fetchCompanyFromDb:', err);
+        return [];
+    });
+}
+
+async function initiateCompany() {
+    return await withOracleDB(async (connection) => {
+        try {
+            // First, try to find any foreign key constraints referencing SHIP1 or SHIP2
+            const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE (table_name = 'COMPANY') 
+                    AND constraint_type = 'P'
+                )`;
+
+            console.log('Checking for foreign key constraints...');
+            const fkResult = await connection.execute(findFKsQuery);
+
+            // Drop any foreign key constraints found
+            for (let fk of fkResult.rows || []) {
+                try {
+                    const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                    await connection.execute(dropFKQuery);
+                    console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+                } catch (err) {
+                    console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+                }
+            }
+
+            // Now try to drop the COMPANY table
+            try {
+                await connection.execute('DROP TABLE COMPANY PURGE');
+                console.log('Existing COMPANY table dropped');
+            } catch (err) {
+                console.log('Error dropping COMPANY table:', err.message);
+            }
+
+            // Create the table
+            await connection.execute(`
+                CREATE TABLE Company
+                (
+                    CEO           VARCHAR2(100) NOT NULL,
+                    Name          VARCHAR2(100) NOT NULL,
+                    Industry      VARCHAR2(100),
+                    YearlyRevenue FLOAT,
+                    CountryName   VARCHAR2(100) NOT NULL,
+                    PRIMARY KEY (CEO, Name),
+                    FOREIGN KEY (CountryName) REFERENCES Country (Name) ON DELETE CASCADE -- ON UPDATE CASCADE
+                )`);
+
+            console.log('COMPANY table created');
+
+
+            // Insert initial data
+            const insertStatements = [
+                ['Wang Chuanfu', 'BYD Auto', 'Automotive', 112000.0, 'USA'],
+                ['Elliot Hill', 'Nike', 'Sportswear', 37200.0, 'USA'],
+                ['Kevin Plank', 'UnderArmour', 'Sportswear', 5000.0, 'USA'],
+                ['Christophe Fouquet', 'ASML Holdings', 'Technology', 29800.0, 'Netherlands'],
+                ['Shuntaro Furakawa', 'Nintendo', 'Entertainment', 14000.0, 'Japan'],
+                ['Mark Bristow', 'Berrick Gold', 'Mining', 11400.0, 'Canada']
+            ];
+
+            // Use bind variables for safer insertion
+            const insertSQL = `
+                INSERT INTO COMPANY (CEO, Name, Industry, YearlyRevenue, CountryName) 
+                VALUES (:1, :2, :3, :4, :5)`;
+
+            for (const data of insertStatements) {
+                await connection.execute(insertSQL, data);
+                console.log('Inserted data for:', data[0]);
+            }
+
+            await connection.commit();
+            console.log('All data inserted and committed');
+            return true;
+        } catch (err) {
+            console.error('Error in initiateCompany:', err);
+            await connection.rollback();
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Failed to initiate company:', err);
         return false;
     });
 }
@@ -1472,6 +1582,9 @@ module.exports = {
 
     fetchShipFromDb,
     initiateShip,
+
+    fetchCompanyFromDb,
+    initiateCompany,
 
     maxAvgContainer,
     updateShipValues,
