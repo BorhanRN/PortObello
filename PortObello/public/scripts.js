@@ -177,7 +177,7 @@ async function updateNameCountry(event) {
 //Deletes a port
 async function deletePort(event) {
     event.preventDefault();
-    const portToDelete = document.getElementById('PortAddress').value; // PROBLEMATIC, causing null error on f12 console
+    const portToDelete = document.getElementById('portDeleteInput').value; // PROBLEMATIC, causing null error on f12 console
 
     const response = await fetch( '/delete-port', {
         method: 'POST',
@@ -197,6 +197,31 @@ async function deletePort(event) {
         fetchTableData();
     } else {
         messageElement.textContent = "Error deleting port!";
+    }
+}
+
+//finds max average of container value
+async function maxAverage(event) {
+    try {
+        const response = await fetch('/max-ship-average', {
+            method: 'GET',
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch max average data.");
+        }
+
+        const responseData = await response.json();
+        const messageElement = document.getElementById('getMaxMessage');
+
+        if (responseData.shipName && responseData.maxAvg !== undefined) {
+            messageElement.textContent = `${responseData.shipName} is the ship with the highest average good value, being $${responseData.maxAvg}`;
+            fetchTableData(); // Ensure this function exists to update table data on the page
+        } else {
+            messageElement.textContent = "Error finding the ship!";
+        }
+    } catch (error) {
+        console.error('Error in maxAverage:', error);
     }
 }
 
@@ -851,10 +876,15 @@ window.onload = async function() {
         await updateNameCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after update
     });
-    document.getElementById("deletePort").addEventListener("submit", async (e) => {
+    document.getElementById("deletePortFront").addEventListener("submit", async (e) => {
         await deletePort(e);
         await fetchAndDisplayPort();
     });
+
+    document.getElementById("groupBy").addEventListener("submit", async (e) => {
+        await maxAverage(e);
+    });
+
     document.getElementById("countCountry").addEventListener("click", countCountry);
 }
 

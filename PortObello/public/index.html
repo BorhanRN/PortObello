@@ -28,12 +28,12 @@
 <!-- TAB HTML CODE FOUND USING (WE LOVE CITING SOURCES!) https://www.w3schools.com/howto/howto_js_tabs.asp -->
 <!-- Show 'Country'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
+<h1>Country</h1>
 <div class="tab">
     <button class="countryTab" onclick="openCountry(event, 'Country Table')">Table</button>
     <button class="countryTab" onclick="openCountry(event, 'Insert Country')">Insert</button>
     <button class="countryTab" onclick="openCountry(event, 'Country Functions')">Function</button>
 </div>
-
 <div id="Country Table" class="countryContent">
 <h2>Show Country</h2>
 <table id="country" border="1">
@@ -55,7 +55,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset Country</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetCountry"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetCountryResultMsg"></div>
@@ -101,6 +101,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 </div>
 
+<h1>Port</h1>
 <div class="tab">
     <button class="portTab" onclick="openPort(event, 'Port Table')">Table</button>
     <button class="portTab" onclick="openPort(event, 'Delete Port')">Delete</button>
@@ -128,7 +129,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset Port</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetPort"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetPortResultMsg"></div>
@@ -140,7 +141,7 @@
 <h2>Delete Port</h2>
 <p>Please be exact when typing the address of the port that you would like to bomb.</p>
 <form id="deletePortFront">
-    Coordinates for Nuke: <input type="text" id="PortAddress" placeholder="Port Address goes here." required> <br><br>
+    Coordinates for Nuke: <input type="text" id="portDeleteInput" placeholder="Port Address goes here." required> <br><br>
 
     <button type="submit"> launch </button> <br>
 </form>
@@ -150,6 +151,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 </div>
 
+<h1>Warehouse</h1>
 <!-- Show 'Warehouse'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show Warehouse</h2>
@@ -171,13 +173,14 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset Warehouse</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetWarehouse"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetWarehouseResultMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
 
+<h1>HomeCountry</h1>
 <!-- Show 'Warehouse'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show HomeCountry</h2>
@@ -200,13 +203,14 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset HomeCountry</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetHomeCountry"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetHomeCountryResultMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
 
+<h1>ForeignCountry</h1>
 <!-- Show 'Warehouse'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show ForeignCountry</h2>
@@ -229,14 +233,15 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset ForeignCountry</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetForeignCountry"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetForeignCountryResultMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
 
-<!-- Show 'Warehouse'.
+<h1>Tariff</h1>
+<!-- Show 'Tariff'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show Tariff</h2>
 <table id="tariff" border="1">
@@ -259,7 +264,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset Tariff</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetTariff"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetTariffResultMsg"></div>
@@ -267,6 +272,7 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
+<h1>ShippingRoute</h1>
 <!-- Show 'ShippingRoute'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show ShippingRoute</h2>
@@ -289,13 +295,19 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset ShippingRoute</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetShippingRoute"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetShippingRouteResultMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
+<div class="tab">
+    <button class="shipTab" onclick="openShip(event, 'Ship Table')">Table</button>
+    <button class="shipTab" onclick="openShip(event, 'Highest Value')">Highest Average</button>
+</div>
 
+<h1>Ship</h1>
+<div id="Ship Table" class="shipContent">
 <!-- Show 'Ship'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show Ship</h2>
@@ -318,15 +330,27 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
+
 <h2>Reset Ship</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetShip"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetShipResultMsg"></div>
 
 
 <br><hr><br> <!-- ========================================================================= -->
+</div>
+<div id="Highest Value" class="shipContent">
+    <p>If you would like to calculate the ship with the highest average shipment container value, please click this magic button!</p>
+    <form id="groupBy">
+    <button type="submit" value="getMax">It's not magic, it's just good SQL!</button>
+    </form>
+    <!-- A placeholder to display messages related to the group by operation. -->
+    <div id="getMaxMessage"></div>
+    <br><hr><br> <!-- ========================================================================= -->
+</div>
 
+<h1>Company</h1>
 <!-- Show 'Company'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show Company</h2>
@@ -349,7 +373,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset Company</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetCompany"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetCompanyResultMsg"></div>
@@ -358,6 +382,7 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
+<h1>ShipmentContainer</h1>
 <!-- Show 'ShipmentContainer'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show ShipmentContainer</h2>
@@ -388,7 +413,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset ShipmentContainer</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="resetShipmentContainer"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetShipmentContainerResultMsg"></div>
@@ -396,7 +421,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 
 <h2>Reset All</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
 <button id="initiateAll"> reset </button> <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="initiateAllResultMsg"></div>
@@ -437,9 +462,24 @@
         evt.currentTarget.className += " active";
     }
 
+    function openShip(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("shipContent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("shipTab");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelector(".countryTab").click();
         document.querySelector(".portTab").click();
+        document.querySelector(".shipTab").click();
     });
 </script>
 
@@ -460,6 +500,17 @@
     }
 
     .countryContent {
+        display: none;
+        padding: 6px 12px;
+        -webkit-animation: fadeEffect 1s;
+        animation: fadeEffect 1s;
+    }
+
+    .shipTab button.active {
+        background-color: #ccc;
+    }
+
+    .shipContent {
         display: none;
         padding: 6px 12px;
         -webkit-animation: fadeEffect 1s;
