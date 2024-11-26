@@ -1789,14 +1789,69 @@ module.exports = {
 };
 
 //!!TODO
-//REQUIRED:
-//HAVE ALL TABLES POPULATED USING A SINGLE SETUP.SQL FILE
-//SELECT -- Search through all attributes --- SHIP
-//PROJECTION -- Choose which attributes to view on this table --- PORT (using buttons on frontend)
-//JOIN -- Find all shipments from a specific COMPANY
-//AGGREGATION with GROUP BY -- DONE!!!!
-//HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
-//FRONT END - SHIP, SHIPMENT, COMPANY, SHIPPING ROUTE
+//------------------REQUIRED------------------
+//INSERT
+//  -> specify what values to insert
+//  -> affects more than one relationship
+//  -> handle the case where the foreign key value in the tuple being inserted does not exist in the relation that is being referred to
+//      -> user notification
+//UPDATE
+//  -> relation must have at least 2 non-primary-key attributes
+//  -> At least one non-primary key attribute must have either a UNIQUE constraint or be a foreign key that references another relation.
+//  -> display the tuples that are available for the relation so the user can select which tuple they want to update (just show table? probably)
+//      -> UPDATECOUNTRYNAME -- need to update all things that reference country MANUALLY
+//-X- DELETE (implemented on PORT and cascades to related tables)
+//  -> cascade-on-delete situation
+//-X- AGGREGATION with GROUP BY (count implemented on COUNTRY)
+//  -> e.g., min, max, average, or count
+//  -> must provide an interface (e.g., button, dropdown, etc.)
 
-//NICE-TO-HAVES:
+//SELECT -- Search through all attributes --- SHIP
+//  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
+//  -> using a dynamically generated dropdown of AND/OR options or parsing user string
+//PROJECTION -- Choose which attributes to view on this table --- PORT (using buttons on frontend)
+//  -> The user can choose any number of attributes to view from this relation
+//  -> Non-selected attributes must not appear in the result
+//JOIN -- Find all shipments from a specific COMPANY
+//  -> join at least two relations
+//  -> user must provide at least one value to qualify in the WHERE clause
+//AGGREGATION WITH HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
+//  -> must include a HAVING clause.
+//  -> must provide an interface (e.g., button, dropdown, etc.)
+//NESTED AGGREGATION WITH GROUP BY
+//  -> must find some aggregated value for each group
+//  -> must provide an interface (e.g., button, dropdown, etc.)
+//  -> can use VIEW if easier
+//  -> see pdf for example
+//DIVISION
+//  -> must do division (no shit)
+//  -> must provide an interface (e.g., button, dropdown, etc.)
+//COMPLEX SQL QUERRIES
+
+//------------------OTHER REQUIREMENTS------------------
+// NOT ALL ON ONE PAGE
+// sufficient user data?
+// basic security practices
+//  -> values from the user are not directly used in the database
+//  -> prevent injection and rainbow attacks
+// basic error handling
+//  -> user errors such as trying to insert a duplicate value, invalid input (e.g., invalid characters or an int when only strings are allowed)
+// user notification
+//  -> The user will receive a success or failure notification upon the completion of an insert,
+//      update, delete action and will have a way to verify the action's effect on the database.
+//ADD MILESTONE 4 PDF
+//  -> cover page
+//  -> description of what we accomplished
+//  -> what we changed compared to final schema
+//  -> A list of all SQL queries used to satisfy the rubric items and where each query can
+//      be found in the code (file name and line number(s)).
+//  -> For SQL queries 2.1.7 through 2.1.10 inclusive, include a copy of your SQL query
+//      and a maximum of 1-2 sentences describing what that query does. You can embed
+//      this in your above list of queries.
+
+
+
+
+//------------------NICE-TO-HAVES------------------
 //MAKE IT LOOK NOT ASS
+//TAB ICON
