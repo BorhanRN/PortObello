@@ -79,28 +79,31 @@ async function testOracleConnection() {
 async function initiateAll() {
     return await withOracleDB(async (connection) => {
         try {
-            console.log("Starting initiateCountry...");
+            console.log('Starting initiateCountry...');
             await initiateCountry();
-            console.log("Starting initiatePort...");
+            console.log('Starting initiatePort...');
             await initiatePort();
-            console.log("Starting initiateWarehouse...");
+            console.log('Starting initiateWarehouse...');
             await initiateWarehouse();
-            console.log("Starting initiateHomeCountry...");
+            console.log('Starting initiateHomeCountry...');
             await initiateHomeCountry();
-            console.log("Starting initiateForeignCountry...");
+            console.log('Starting initiateForeignCountry...');
             await initiateForeignCountry();
-            console.log("Starting initiateTariff...");
+            console.log('Starting initiateTariff...');
             await initiateTariff();
-            console.log("Starting initiateShippingRoute...");
+            console.log('Starting initiateShippingRoute...');
             await initiateShippingRoute();
-            console.log("Starting initiateShip...");
+            console.log('Starting initiateShip...');
             await initiateShip();
-            console.log("Starting initiateCompany...");
+            console.log('Starting initiateCompany...');
             await initiateCompany();
-            console.log("Starting initiateShipmentContainer...");
+            console.log('Starting initiateShipmentContainer...');
             await initiateShipmentContainer();
+            console.log('All tables initiated.');
+            return true;
             } catch (err) {
             console.error('Error initiating all:', err);
+            await connection.rollback();
             throw err;
         }
     }).catch((err) => {
