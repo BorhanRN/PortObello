@@ -303,7 +303,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 <div class="tab">
     <button class="shipTab" onclick="openShip(event, 'Ship Table')">Table</button>
-    <button class="shipTab" onclick="openShip(event, 'Highest Value')">Delete</button>
+    <button class="shipTab" onclick="openShip(event, 'Highest Value')">Highest Average</button>
 </div>
 
 <h1>Ship</h1>
@@ -342,7 +342,10 @@
 </div>
 <div id="Highest Value" class="shipContent">
     <p>If you would like to calculate the ship with the highest average shipment container value, please click this magic button!</p>
+    <form id="groupBy">
     <button type="submit" value="getMax">It's not magic, it's just good SQL!</button>
+    </form>
+    <!-- A placeholder to display messages related to the group by operation. -->
     <div id="getMaxMessage"></div>
     <br><hr><br> <!-- ========================================================================= -->
 </div>

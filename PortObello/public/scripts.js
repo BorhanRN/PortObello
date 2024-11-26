@@ -876,10 +876,15 @@ window.onload = async function() {
         await updateNameCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after update
     });
-    document.getElementById("deletePort").addEventListener("submit", async (e) => {
+    document.getElementById("deletePortFront").addEventListener("submit", async (e) => {
         await deletePort(e);
         await fetchAndDisplayPort();
     });
+
+    document.getElementById("groupBy").addEventListener("submit", async (e) => {
+        await maxAverage(e);
+    });
+
     document.getElementById("countCountry").addEventListener("click", countCountry);
 }
 
