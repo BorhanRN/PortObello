@@ -780,6 +780,8 @@ window.onload = function() {
 
     // Initial resets + fetches
     // resetAll();
+    fetchTableData();
+
     resetCountry();
     resetPort();
     resetWarehouse();
@@ -795,16 +797,16 @@ window.onload = function() {
     document.getElementById("resetAll").addEventListener("click", async () => {
         //await resetAll();
         //await fetchTableData();
-        resetCountry();
-        resetPort();
-        resetWarehouse();
-        resetHomeCountry();
-        resetForeignCountry();
-        resetTariff();
-        resetShippingRoute();
-        resetShip();
-        resetCompany();
-        resetShipmentContainer();
+        await resetCountry();
+        await resetPort();
+        await resetWarehouse();
+        await resetHomeCountry();
+        await resetForeignCountry();
+        await resetTariff();
+        await resetShippingRoute();
+        await resetShip();
+        await resetCompany();
+        await resetShipmentContainer();
     });
     document.getElementById("resetCountry").addEventListener("click", async () => {
         await resetCountry();
