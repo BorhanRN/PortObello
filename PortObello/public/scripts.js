@@ -52,7 +52,7 @@ async function initializeDatabase() {
     }
 }
 
-// This function resets or initializes COUNTRY.
+// This function resets or initializes ALL.
 async function resetAll() {
     const response = await fetch("/initiate-all", {
         method: 'POST'
@@ -779,69 +779,32 @@ window.onload = function() {
     // initializeDatabase();
 
     // Initial resets + fetches
-    resetAll();
-    // resetCountry();
-    // fetchAndDisplayCountry();
-    //
-    // resetPort();
-    // fetchAndDisplayPort();
-    //
-    // resetWarehouse();
-    // fetchAndDisplayWarehouse();
-    //
-    // resetHomeCountry();
-    // fetchAndDisplayHomeCountry();
-    //
-    // resetForeignCountry();
-    // fetchAndDisplayForeignCountry();
-    //
-    // resetTariff();
-    // fetchAndDisplayTariff();
-    //
-    // resetShippingRoute();
-    // fetchAndDisplayShippingRoute();
-    //
-    // resetShip();
-    // fetchAndDisplayShip();
-    //
-    // resetCompany();
-    // fetchAndDisplayCompany();
-    //
-    // resetShipmentContainer();
-    // fetchAndDisplayShipmentContainer();
+    // resetAll();
+    resetCountry();
+    resetPort();
+    resetWarehouse();
+    resetHomeCountry();
+    resetForeignCountry();
+    resetTariff();
+    resetShippingRoute();
+    resetShip();
+    resetCompany();
+    resetShipmentContainer();
 
     // Add event listeners
     document.getElementById("resetAll").addEventListener("click", async () => {
-        await resetAll();
-        // resetCountry();
-        // fetchAndDisplayCountry();
-        //
-        // resetPort();
-        // fetchAndDisplayPort();
-        //
-        // resetWarehouse();
-        // fetchAndDisplayWarehouse();
-        //
-        // resetHomeCountry();
-        // fetchAndDisplayHomeCountry();
-        //
-        // resetForeignCountry();
-        // fetchAndDisplayForeignCountry();
-        //
-        // resetTariff();
-        // fetchAndDisplayTariff();
-        //
-        // resetShippingRoute();
-        // fetchAndDisplayShippingRoute();
-        //
-        // resetShip();
-        // fetchAndDisplayShip();
-        //
-        // resetCompany();
-        // fetchAndDisplayCompany();
-        //
-        // resetShipmentContainer();
-        // fetchAndDisplayShipmentContainer();
+        //await resetAll();
+        //await fetchTableData();
+        resetCountry();
+        resetPort();
+        resetWarehouse();
+        resetHomeCountry();
+        resetForeignCountry();
+        resetTariff();
+        resetShippingRoute();
+        resetShip();
+        resetCompany();
+        resetShipmentContainer();
     });
     document.getElementById("resetCountry").addEventListener("click", async () => {
         await resetCountry();
