@@ -28,12 +28,12 @@
 <!-- TAB HTML CODE FOUND USING (WE LOVE CITING SOURCES!) https://www.w3schools.com/howto/howto_js_tabs.asp -->
 <!-- Show 'Country'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
+<h1>Country</h1>
 <div class="tab">
     <button class="countryTab" onclick="openCountry(event, 'Country Table')">Table</button>
     <button class="countryTab" onclick="openCountry(event, 'Insert Country')">Insert</button>
     <button class="countryTab" onclick="openCountry(event, 'Country Functions')">Function</button>
 </div>
-
 <div id="Country Table" class="countryContent">
 <h2>Show Country</h2>
 <table id="country" border="1">
@@ -101,6 +101,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 </div>
 
+<h1>Port</h1>
 <div class="tab">
     <button class="portTab" onclick="openPort(event, 'Port Table')">Table</button>
     <button class="portTab" onclick="openPort(event, 'Delete Port')">Delete</button>
@@ -150,6 +151,7 @@
 <br><hr><br> <!-- ========================================================================= -->
 </div>
 
+<h1>Warehouse</h1>
 <!-- Show 'Warehouse'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show Warehouse</h2>
@@ -178,6 +180,7 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
+<h1>HomeCountry</h1>
 <!-- Show 'Warehouse'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show HomeCountry</h2>
@@ -207,6 +210,7 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
+<h1>ForeignCountry</h1>
 <!-- Show 'Warehouse'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show ForeignCountry</h2>
@@ -236,7 +240,8 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
-<!-- Show 'Warehouse'.
+<h1>Tariff</h1>
+<!-- Show 'Tariff'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show Tariff</h2>
 <table id="tariff" border="1">
@@ -267,6 +272,7 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
+<h1>ShippingRoute</h1>
 <!-- Show 'ShippingRoute'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show ShippingRoute</h2>
@@ -296,10 +302,11 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 <div class="tab">
-    <button class="shipTab" onclick="openPort(event, 'Ship Table')">Table</button>
-    <button class="shipTab" onclick="openPort(event, 'Highest Value')">Delete</button>
+    <button class="shipTab" onclick="openShip(event, 'Ship Table')">Table</button>
+    <button class="shipTab" onclick="openShip(event, 'Highest Value')">Delete</button>
 </div>
 
+<h1>Ship</h1>
 <div id="Ship Table" class="shipContent">
 <!-- Show 'Ship'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
@@ -340,6 +347,7 @@
     <br><hr><br> <!-- ========================================================================= -->
 </div>
 
+<h1>Company</h1>
 <!-- Show 'Company'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show Company</h2>
@@ -371,6 +379,7 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
+<h1>ShipmentContainer</h1>
 <!-- Show 'ShipmentContainer'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
 <h2>Show ShipmentContainer</h2>
@@ -467,6 +476,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelector(".countryTab").click();
         document.querySelector(".portTab").click();
+        document.querySelector(".shipTab").click();
     });
 </script>
 
