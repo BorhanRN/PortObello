@@ -111,25 +111,25 @@ async function initiateAll() {
         try {
 
                 await initiateCountry();
-                await fetchAndDisplayCountry();
+                await fetchCountryFromDb();
                 await initiatePort();
-                await fetchAndDisplayPort();
+                await fetchPortFromDb();
                 await initiateWarehouse();
-                await fetchAndDisplayWarehouse();
+                await fetchWarehouseFromDb();
                 await initiateHomeCountry();
-                await fetchAndDisplayHomeCountry();
+                await fetchHomeCountryFromDb();
                 await initiateForeignCountry();
-                await fetchAndDisplayForeignCountry();
+                await fetchForeignCountryFromDb();
                 await initiateTariff();
-                await fetchAndDisplayTariff();
+                await fetchTariffFromDb();
                 await initiateShippingRoute();
                 await fetchShippingRouteFromDb();
                 await initiateShip();
                 await fetchShipFromDb();
                 await initiateCompany();
-                await fetchAndDisplayCompany();
+                await fetchCompanyFromDb();
                 await initiateShipmentContainer();
-                await fetchAndDisplayShipmentContainer();
+                await fetchShipmentContainerFromDb();
             } catch (err) {
             console.error('Error initiating all:', err);
             throw err;
