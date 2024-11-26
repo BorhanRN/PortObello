@@ -109,28 +109,28 @@ async function initializeDatabase() {
 async function initiateAll() {
     return await withOracleDB(async (connection) => {
         try {
-            await connection.execute(
-                initiateCountry(),
-                fetchAndDisplayCountry(),
-                initiatePort(),
-                fetchAndDisplayPort(),
-                initiateWarehouse(),
-                fetchAndDisplayWarehouse(),
-                initiateHomeCountry(),
-                fetchAndDisplayHomeCountry(),
-                initiateForeignCountry(),
-                fetchAndDisplayForeignCountry(),
-                initiateTariff(),
-                fetchAndDisplayTariff(),
-                initiateShippingRoute(),
-                fetchShippingRouteFromDb(),
-                initiateShip(),
-                fetchShipFromDb(),
-                initiateCompany(),
-                fetchAndDisplayCompany(),
-                initiateShipmentContainer(),
-                fetchAndDisplayShipmentContainer()
-            )} catch (err) {
+
+                await initiateCountry();
+                await fetchAndDisplayCountry();
+                await initiatePort();
+                await fetchAndDisplayPort();
+                await initiateWarehouse();
+                await fetchAndDisplayWarehouse();
+                await initiateHomeCountry();
+                await fetchAndDisplayHomeCountry();
+                await initiateForeignCountry();
+                await fetchAndDisplayForeignCountry();
+                await initiateTariff();
+                await fetchAndDisplayTariff();
+                await initiateShippingRoute();
+                await fetchShippingRouteFromDb();
+                await initiateShip();
+                await fetchShipFromDb();
+                await initiateCompany();
+                await fetchAndDisplayCompany();
+                await initiateShipmentContainer();
+                await fetchAndDisplayShipmentContainer();
+            } catch (err) {
             console.error('Error initiating all:', err);
             throw err;
         }
