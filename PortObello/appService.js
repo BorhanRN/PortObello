@@ -106,6 +106,39 @@ async function initializeDatabase() {
     });
 }
 
+async function initiateAll() {
+    return await withOracleDB(async (connection) => {
+        try {
+            await connection.execute(
+                initiateCountry(),
+                fetchAndDisplayCountry(),
+                initiatePort(),
+                fetchAndDisplayPort(),
+                initiateWarehouse(),
+                fetchAndDisplayWarehouse(),
+                initiateHomeCountry(),
+                fetchAndDisplayHomeCountry(),
+                initiateForeignCountry(),
+                fetchAndDisplayForeignCountry(),
+                initiateTariff(),
+                fetchAndDisplayTariff(),
+                initiateShippingRoute(),
+                fetchShippingRouteFromDb(),
+                initiateShip(),
+                fetchShipFromDb(),
+                initiateCompany(),
+                fetchAndDisplayCompany(),
+                initiateShipmentContainer(),
+                fetchAndDisplayShipmentContainer()
+            )} catch (err) {
+            console.error('Error initiating all:', err);
+            throw err;
+        }
+    }).catch((err) => {
+        console.error('Failed to initiate all:', err);
+        return false;
+    });
+}
 
 async function fetchCountryFromDb() {
     return await withOracleDB(async (connection) => {
@@ -1735,6 +1768,7 @@ async function updateShipValues() {
 module.exports = {
     testOracleConnection,
     initializeDatabase,
+    initiateAll,
 
     fetchCountryFromDb,
     initiateCountry,

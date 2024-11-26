@@ -29,6 +29,15 @@ router.get('/initialize-db', async (req, res) => {
     }
 });
 
+router.post("/initiate-all", async (req, res) => {
+    const initiateResult = await appService.initiateAll();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 router.get('/country', async (req, res) => {
     const tableContent = await appService.fetchCountryFromDb();
     res.json({data: tableContent});

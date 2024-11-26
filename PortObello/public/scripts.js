@@ -52,6 +52,22 @@ async function initializeDatabase() {
     }
 }
 
+// This function resets or initializes COUNTRY.
+async function resetAll() {
+    const response = await fetch("/initiate-all", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetAllResultMsg');
+        messageElement.textContent = "all initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
 // Fetches data from COUNTRY and displays it. CL1
 async function fetchAndDisplayCountry() {
     try {
@@ -760,20 +776,73 @@ async function resetShipmentContainer() {
 window.onload = function() {
     console.log('Page loaded, initializing...');
     checkDbConnection();
-    initializeDatabase();
+    // initializeDatabase();
 
-    fetchAndDisplayCountry();  // Initial fetches
-    fetchAndDisplayPort();
-    fetchAndDisplayWarehouse();
-    fetchAndDisplayHomeCountry();
-    fetchAndDisplayForeignCountry();
-    fetchAndDisplayTariff();
-    fetchAndDisplayShippingRoute();
-    fetchAndDisplayShip();
-    fetchAndDisplayCompany();
-    fetchAndDisplayShipmentContainer();
+    // Initial resets + fetches
+    resetAll();
+    // resetCountry();
+    // fetchAndDisplayCountry();
+    //
+    // resetPort();
+    // fetchAndDisplayPort();
+    //
+    // resetWarehouse();
+    // fetchAndDisplayWarehouse();
+    //
+    // resetHomeCountry();
+    // fetchAndDisplayHomeCountry();
+    //
+    // resetForeignCountry();
+    // fetchAndDisplayForeignCountry();
+    //
+    // resetTariff();
+    // fetchAndDisplayTariff();
+    //
+    // resetShippingRoute();
+    // fetchAndDisplayShippingRoute();
+    //
+    // resetShip();
+    // fetchAndDisplayShip();
+    //
+    // resetCompany();
+    // fetchAndDisplayCompany();
+    //
+    // resetShipmentContainer();
+    // fetchAndDisplayShipmentContainer();
 
     // Add event listeners
+    document.getElementById("resetAll").addEventListener("click", async () => {
+        await resetAll();
+        // resetCountry();
+        // fetchAndDisplayCountry();
+        //
+        // resetPort();
+        // fetchAndDisplayPort();
+        //
+        // resetWarehouse();
+        // fetchAndDisplayWarehouse();
+        //
+        // resetHomeCountry();
+        // fetchAndDisplayHomeCountry();
+        //
+        // resetForeignCountry();
+        // fetchAndDisplayForeignCountry();
+        //
+        // resetTariff();
+        // fetchAndDisplayTariff();
+        //
+        // resetShippingRoute();
+        // fetchAndDisplayShippingRoute();
+        //
+        // resetShip();
+        // fetchAndDisplayShip();
+        //
+        // resetCompany();
+        // fetchAndDisplayCompany();
+        //
+        // resetShipmentContainer();
+        // fetchAndDisplayShipmentContainer();
+    });
     document.getElementById("resetCountry").addEventListener("click", async () => {
         await resetCountry();
         await fetchAndDisplayCountry();  // Refresh table after reset
