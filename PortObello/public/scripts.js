@@ -870,6 +870,7 @@ window.onload = function() {
 // You can invoke this after any table-modifying operation to keep consistency.
 function fetchTableData() {
     fetchAndDisplayCountry();
+    fetchAndDisplayPort();
     fetchAndDisplayWarehouse();
     fetchAndDisplayHomeCountry();
     fetchAndDisplayForeignCountry();
