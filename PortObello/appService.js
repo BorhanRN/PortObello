@@ -76,36 +76,6 @@ async function testOracleConnection() {
     });
 }
 
-const fs = require('fs');
-const path = require('path');
-
-// Function to execute the setup.sql file
-async function initializeDatabase() {
-    return await withOracleDB(async (connection) => {
-        try {
-            const setupFilePath = path.resolve(__dirname, 'sql/setup.sql');
-            const setupScript = fs.readFileSync(setupFilePath, 'utf8');
-
-            const sqlStatements = setupScript
-                .split(';') // Split the script into individual SQL statements
-                .map((stmt) => stmt.trim()) // Trim whitespace
-                .filter((stmt) => stmt.length > 0); // Remove empty statements
-
-            for (const statement of sqlStatements) {
-                console.log('Executing:', statement);
-                await connection.execute(statement);
-            }
-
-            await connection.commit();
-            console.log('Database initialized successfully.');
-            return true;
-        } catch (err) {
-            console.error('Error initializing database:', err);
-            throw err;
-        }
-    });
-}
-
 async function initiateAll() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1766,7 +1736,6 @@ async function updateShipValues() {
 }
 module.exports = {
     testOracleConnection,
-    initializeDatabase,
     initiateAll,
 
     fetchCountryFromDb,

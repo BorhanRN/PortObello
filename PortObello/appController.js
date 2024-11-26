@@ -15,20 +15,6 @@ router.get('/check-db-connection', async (req, res) => {
     }
 });
 
-router.get('/initialize-db', async (req, res) => {
-    try {
-        const success = await appService.initializeDatabase();
-        if (success) {
-            res.json({ success: true, message: 'Database initialized successfully.' });
-        } else {
-            res.status(500).json({ success: false, message: 'Database initialization failed.' });
-        }
-    } catch (err) {
-        console.error('Initialization error:', err);
-        res.status(500).json({ success: false, message: 'An error occurred during initialization.' });
-    }
-});
-
 router.post("/initiate-all", async (req, res) => {
     const initiateResult = await appService.initiateAll();
     if (initiateResult) {

@@ -36,31 +36,15 @@ async function checkDbConnection() {
         });
 }
 
-// Function to initialize the database
-async function initializeDatabase() {
-    try {
-        const response = await fetch('/initialize-db', { method: 'GET' });
-        const data = await response.json();
-
-        if (data.success) {
-            console.log('Database initialized successfully:', data.message);
-        } else {
-            console.error('Database initialization failed:', data.message);
-        }
-    } catch (error) {
-        console.error('Error initializing database:', error);
-    }
-}
-
-// This function resets or initializes ALL.
-async function resetAll() {
+// This function resets or initiates ALL.
+async function initiateAll() {
     const response = await fetch("/initiate-all", {
         method: 'POST'
     });
     const responseData = await response.json();
 
     if (responseData.success) {
-        const messageElement = document.getElementById('resetAllResultMsg');
+        const messageElement = document.getElementById('initiateAllResultMsg');
         messageElement.textContent = "all initiated successfully!";
         fetchTableData();
     } else {
@@ -776,37 +760,37 @@ async function resetShipmentContainer() {
 window.onload = function() {
     console.log('Page loaded, initializing...');
     checkDbConnection();
-    // initializeDatabase();
 
-    // Initial resets + fetches
-    // resetAll();
+    // Initial fetch + resets
     fetchTableData();
+    initiateAll();
 
-    resetCountry();
-    resetPort();
-    resetWarehouse();
-    resetHomeCountry();
-    resetForeignCountry();
-    resetTariff();
-    resetShippingRoute();
-    resetShip();
-    resetCompany();
-    resetShipmentContainer();
+    // resetCountry();
+    // resetPort();
+    // resetWarehouse();
+    // resetHomeCountry();
+    // resetForeignCountry();
+    // resetTariff();
+    // resetShippingRoute();
+    // resetShip();
+    // resetCompany();
+    // resetShipmentContainer();
 
     // Add event listeners
-    document.getElementById("resetAll").addEventListener("click", async () => {
-        //await resetAll();
-        //await fetchTableData();
-        await resetCountry();
-        await resetPort();
-        await resetWarehouse();
-        await resetHomeCountry();
-        await resetForeignCountry();
-        await resetTariff();
-        await resetShippingRoute();
-        await resetShip();
-        await resetCompany();
-        await resetShipmentContainer();
+    document.getElementById("initiateAll").addEventListener("click", async () => {
+        await fetchTableData();
+        await initiateAll();
+        // await resetCountry();
+        // await resetPort();
+        // await resetWarehouse();
+        // await resetHomeCountry();
+        // await resetForeignCountry();
+        // await resetTariff();
+        // await resetShippingRoute();
+        // await resetShip();
+        // await resetCompany();
+        // await resetShipmentContainer();
+        await fetchTableData();
     });
     document.getElementById("resetCountry").addEventListener("click", async () => {
         await resetCountry();
