@@ -109,27 +109,26 @@ async function initializeDatabase() {
 async function initiateAll() {
     return await withOracleDB(async (connection) => {
         try {
-
-                await initiateCountry();
-                await fetchCountryFromDb();
-                await initiatePort();
-                await fetchPortFromDb();
-                await initiateWarehouse();
-                await fetchWarehouseFromDb();
-                await initiateHomeCountry();
-                await fetchHomeCountryFromDb();
-                await initiateForeignCountry();
-                await fetchForeignCountryFromDb();
-                await initiateTariff();
-                await fetchTariffFromDb();
-                await initiateShippingRoute();
-                await fetchShippingRouteFromDb();
-                await initiateShip();
-                await fetchShipFromDb();
-                await initiateCompany();
-                await fetchCompanyFromDb();
-                await initiateShipmentContainer();
-                await fetchShipmentContainerFromDb();
+            await fetchCountryFromDb();
+            await initiateCountry();
+            await fetchPortFromDb();
+            await initiatePort();
+            await fetchWarehouseFromDb();
+            await initiateWarehouse();
+            await fetchHomeCountryFromDb();
+            await initiateHomeCountry();
+            await fetchForeignCountryFromDb();
+            await initiateForeignCountry();
+            await fetchTariffFromDb();
+            await initiateTariff();
+            await fetchShippingRouteFromDb();
+            await initiateShippingRoute();
+            await fetchShipFromDb();
+            await initiateShip();
+            await fetchCompanyFromDb();
+            await initiateCompany();
+            await fetchShipmentContainerFromDb();
+            await initiateShipmentContainer();
             } catch (err) {
             console.error('Error initiating all:', err);
             throw err;
