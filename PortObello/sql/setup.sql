@@ -55,7 +55,7 @@ CREATE TABLE HomeCountry
     Population NUMBER,
     GDP        FLOAT,
     Government VARCHAR2(100),
-    DockingFee FLOAT,
+    PortAddress VARCHAR2(100),
     PRIMARY KEY (Name),
     FOREIGN KEY (Name) REFERENCES Country (Name) ON DELETE CASCADE
 );
@@ -67,6 +67,7 @@ CREATE TABLE ForeignCountry
     GDP        FLOAT,
     Government VARCHAR2(100),
     DockingFee FLOAT,
+    PortAddress VARCHAR2(100),
     PRIMARY KEY (Name),
     FOREIGN KEY (Name) REFERENCES Country (Name) ON DELETE CASCADE
 );
@@ -193,13 +194,13 @@ VALUES ('Japan', 125100000, 'Liberal Democratic Party - Shigeru Ishiba', '4 - ch
 INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
 VALUES ('Netherlands', 177000000, 'Independent - Dick Schoof', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 1.12);
 INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
-VALUES ('Russia', 146000000, 'United Russia - Vladimir Putin', 'xxx', 1680.0);
+VALUES ('Russia', 146000000, 'United Russia - Vladimir Putin', '2, Mira St, Novorossiysk, Krasnodar Region 353900, Russia', 1680.0);
 INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
-VALUES ('India', 1390000000, 'Bharatiya Janata Party - Narendra Modi', 'yyy', 2875.0);
+VALUES ('India', 1390000000, 'Bharatiya Janata Party - Narendra Modi', 'Port House Shoorji Vallabhdas Marg Mumbai, Maharastra 400 001, India', 2875.0);
 INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
-VALUES ('Brazil', 213000000, 'Workers Party - Luiz Inácio Lula da Silva', 'zzz', 1505.0);
+VALUES ('Brazil', 213000000, 'Workers Party - Luiz Inácio Lula da Silva', 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil', 1505.0);
 INSERT INTO Country (Name, Population, Government, PortAddress, GDP)
-VALUES ('UK', 67000000, 'Conservative Party - Rishi Sunak', 'xyz', 3031.0);
+VALUES ('UK', 67000000, 'Conservative Party - Rishi Sunak', 'Immingham DN40 2LZ, United Kingdom', 3031.0);
 
 
 INSERT INTO Port (PortAddress, NumWorkers, DockedShips, CountryName)
@@ -214,43 +215,43 @@ INSERT INTO Port (PortAddress, NumWorkers, DockedShips, CountryName)
 VALUES ('4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan', 30000, 44,'Japan');
 
 
-INSERT INTO HomeCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', 500.0);
-INSERT INTO HomeCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0);
-INSERT INTO HomeCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0);
-INSERT INTO HomeCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0);
-INSERT INTO HomeCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0);
-INSERT INTO HomeCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0);
-INSERT INTO HomeCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0);
-INSERT INTO HomeCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0);
-INSERT INTO HomeCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0);
+INSERT INTO HomeCountry (Name, Population, GDP, Government, PortAddress)
+VALUES ('Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', '999 Canada Pl, Vancouver, BC V6C 3T4');
+INSERT INTO HomeCountry (Name, Population, GDP, Government, PortAddress)
+VALUES ('USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 'Signal St, San Pedro, CA 90731, United States');
+INSERT INTO HomeCountry (Name, Population, GDP, Government, PortAddress)
+VALUES ('China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 'Shengsi County, Zhoushan, China, 202461');
+INSERT INTO HomeCountry (Name, Population, GDP, Government, PortAddress)
+VALUES ('Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan');
+INSERT INTO HomeCountry (Name, Population, GDP, Government, PortAddress)
+VALUES ('Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands');
+INSERT INTO HomeCountry (Name, Population, GDP, Government, PortAddress)
+VALUES ('Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', '2, Mira St, Novorossiysk, Krasnodar Region 353900, Russia');
+INSERT INTO HomeCountry (Name, Population, GDP, Government, PortAddress)
+VALUES ('India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 'Port House Shoorji Vallabhdas Marg Mumbai, Maharastra 400 001, India');
+INSERT INTO HomeCountry (Name, Population, GDP, Government, PortAddress)
+VALUES ('Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil');
+INSERT INTO HomeCountry (Name, Population, GDP, Government, PortAddress)
+VALUES ('UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 'Immingham DN40 2LZ, United Kingdom');
 
+INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
+VALUES ('Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', 500.0, '999 Canada Pl, Vancouver, BC V6C 3T4');
 INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', 500.0);
+VALUES ('Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0, '2, Mira St, Novorossiysk, Krasnodar Region 353900, Russia');
 INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0);
+VALUES ('India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0, 'Port House Shoorji Vallabhdas Marg Mumbai, Maharastra 400 001, India');
 INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0);
+VALUES ('Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0, 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil');
 INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0);
+VALUES ('UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0, 'Immingham DN40 2LZ, United Kingdom');
 INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0);
+VALUES ('USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0, 'Signal St, San Pedro, CA 90731, United States');
 INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0);
+VALUES ('China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0, 'Shengsi County, Zhoushan, China, 202461');
 INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0);
+VALUES ('Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0, '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan');
 INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0);
-INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
-VALUES ('Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0);
+VALUES ('Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0, 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands');
 
 
 INSERT INTO Warehouse (WarehouseSection, NumContainers, Capacity, PortAddress)

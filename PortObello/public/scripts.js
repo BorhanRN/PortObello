@@ -420,6 +420,40 @@ async function resetHomeCountry() {
     }
 }
 
+// Inserts new records into HOMECOUNTRY.
+async function insertHomeCountry(event) {
+    event.preventDefault();
+
+    const name = document.getElementById('insertHomeCountryName').value;
+    const population = document.getElementById('insertHomeCountryPopulation').value;
+    const government = document.getElementById('insertHomeCountryGovernment').value;
+    const gdp = document.getElementById('insertHomeCountryGDP').value;
+    const portaddress = document.getElementById('insertHomeCountryPortAddress').value;
+
+    const response = await fetch('/insert-homecountry', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: name,
+            population: population,
+            government: government,
+            gdp: gdp,
+            portaddress: portaddress
+        })
+    });
+
+    const responseData = await response.json();
+    const messageElement = document.getElementById('insertHomeResultMsg');
+
+    if (responseData.success && response.ok) {
+        messageElement.textContent = "Data inserted successfully!";
+        fetchTableData();
+    } else {
+        messageElement.textContent = "Error inserting data!";
+    }
+}
 
 // Fetches data from FOREIGNCOUNTRY and displays it. CL1
 async function fetchAndDisplayForeignCountry() {
@@ -871,6 +905,11 @@ window.onload = async function() {
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
         await insertCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after insert
+    });
+    document.getElementById("insertHomeCountry").addEventListener("submit", async (e) => {
+        await insertHomeCountry(e);
+        await fetchAndDisplayCountry();  // Refresh table after insert
+        await fetchAndDisplayHomeCountry();
     });
     document.getElementById("updateNameCountry").addEventListener("submit", async (e) => {
         await updateNameCountry(e);

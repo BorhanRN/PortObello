@@ -193,10 +193,10 @@ async function initiateCountry() {
                 ['China', 1412000000, 'Chinese Communist Party - Xi Jinping',17.79, 'Shengsi County, Zhoushan, China, 202461'],
                 ['Japan', 125100000, 'Liberal Democratic Party - Shigeru Ishiba', 4.21, '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan'],
                 ['Netherlands', 177000000, 'Independent - Dick Schoof',1.12, 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands'],
-                ['Russia', 146000000, 'United Russia - Vladimir Putin',  1680.0, 'xxx'],
-                ['India', 1390000000, 'Bharatiya Janata Party - Narendra Modi',  1680.0, 'yyy'],
-                ['Brazil', 213000000, 'Workers Party - Luiz Inácio Lula da Silva', 1505.0, 'zzz'],
-                ['UK', 67000000, 'Conservative Party - Rishi Sunak', 3031.0, 'xyz']
+                ['Russia', 146000000, 'United Russia - Vladimir Putin',  1680.0, '2, Mira St, Novorossiysk, Krasnodar Region 353900, Russia'],
+                ['India', 1390000000, 'Bharatiya Janata Party - Narendra Modi',  1680.0, 'Port House Shoorji Vallabhdas Marg Mumbai, Maharastra 400 001, India'],
+                ['Brazil', 213000000, 'Workers Party - Luiz Inácio Lula da Silva', 1505.0, 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil'],
+                ['UK', 67000000, 'Conservative Party - Rishi Sunak', 3031.0, 'Immingham DN40 2LZ, United Kingdom']
 
         ];
 
@@ -548,7 +548,7 @@ async function initiateHomeCountry() {
                     Population NUMBER,
                     GDP        FLOAT,
                     Government VARCHAR2(100),
-                    DockingFee FLOAT,
+                    PortAddress VARCHAR2(100),
                     PRIMARY KEY (Name),
                     FOREIGN KEY (Name) REFERENCES Country (Name) ON DELETE CASCADE
                 )`);
@@ -557,20 +557,20 @@ async function initiateHomeCountry() {
 
             // Insert initial data
             const insertStatements = [
-                ['Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', 500.0],
-                ['USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0],
-                ['China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0],
-                ['Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0],
-                ['Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0],
-                ['Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0],
-                ['India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0],
-                ['Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0],
-                ['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0]
+                ['Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', '999 Canada Pl, Vancouver, BC V6C 3T4'],
+                ['USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 'Signal St, San Pedro, CA 90731, United States'],
+                ['China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 'Shengsi County, Zhoushan, China, 202461'],
+                ['Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan'],
+                ['Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands'],
+                ['Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', '2, Mira St, Novorossiysk, Krasnodar Region 353900, Russia'],
+                ['India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 'Port House Shoorji Vallabhdas Marg Mumbai, Maharastra 400 001, India'],
+                ['Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil'],
+                ['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 'Immingham DN40 2LZ, United Kingdom']
             ];
 
             // Use bind variables for safer insertion
             const insertSQL = `
-                INSERT INTO HOMECOUNTRY (Name, Population, GDP, Government, DockingFee) 
+                INSERT INTO HOMECOUNTRY (Name, Population, GDP, Government, PortAddress) 
                 VALUES (:1, :2, :3, :4, :5)`;
 
             for (const data of insertStatements) {
@@ -588,6 +588,48 @@ async function initiateHomeCountry() {
         }
     }).catch((err) => {
         console.error('Failed to initiate homecountry:', err);
+        return false;
+    });
+}
+
+async function insertHomeCountry(name, population, government, gdp, portaddress) {
+    return await withOracleDB(async (connection) => {
+        try {
+            // Check if the entity exists in the COUNTRY table
+            const checkResult = await connection.execute(
+                `SELECT COUNT(*) AS COUNT FROM COUNTRY WHERE Name = :name`,
+                [name]
+            );
+
+            const exists = checkResult.rows[0].COUNT > 0;
+
+            if (!exists) {
+                throw new Error(`Entity '${name}' does not exist in the COUNTRY table.`);
+            }
+
+            // Insert into HOMECOUNTRY table
+            await connection.execute(
+                `INSERT INTO HOMECOUNTRY (Name, Population, Government, GDP, PortAddress) 
+                 VALUES (:name, :population, :government, :gdp, :portaddress)`,
+                [name, population, government, gdp, portaddress]
+            );
+
+            // Insert into FOREIGNCOUNTRY table
+            await connection.execute(
+                `INSERT INTO FOREIGNCOUNTRY (Name, Population, Government, GDP, DockingFee, PortAddress) 
+                 VALUES (:name, :population, :government, :gdp, 500.0, :portaddress)`,
+                [name, population, government, gdp, portaddress]
+            );
+
+            // Commit transaction
+            await connection.commit();
+
+            return true;
+        } catch (err) {
+            console.error("Error inserting home country:", err);
+            throw err; // Re-throw error to handle it in the route
+        }
+    }).catch(() => {
         return false;
     });
 }
@@ -662,6 +704,7 @@ async function initiateForeignCountry() {
                     GDP        FLOAT,
                     Government VARCHAR2(100),
                     DockingFee FLOAT,
+                    PortAddress VARCHAR2(100),
                     PRIMARY KEY (Name),
                     FOREIGN KEY (Name) REFERENCES Country (Name) ON DELETE CASCADE
                 )`);
@@ -670,21 +713,21 @@ async function initiateForeignCountry() {
 
             // Insert initial data
             const insertStatements = [
-                ['Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', 500.0],
-                ['Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0],
-                ['India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0],
-                ['Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0],
-                ['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0],
-                ['USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0],
-                ['China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0],
-                ['Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0],
-                ['Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0]
+                ['Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', 500.0, '999 Canada Pl, Vancouver, BC V6C 3T4'],
+                ['Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0, '2, Mira St, Novorossiysk, Krasnodar Region 353900, Russia'],
+                ['India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0, 'Port House Shoorji Vallabhdas Marg Mumbai, Maharastra 400 001, India'],
+                ['Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0, 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil'],
+                ['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0, 'Immingham DN40 2LZ, United Kingdom'],
+                ['USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0, 'Signal St, San Pedro, CA 90731, United States'],
+                ['China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0, 'Shengsi County, Zhoushan, China, 202461'],
+                ['Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0, '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan'],
+                ['Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0, 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands']
             ];
 
             // Use bind variables for safer insertion
             const insertSQL = `
-                INSERT INTO FOREIGNCOUNTRY (Name, Population, GDP, Government, DockingFee) 
-                VALUES (:1, :2, :3, :4, :5)`;
+                INSERT INTO FOREIGNCOUNTRY (Name, Population, GDP, Government, DockingFee, PortAddress) 
+                VALUES (:1, :2, :3, :4, :5, :6)`;
 
             for (const data of insertStatements) {
                 await connection.execute(insertSQL, data);
@@ -1752,6 +1795,7 @@ module.exports = {
 
     fetchHomeCountryFromDb,
     initiateHomeCountry,
+    insertHomeCountry,
 
     fetchForeignCountryFromDb,
     initiateForeignCountry,
@@ -1790,11 +1834,11 @@ module.exports = {
 
 //!!TODO
 //------------------REQUIRED------------------
-//INSERT
+//INSERT (implement on HOMECOUNTRY)
 //  -> specify what values to insert
 //  -> affects more than one relationship
 //  -> handle the case where the foreign key value in the tuple being inserted does not exist in the relation that is being referred to
-//      -> user notification
+//      -> user notification - rejection
 //UPDATE
 //  -> relation must have at least 2 non-primary-key attributes
 //  -> At least one non-primary key attribute must have either a UNIQUE constraint or be a foreign key that references another relation.
@@ -1827,6 +1871,7 @@ module.exports = {
 //  -> must do division (no shit)
 //  -> must provide an interface (e.g., button, dropdown, etc.)
 //COMPLEX SQL QUERRIES
+// !!!!!!!!!!
 
 //------------------OTHER REQUIREMENTS------------------
 // NOT ALL ON ONE PAGE
@@ -1843,6 +1888,8 @@ module.exports = {
 //  -> cover page
 //  -> description of what we accomplished
 //  -> what we changed compared to final schema
+//      -> destination country instead of destination port in shipping route
+//      -> ISA relationship is not disjoint, it is inclusive
 //  -> A list of all SQL queries used to satisfy the rubric items and where each query can
 //      be found in the code (file name and line number(s)).
 //  -> For SQL queries 2.1.7 through 2.1.10 inclusive, include a copy of your SQL query
