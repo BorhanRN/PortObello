@@ -876,7 +876,7 @@ window.onload = async function() {
         await updateNameCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after update
     });
-    document.getElementById("deletePortFront").addEventListener("submit", async (e) => {
+    document.getElementById("deletePort").addEventListener("submit", async (e) => {
         await deletePortCall(e);
         await fetchAndDisplayPort();
     });
