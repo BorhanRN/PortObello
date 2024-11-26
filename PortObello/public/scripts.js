@@ -175,9 +175,9 @@ async function updateNameCountry(event) {
 }
 
 //Deletes a port
-async function deletePort(event) {
+async function deletePortCall(event) {
     event.preventDefault();
-    const portToDelete = document.getElementById('portDeleteInput').value; // PROBLEMATIC, causing null error on f12 console
+    const portToDelete = document.getElementById('portAddress').value; // PROBLEMATIC, causing null error on f12 console
 
     const response = await fetch( '/delete-port', {
         method: 'POST',
@@ -876,8 +876,8 @@ window.onload = async function() {
         await updateNameCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after update
     });
-    document.getElementById("deletePortFront").addEventListener("submit", async (e) => {
-        await deletePort(e);
+    document.getElementById("deletePort").addEventListener("submit", async (e) => {
+        await deletePortCall(e);
         await fetchAndDisplayPort();
     });
 

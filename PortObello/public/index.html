@@ -140,8 +140,8 @@
 <div id="Delete Port" class="portContent">
 <h2>Delete Port</h2>
 <p>Please be exact when typing the address of the port that you would like to bomb.</p>
-<form id="deletePortFront">
-    Coordinates for Nuke: <input type="text" id="portDeleteInput" placeholder="Port Address goes here." required> <br><br>
+<form id="deletePort">
+    Coordinates for Nuke: <input type="text" id="portAddress" placeholder="Port Address goes here." required> <br><br>
 
     <button type="submit"> launch </button> <br>
 </form>
@@ -301,12 +301,12 @@
 <div id="resetShippingRouteResultMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
+<h1>Ship</h1>
+
 <div class="tab">
     <button class="shipTab" onclick="openShip(event, 'Ship Table')">Table</button>
     <button class="shipTab" onclick="openShip(event, 'Highest Value')">Highest Average</button>
 </div>
-
-<h1>Ship</h1>
 <div id="Ship Table" class="shipContent">
 <!-- Show 'Ship'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
