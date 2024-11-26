@@ -46,9 +46,8 @@ async function initiateAll() {
     if (responseData.success) {
         const messageElement = document.getElementById('initiateAllResultMsg');
         messageElement.textContent = "all initiated successfully!";
-        fetchTableData();
     } else {
-        alert("Error initiating table! ${responseData.error || ''}");
+        alert("Error initiating table!");
     }
 }
 
@@ -762,8 +761,17 @@ window.onload = async function() {
     checkDbConnection();
 
     // Initial fetch + resets
-    await fetchTableData();
-    await initiateAll();
+    // await fetchTableData();
+    // await initiateAll();
+
+    try {
+        // Ensure tables are reset/initialized before fetching data
+        await initiateAll();
+        await fetchTableData();
+    } catch (error) {
+        console.error("Error during initialization:", error);
+        alert("Failed to initialize. Please try again.");
+    }
 
     // resetCountry();
     // resetPort();
