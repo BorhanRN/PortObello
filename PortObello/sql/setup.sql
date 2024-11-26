@@ -236,21 +236,21 @@ VALUES ('UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 'Immingham D
 
 INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
 VALUES ('Canada', 38000000, 2.14, 'Liberal Party - Justin Trudeau', 500.0, '999 Canada Pl, Vancouver, BC V6C 3T4');
-INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
+INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
 VALUES ('Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0, '2, Mira St, Novorossiysk, Krasnodar Region 353900, Russia');
-INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
+INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
 VALUES ('India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0, 'Port House Shoorji Vallabhdas Marg Mumbai, Maharastra 400 001, India');
-INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
+INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
 VALUES ('Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0, 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil');
-INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
+INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
 VALUES ('UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0, 'Immingham DN40 2LZ, United Kingdom');
-INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
+INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
 VALUES ('USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0, 'Signal St, San Pedro, CA 90731, United States');
-INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
+INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
 VALUES ('China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0, 'Shengsi County, Zhoushan, China, 202461');
-INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
+INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
 VALUES ('Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0, '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan');
-INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee)
+INSERT INTO ForeignCountry (Name, Population, GDP, Government, DockingFee, PortAddress)
 VALUES ('Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 470.0, 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands');
 
 
