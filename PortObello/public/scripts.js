@@ -48,7 +48,7 @@ async function initiateAll() {
         messageElement.textContent = "all initiated successfully!";
         fetchTableData();
     } else {
-        alert("Error initiating table!");
+        alert("Error initiating table! ${responseData.error || ''}");
     }
 }
 
@@ -178,7 +178,7 @@ async function updateNameCountry(event) {
 //Deletes a port
 async function deletePort(event) {
     event.preventDefault();
-    const portToDelete = document.getElementById('PortAddress').value;
+    const portToDelete = document.getElementById('PortAddress').value; // PROBLEMATIC, causing null error on f12 console
 
     const response = await fetch( '/delete-port', {
         method: 'POST',
@@ -757,13 +757,13 @@ async function resetShipmentContainer() {
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
-window.onload = function() {
+window.onload = async function() {
     console.log('Page loaded, initializing...');
     checkDbConnection();
 
     // Initial fetch + resets
-    fetchTableData();
-    initiateAll();
+    await fetchTableData();
+    await initiateAll();
 
     // resetCountry();
     // resetPort();
@@ -852,15 +852,15 @@ window.onload = function() {
 
 // General function to refresh the displayed table data.
 // You can invoke this after any table-modifying operation to keep consistency.
-function fetchTableData() {
-    fetchAndDisplayCountry();
-    fetchAndDisplayPort();
-    fetchAndDisplayWarehouse();
-    fetchAndDisplayHomeCountry();
-    fetchAndDisplayForeignCountry();
-    fetchAndDisplayTariff();
-    fetchAndDisplayShippingRoute();
-    fetchAndDisplayShip();
-    fetchAndDisplayCompany();
-    fetchAndDisplayShipmentContainer();
+async function fetchTableData() {
+    await fetchAndDisplayCountry();
+    await fetchAndDisplayPort();
+    await fetchAndDisplayWarehouse();
+    await fetchAndDisplayHomeCountry();
+    await fetchAndDisplayForeignCountry();
+    await fetchAndDisplayTariff();
+    await fetchAndDisplayShippingRoute();
+    await fetchAndDisplayShip();
+    await fetchAndDisplayCompany();
+    await fetchAndDisplayShipmentContainer();
 }
