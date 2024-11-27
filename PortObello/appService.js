@@ -1595,6 +1595,20 @@ async function deletePort(addy) {
             { addy }
         );
 
+        await connection.execute(`
+                    UPDATE Ship1
+                    SET DockedAtPortAddress = 'Ship is currently at sea.'
+                    WHERE DockedAtPortAddress = :addy
+            `,
+            { addy }
+        );
+
+        await connection.execute(`
+                    DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
+                 `,
+            { addy }
+        );
+
         await connection.execute( `
                     UPDATE Country
                     SET PortAddress = 'No ports from this country are currently monitored.'
@@ -1603,13 +1617,6 @@ async function deletePort(addy) {
             { addy }
         );
 
-        await connection.execute(`
-                 UPDATE Ship1
-                 SET DockedAtPortAddress = 'Ship is currently at sea.'
-                 WHERE DockedAtPortAddress = :addy
-                 `,
-            { addy }
-        );
 
         const deletion = await connection.execute( `
         DELETE FROM Port WHERE PortAddress =:addy
