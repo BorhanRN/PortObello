@@ -736,7 +736,7 @@ async function initiateForeignCountry() {
                 ['Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', 620.0, '2, Mira St, Novorossiysk, Krasnodar Region 353900, Russia'],
                 ['India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 580.0, 'Port House Shoorji Vallabhdas Marg Mumbai, Maharastra 400 001, India'],
                 ['Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 490.0, 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil'],
-                ['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0, 'Immingham DN40 2LZ, United Kingdom'],
+                //['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 550.0, 'Immingham DN40 2LZ, United Kingdom'],
                 ['USA', 331000000, 27.36, 'Democratic Party - Joe Biden', 600.0, 'Signal St, San Pedro, CA 90731, United States'],
                 ['China', 83000000, 17.79, 'Chinese Communist Party - Xi Jinping', 550.0, 'Shengsi County, Zhoushan, China, 202461'],
                 ['Japan', 125800000, 4.21, 'Liberal Democratic Party - Shigeru Ishiba', 580.0, '4 - chōme - 8 Ariake, Koto City, Tokyo 135-0063, Japan'],
