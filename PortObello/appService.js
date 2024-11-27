@@ -261,7 +261,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     portaddress=:portaddress,
                     gdp=:gdp
                    WHERE name=:cname`,
-            [population, government, portaddress, gdp, cnam],
+            [population, government, portaddress, gdp, cname],
             { autoCommit: true }
         );
 
