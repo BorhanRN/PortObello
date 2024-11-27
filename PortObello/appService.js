@@ -1805,8 +1805,9 @@ module.exports = {
     initiateWarehouse,
 
     fetchHomeCountryFromDb,
-    initiateHomeCountry,
     insertHomeCountry,
+    initiateHomeCountry,
+
 
     fetchForeignCountryFromDb,
     initiateForeignCountry,
@@ -1881,8 +1882,6 @@ module.exports = {
 //DIVISION
 //  -> must do division (no shit)
 //  -> must provide an interface (e.g., button, dropdown, etc.)
-//COMPLEX SQL QUERRIES
-// !!!!!!!!!!
 
 //------------------OTHER REQUIREMENTS------------------
 //-X-NOT ALL ON ONE PAGE

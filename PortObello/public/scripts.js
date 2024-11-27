@@ -893,12 +893,7 @@ window.onload = async function() {
     console.log('Page loaded, initializing...');
     checkDbConnection();
 
-    // Initial fetch + resets
-    // await fetchTableData();
-    // await initiateAll();
-
     try {
-        // Ensure tables are reset/initialized before fetching data
         await initiateAll();
         await fetchTableData();
     } catch (error) {
@@ -906,31 +901,10 @@ window.onload = async function() {
         alert("Failed to initialize. Please try again.");
     }
 
-    // resetCountry();
-    // resetPort();
-    // resetWarehouse();
-    // resetHomeCountry();
-    // resetForeignCountry();
-    // resetTariff();
-    // resetShippingRoute();
-    // resetShip();
-    // resetCompany();
-    // resetShipmentContainer();
-
     // Add event listeners
     document.getElementById("initiateAll").addEventListener("click", async () => {
         await fetchTableData();
         await initiateAll();
-        // await resetCountry();
-        // await resetPort();
-        // await resetWarehouse();
-        // await resetHomeCountry();
-        // await resetForeignCountry();
-        // await resetTariff();
-        // await resetShippingRoute();
-        // await resetShip();
-        // await resetCompany();
-        // await resetShipmentContainer();
         await fetchTableData();
     });
     document.getElementById("resetCountry").addEventListener("click", async () => {
@@ -980,17 +954,11 @@ window.onload = async function() {
         await insertCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after insert
     });
-    // document.getElementById("insertHomeCountry").addEventListener("submit", async (e) => {
-    //     await insertHomeCountry(e);
-    //     await fetchAndDisplayCountry();  // Refresh table after insert
-    //     await fetchAndDisplayHomeCountry();
-    //     await fetchAndDisplayForeignCountry();
-    // });
-    document.addEventListener("DOMContentLoaded", () => {
-        const homeCountryForm = document.getElementById("insertHomeCountry");
-        if (homeCountryForm) {
-            homeCountryForm.addEventListener("submit", insertHomeCountry);
-        }
+    document.getElementById("insertHomeCountry").addEventListener("submit", async (e) => {
+        await insertHomeCountry(e);
+        // await fetchAndDisplayCountry();  // Refresh table after insert
+        // await fetchAndDisplayHomeCountry();
+        // await fetchAndDisplayForeignCountry();
     });
     document.getElementById("updateNameCountry").addEventListener("submit", async (e) => {
         await updateNameCountry(e);
