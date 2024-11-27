@@ -58,9 +58,9 @@ router.post("/ship-to-port", async (req, res) => {
     }
 });
 
-router.post("/update-name-country", async (req, res) => {
-    const { oldName, newName } = req.body;
-    const updateResult = await appService.updateNameCountry(oldName, newName);
+router.post("/update-country", async (req, res) => {
+    const { cname, population, government, portaddress, gdp } = req.body;
+    const updateResult = await appService.updateCountry(cname, population, government, portaddress, gdp);
     if (updateResult) {
         res.json({ success: true });
     } else {

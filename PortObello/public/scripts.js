@@ -145,32 +145,66 @@ async function insertCountry(event) {
     }
 }
 
-// Updates names in country.
-async function updateNameCountry(event) {
+// // Updates names in country.
+// async function updateCountry(event) {
+//     event.preventDefault();
+//
+//     const oldNameValue = document.getElementById('updateOldName').value;
+//     const newNameValue = document.getElementById('updateNewName').value;
+//
+//     const response = await fetch('/update-name-country', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             oldName: oldNameValue,
+//             newName: newNameValue
+//         })
+//     });
+//
+//     const responseData = await response.json();
+//     const messageElement = document.getElementById('updateNameResultMsg');
+//
+//     if (responseData.success) {
+//         messageElement.textContent = "Name updated successfully!";
+//         fetchTableData();
+//     } else {
+//         messageElement.textContent = "Error updating name!";
+//     }
+// }
+
+async function updateCountry(event) {
     event.preventDefault();
 
-    const oldNameValue = document.getElementById('updateOldName').value;
-    const newNameValue = document.getElementById('updateNewName').value;
+    const nameValue = document.getElementById('updateName').value;
+    const populationValue = document.getElementById('updatePopulation').value;
+    const governmentValue = document.getElementById('updateGovernment').value;
+    const portAddressValue = document.getElementById('updatePortAddress').value;
+    const GDPValue = document.getElementById('updateGDP').value;
 
-    const response = await fetch('/update-name-country', {
+    const response = await fetch('/update-country', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            oldName: oldNameValue,
-            newName: newNameValue
+            cname: nameValue,
+            population: populationValue,
+            government: governmentValue,
+            portaddress: portAddressValue,
+            gdp: GDPValue
         })
     });
 
     const responseData = await response.json();
-    const messageElement = document.getElementById('updateNameResultMsg');
+    const messageElement = document.getElementById('updateResultMsg');
 
     if (responseData.success) {
-        messageElement.textContent = "Name updated successfully!";
+        messageElement.textContent = "Country updated successfully!";
         fetchTableData();
     } else {
-        messageElement.textContent = "Error updating name!";
+        messageElement.textContent = "Error updating country!";
     }
 }
 
@@ -986,8 +1020,8 @@ window.onload = async function() {
         // await fetchAndDisplayHomeCountry();
         // await fetchAndDisplayForeignCountry();
     });
-    document.getElementById("updateNameCountry").addEventListener("submit", async (e) => {
-        await updateNameCountry(e);
+    document.getElementById("updateCountry").addEventListener("submit", async (e) => {
+        await updateCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after update
     });
     document.getElementById("deletePort").addEventListener("submit", async (e) => {
