@@ -447,7 +447,7 @@ async function insertHomeCountry(event) {
     const responseData = await response.json();
     const messageElement = document.getElementById('insertHomeResultMsg');
 
-    if (responseData.success && response.ok) {
+    if (responseData.success) {
         messageElement.textContent = "Data inserted successfully!";
         fetchTableData();
     } else {

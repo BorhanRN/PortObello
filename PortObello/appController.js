@@ -137,7 +137,7 @@ router.post("/insert-homecountry", async (req, res) => {
         }
     } catch (err) {
         // Send a clear error message to the frontend
-        res.status(400).json({ success: false, message: err.message });
+        res.status(500).json({ success: false, message: err.message });
     }
 });
 
