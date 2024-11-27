@@ -617,8 +617,8 @@ async function insertHomeCountry(name, population, government, gdp, portaddress)
             // Insert into FOREIGNCOUNTRY table
             await connection.execute(
                 `INSERT INTO FOREIGNCOUNTRY (Name, Population, Government, GDP, DockingFee, PortAddress) 
-                 VALUES (:name, :population, :government, :gdp, 500.0, :portaddress)`,
-                [name, population, government, gdp, portaddress]
+                 VALUES (:name, :population, :government, :gdp, :500.0, :portaddress)`,
+                [name, population, government, gdp, 500.0, portaddress]
             );
 
             // Commit transaction

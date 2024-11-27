@@ -390,7 +390,7 @@ async function fetchAndDisplayHomeCountry() {
 
         responseData.data.forEach(homecountry => {
             const row = tableBody.insertRow();
-            const columns = ['NAME', 'POPULATION', 'GDP', 'GOVERNMENT', 'DOCKINGFEE'];
+            const columns = ['NAME', 'POPULATION', 'GDP', 'GOVERNMENT', 'PORTADDRESS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
                 cell.textContent = homecountry[col] || 'N/A';
