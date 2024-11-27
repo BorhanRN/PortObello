@@ -202,6 +202,7 @@ async function deletePortCall(event) {
 
 //finds max average of container value
 async function maxAverage(event) {
+    event.preventDefault();
     try {
         const response = await fetch('/max-ship-average', {
             method: 'GET',

@@ -155,23 +155,6 @@ router.post("/insert-homecountry", async (req, res) => {
     }
 });
 
-
-// router.post("/insert-homecountry", async (req, res) => {
-//     console.log('Received request:', req.body);
-//     const { name, population, government, gdp, portaddress } = req.body;
-//
-//     try {
-//         const insertResult = await appService.insertHomeCountry(name, population, government, gdp, portaddress);
-//
-//         if (insertResult) {
-//             res.json({ success: true });
-//         }
-//     } catch (err) {
-//         // Send a clear error message to the frontend
-//         res.status(500).json({ success: false });
-//     }
-// });
-
 router.get('/foreigncountry', async (req, res) => {
     const tableContent = await appService.fetchForeignCountryFromDb();
     res.json({data: tableContent});

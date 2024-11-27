@@ -1854,7 +1854,7 @@ module.exports = {
 
 //!!TODO
 //------------------REQUIRED------------------
-//INSERT (implement on HOMECOUNTRY)
+//-X-INSERT (implement on HOMECOUNTRY)
 //  -> specify what values to insert
 //  -> affects more than one relationship
 //  -> handle the case where the foreign key value in the tuple being inserted does not exist in the relation that is being referred to
@@ -1908,6 +1908,7 @@ module.exports = {
 //  -> what we changed compared to final schema
 //      -> destination country instead of destination port in shipping route
 //      -> ISA relationship is not disjoint, it is inclusive
+//      -> added unique constraint to country government
 //  -> A list of all SQL queries used to satisfy the rubric items and where each query can
 //      be found in the code (file name and line number(s)).
 //  -> For SQL queries 2.1.7 through 2.1.10 inclusive, include a copy of your SQL query

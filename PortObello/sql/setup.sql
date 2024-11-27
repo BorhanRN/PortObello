@@ -23,7 +23,7 @@ CREATE TABLE Country
 (
     Name        VARCHAR2(100) NOT NULL,
     Population  NUMBER,
-    Government  VARCHAR2(100),
+    Government  VARCHAR2(100) UNIQUE,
     PortAddress VARCHAR2(200) NOT NULL,
     GDP         NUMBER,
     PRIMARY KEY (Name)
