@@ -238,11 +238,30 @@ async function insertCountry(name, population, government, gdp, portaddress) {
     });
 }
 
-async function updateNameCountry(oldName, newName) {
+// async function updateNameCountry(oldName, newName) {
+//     return await withOracleDB(async (connection) => {
+//         const result = await connection.execute(
+//             `UPDATE COUNTRY SET name=:newName where name=:oldName`,
+//             [newName, oldName],
+//             { autoCommit: true }
+//         );
+//
+//         return result.rowsAffected && result.rowsAffected > 0;
+//     }).catch(() => {
+//         return false;
+//     });
+// }
+
+async function updateCountry(cname, population, government, portaddress, gdp) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `UPDATE COUNTRY SET name=:newName where name=:oldName`,
-            [newName, oldName],
+            `UPDATE COUNTRY 
+                SET population=:population,
+                    government=:government,
+                    portaddress=:portaddress,
+                    gdp=:gdp
+                   WHERE name=:cname`,
+            [population, government, portaddress, gdp, cnam],
             { autoCommit: true }
         );
 
@@ -1861,7 +1880,8 @@ module.exports = {
     updateShipValues,
 
     insertCountry,
-    updateNameCountry,
+    //updateNameCountry,
+    updateCountry,
     countCountry,
 
     shipToPort,
@@ -1893,6 +1913,9 @@ module.exports = {
 //  -> e.g., min, max, average, or count
 //  -> must provide an interface (e.g., button, dropdown, etc.)
 
+//DIVISION
+//  -> must do division (no shit)
+//  -> must provide an interface (e.g., button, dropdown, etc.)
 //SELECT -- Search through all attributes --- SHIP
 //  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
 //  -> using a dynamically generated dropdown of AND/OR options or parsing user string
@@ -1910,9 +1933,7 @@ module.exports = {
 //  -> must provide an interface (e.g., button, dropdown, etc.)
 //  -> can use VIEW if easier
 //  -> see pdf for example
-//DIVISION
-//  -> must do division (no shit)
-//  -> must provide an interface (e.g., button, dropdown, etc.)
+
 
 //------------------OTHER REQUIREMENTS------------------
 //-X-NOT ALL ON ONE PAGE
