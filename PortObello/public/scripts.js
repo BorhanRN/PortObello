@@ -225,6 +225,31 @@ async function maxAverage(event) {
     }
 }
 
+async function portNumShip(event){
+    event.preventDefault();
+    const num = document.getElementById('numberOfShips').value;
+
+    const response = await fetch( '/port-num-ship', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            num: num,
+        })
+    });
+
+    const responseData = await response.json();
+    const messageElement = document.getElementById('portNumShipsMessage');
+
+    if (responseData.success) {
+        messageElement.textContent = "Ports loaded successfully!";
+        fetchTableData();
+    } else {
+        messageElement.textContent = "Error finding ports!";
+    }
+}
+
 // Counts rows in country.
 // Modify the function accordingly if using different aggregate functions or procedures.
 async function countCountry() {
@@ -962,6 +987,10 @@ window.onload = async function() {
     document.getElementById("deletePort").addEventListener("submit", async (e) => {
         await deletePortCall(e);
         await fetchAndDisplayPort();
+    });
+
+    document.getElementById("numShips").addEventListener("submit", async (e) => {
+        await portNumShip(e);
     });
 
     document.getElementById("groupBy").addEventListener("submit", async (e) => {

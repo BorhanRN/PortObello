@@ -105,6 +105,7 @@
 <div class="tab">
     <button class="portTab" onclick="openPort(event, 'Port Table')">Table</button>
     <button class="portTab" onclick="openPort(event, 'Delete Port')">Delete</button>
+    <button class="portTab" onclick="openPort(event, 'Find Populated Ports')">Find Populated Ports</button>
 </div>
 <!-- Show 'Port'.
     Data will be fetched and inserted here dynamically using JavaScript. -->
@@ -149,6 +150,20 @@
 <div id="deletePortResultsMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
+</div>
+
+<div id="Find Populated Ports" class="portContent">
+    <h2>Delete Port</h2>
+    <p>This page allows you to find all ports with a certain (or more) number of ships docked.</p>
+    <form id="numShips">
+        Minimum number of ships: <input type="number" id="numberOfShips" placeholder="Number here..." required> <br><br>
+
+        <button type="submit"> launch </button> <br>
+    </form>
+    <!-- A placeholder to display messages related to the update operation. -->
+    <div id="deletePortResultsMsg"></div>
+
+    <br><hr><br> <!-- ========================================================================= -->
 </div>
 
 <h1>Warehouse</h1>
