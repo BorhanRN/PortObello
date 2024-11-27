@@ -564,8 +564,8 @@ async function initiateHomeCountry() {
                 ['Netherlands', 25600000, 1.12, 'Independent - Dick Schoof', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands'],
                 ['Russia', 146000000, 1680.0, 'United Russia - Vladimir Putin', '2, Mira St, Novorossiysk, Krasnodar Region 353900, Russia'],
                 ['India', 1390000000, 2875.0, 'Bharatiya Janata Party - Narendra Modi', 'Port House Shoorji Vallabhdas Marg Mumbai, Maharastra 400 001, India'],
-                ['Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil'],
-                ['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 'Immingham DN40 2LZ, United Kingdom']
+                ['Brazil', 213000000, 1505.0, 'Workers Party - Luiz Inácio Lula da Silva', 'Av. Conselheiro Rodrigues Alves, S/N - Porto Macuco, Santos - SP, 11015-900, Brazil']//,
+                //['UK', 67000000, 3031.0, 'Conservative Party - Rishi Sunak', 'Immingham DN40 2LZ, United Kingdom']
             ];
 
             // Use bind variables for safer insertion
@@ -592,43 +592,58 @@ async function initiateHomeCountry() {
     });
 }
 
+// async function insertHomeCountry(name, population, government, gdp, portaddress) {
+//     return await withOracleDB(async (connection) => {
+//         // Check if the entity exists in the COUNTRY table
+//         const checkResult = await connection.execute(
+//             `SELECT COUNT(*) AS COUNT
+//              FROM COUNTRY
+//              WHERE Name = :name`,
+//             [name]
+//         );
+//
+//         const exists = checkResult.rows[0].COUNT > 0;
+//
+//         if (!exists) {
+//             throw new Error(`Entity '${name}' does not exist in the COUNTRY table.`);
+//         }
+//
+//         // Insert into HOMECOUNTRY table
+//         const result = await connection.execute(
+//             `INSERT INTO HOMECOUNTRY (Name, Population, Government, GDP, PortAddress)
+//              VALUES (:name, :population, :government, :gdp, :portaddress)`,
+//             [name, population, government, gdp, portaddress],
+//             {autoCommit: true}
+//         );
+//
+//         // // Insert into FOREIGNCOUNTRY table
+//         // const result2 = await connection.execute(
+//         //     `INSERT INTO FOREIGNCOUNTRY (Name, Population, Government, GDP, DockingFee, PortAddress)
+//         //      VALUES (:name, :population, :government, :gdp, :500.0, :portaddress)`,
+//         //     [name, population, government, gdp, 500.0, portaddress],
+//         //     {autoCommit: true}
+//         // );
+//
+//         return result.rowsAffected && result.rowsAffected > 0;// && result2.rowsAffected && result2.rowsAffected > 0;
+//     }).catch(() => {
+//         return false;
+//     });
+// }
 async function insertHomeCountry(name, population, government, gdp, portaddress) {
     return await withOracleDB(async (connection) => {
-        // Check if the entity exists in the COUNTRY table
-        const checkResult = await connection.execute(
-            `SELECT COUNT(*) AS COUNT
-             FROM COUNTRY
-             WHERE Name = :name`,
-            [name]
-        );
-
-        const exists = checkResult.rows[0].COUNT > 0;
-
-        if (!exists) {
-            throw new Error(`Entity '${name}' does not exist in the COUNTRY table.`);
-        }
-
-        // Insert into HOMECOUNTRY table
         const result = await connection.execute(
-            `INSERT INTO HOMECOUNTRY (Name, Population, Government, GDP, PortAddress)
+            `INSERT INTO HOMECOUNTRY (name, population, government, gdp, PortAddress) 
              VALUES (:name, :population, :government, :gdp, :portaddress)`,
             [name, population, government, gdp, portaddress],
-            {autoCommit: true}
+            { autoCommit: true }
         );
 
-        // Insert into FOREIGNCOUNTRY table
-        const result2 = await connection.execute(
-            `INSERT INTO FOREIGNCOUNTRY (Name, Population, Government, GDP, DockingFee, PortAddress)
-             VALUES (:name, :population, :government, :gdp, :500.0, :portaddress)`,
-            [name, population, government, gdp, 500.0, portaddress],
-            {autoCommit: true}
-        );
-
-        return result.rowsAffected && result.rowsAffected > 0 && result2.rowsAffected && result2.rowsAffected > 0;
+        return result.rowsAffected && result.rowsAffected > 0;
     }).catch(() => {
         return false;
     });
 }
+
 
 async function fetchForeignCountryFromDb() {
     return await withOracleDB(async (connection) => {
@@ -1870,8 +1885,8 @@ module.exports = {
 // !!!!!!!!!!
 
 //------------------OTHER REQUIREMENTS------------------
-// NOT ALL ON ONE PAGE
-// sufficient user data?
+//-X-NOT ALL ON ONE PAGE
+//-X-sufficient user data?
 // basic security practices
 //  -> values from the user are not directly used in the database
 //  -> prevent injection and rainbow attacks

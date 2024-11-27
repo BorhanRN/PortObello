@@ -432,30 +432,67 @@ async function insertHomeCountry(event) {
     const response = await fetch('/insert-homecountry', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
             name: name,
             population: population,
             government: government,
             gdp: gdp,
-            portaddress: portaddress
-        })
+            portaddress: portaddress,
+        }),
     });
 
-    const messageElement = document.getElementById('insertHomeResultMsg');
     const responseData = await response.json();
+    const messageElement = document.getElementById('insertHomeResultMsg');
 
-    if (response.ok && responseData.success) {
+    if (responseData.success) {
         messageElement.textContent = "Data inserted successfully!";
         messageElement.style.color = "green";
-        fetchTableData(); // Update the table if required
+        fetchTableData(); // Ensure this function updates the "homecountry" table
     } else {
-        const errorMessage = responseData.error || "Unknown error occurred.";
-        messageElement.textContent = `Error: ${errorMessage}`;
+        messageElement.textContent = "Error inserting data!";
         messageElement.style.color = "red";
     }
 }
+
+
+// async function insertHomeCountry(event) {
+//     event.preventDefault();
+//
+//     const name = document.getElementById('insertHomeCountryName').value;
+//     const population = document.getElementById('insertHomeCountryPopulation').value;
+//     const government = document.getElementById('insertHomeCountryGovernment').value;
+//     const gdp = document.getElementById('insertHomeCountryGDP').value;
+//     const portaddress = document.getElementById('insertHomeCountryPortAddress').value;
+//
+//     const response = await fetch('/insert-homecountry', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             name: name,
+//             population: population,
+//             government: government,
+//             gdp: gdp,
+//             portaddress: portaddress
+//         })
+//     });
+//
+//     const messageElement = document.getElementById('insertHomeResultMsg');
+//     const responseData = await response.json();
+//
+//     if (response.ok && responseData.success) {
+//         messageElement.textContent = "Data inserted successfully!";
+//         messageElement.style.color = "green";
+//         fetchTableData(); // Update the table if required
+//     } else {
+//         const errorMessage = responseData.error || "Unknown error occurred.";
+//         messageElement.textContent = `Error: ${errorMessage}`;
+//         messageElement.style.color = "red";
+//     }
+// }
 
 // // Inserts new records into HOMECOUNTRY.
 // async function insertHomeCountry(event) {
@@ -950,9 +987,9 @@ window.onload = async function() {
     //     await fetchAndDisplayForeignCountry();
     // });
     document.addEventListener("DOMContentLoaded", () => {
-        const form = document.getElementById("insertHomeCountry");
-        if (form) {
-            form.addEventListener("submit", insertHomeCountry);
+        const homeCountryForm = document.getElementById("insertHomeCountry");
+        if (homeCountryForm) {
+            homeCountryForm.addEventListener("submit", insertHomeCountry);
         }
     });
     document.getElementById("updateNameCountry").addEventListener("submit", async (e) => {
