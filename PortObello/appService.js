@@ -1610,7 +1610,7 @@ async function deletePort(addy) {
                     DELETE FROM Warehouse
                     WHERE PortAddress =:addy
             `,
-            { addy }
+           [addy]
         );
 
         await connection.execute(`
@@ -1618,13 +1618,13 @@ async function deletePort(addy) {
                     SET DockedAtPortAddress = 'Ship is currently at sea.'
                     WHERE DockedAtPortAddress = :addy
             `,
-            { addy }
+            [addy]
         );
 
         await connection.execute(`
                     DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
                  `,
-            { addy }
+            [addy]
         );
 
         await connection.execute( `
@@ -1632,14 +1632,14 @@ async function deletePort(addy) {
                     SET PortAddress = 'No ports from this country are currently monitored.'
                     WHERE PortAddress =:addy
             `,
-            { addy }
+            [addy]
         );
 
 
         const deletion = await connection.execute( `
         DELETE FROM Port WHERE PortAddress =:addy
         `,
-            { addy }
+            [addy]
         );
 
         // Commit all updates
