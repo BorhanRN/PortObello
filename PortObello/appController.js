@@ -126,20 +126,38 @@ router.post("/initiate-homecountry", async (req, res) => {
 });
 
 router.post("/insert-homecountry", async (req, res) => {
-    console.log('Received request:', req.body);
-    const { name, population, government, gdp, portaddress } = req.body;
-
     try {
+        const { name, population, government, gdp, portaddress } = req.body;
+        console.log('Received request:', req.body);
+
         const insertResult = await appService.insertHomeCountry(name, population, government, gdp, portaddress);
 
         if (insertResult) {
             res.json({ success: true });
+        } else {
+            res.status(400).json({ success: false, error: "Failed to insert record." });
         }
     } catch (err) {
-        // Send a clear error message to the frontend
-        res.status(500).json({ success: false, message: err.message });
+        console.error("Insert error:", err.message); // Log error for debugging
+        res.status(500).json({ success: false, error: err.message || "Unknown server error." });
     }
 });
+
+// router.post("/insert-homecountry", async (req, res) => {
+//     console.log('Received request:', req.body);
+//     const { name, population, government, gdp, portaddress } = req.body;
+//
+//     try {
+//         const insertResult = await appService.insertHomeCountry(name, population, government, gdp, portaddress);
+//
+//         if (insertResult) {
+//             res.json({ success: true });
+//         }
+//     } catch (err) {
+//         // Send a clear error message to the frontend
+//         res.status(500).json({ success: false });
+//     }
+// });
 
 router.get('/foreigncountry', async (req, res) => {
     const tableContent = await appService.fetchForeignCountryFromDb();

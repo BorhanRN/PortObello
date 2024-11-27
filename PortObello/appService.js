@@ -594,41 +594,37 @@ async function initiateHomeCountry() {
 
 async function insertHomeCountry(name, population, government, gdp, portaddress) {
     return await withOracleDB(async (connection) => {
-        try {
-            // Check if the entity exists in the COUNTRY table
-            const checkResult = await connection.execute(
-                `SELECT COUNT(*) AS COUNT FROM COUNTRY WHERE Name = :name`,
-                [name]
-            );
+        // Check if the entity exists in the COUNTRY table
+        const checkResult = await connection.execute(
+            `SELECT COUNT(*) AS COUNT
+             FROM COUNTRY
+             WHERE Name = :name`,
+            [name]
+        );
 
-            const exists = checkResult.rows[0].COUNT > 0;
+        const exists = checkResult.rows[0].COUNT > 0;
 
-            if (!exists) {
-                throw new Error(`Entity '${name}' does not exist in the COUNTRY table.`);
-            }
-
-            // Insert into HOMECOUNTRY table
-            await connection.execute(
-                `INSERT INTO HOMECOUNTRY (Name, Population, Government, GDP, PortAddress) 
-                 VALUES (:name, :population, :government, :gdp, :portaddress)`,
-                [name, population, government, gdp, portaddress]
-            );
-
-            // Insert into FOREIGNCOUNTRY table
-            await connection.execute(
-                `INSERT INTO FOREIGNCOUNTRY (Name, Population, Government, GDP, DockingFee, PortAddress) 
-                 VALUES (:name, :population, :government, :gdp, :500.0, :portaddress)`,
-                [name, population, government, gdp, 500.0, portaddress]
-            );
-
-            // Commit transaction
-            await connection.commit();
-
-            return true;
-        } catch (err) {
-            console.error("Error inserting home country:", err);
-            throw err; // Re-throw error to handle it in the route
+        if (!exists) {
+            throw new Error(`Entity '${name}' does not exist in the COUNTRY table.`);
         }
+
+        // Insert into HOMECOUNTRY table
+        const result = await connection.execute(
+            `INSERT INTO HOMECOUNTRY (Name, Population, Government, GDP, PortAddress)
+             VALUES (:name, :population, :government, :gdp, :portaddress)`,
+            [name, population, government, gdp, portaddress],
+            {autoCommit: true}
+        );
+
+        // Insert into FOREIGNCOUNTRY table
+        const result2 = await connection.execute(
+            `INSERT INTO FOREIGNCOUNTRY (Name, Population, Government, GDP, DockingFee, PortAddress)
+             VALUES (:name, :population, :government, :gdp, :500.0, :portaddress)`,
+            [name, population, government, gdp, 500.0, portaddress],
+            {autoCommit: true}
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0 && result2.rowsAffected && result2.rowsAffected > 0;
     }).catch(() => {
         return false;
     });
