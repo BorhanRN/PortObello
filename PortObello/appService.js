@@ -1606,11 +1606,48 @@ async function shipToPort(Owner, ShipName) {
 
 async function deletePort(addy) {
     return await withOracleDB(async (connection) =>  {
+        const findFKsQuery = `
+                SELECT table_name, constraint_name 
+                FROM user_constraints 
+                WHERE r_constraint_name IN (
+                    SELECT constraint_name 
+                    FROM user_constraints 
+                    WHERE table_name = 'SHIP1' 
+                    AND constraint_type = 'P'
+                )`;
+
+        console.log('Checking for foreign key constraints...');
+        const fkResult = await connection.execute(findFKsQuery);
+
+        // Drop any foreign key constraints found
+        for (let fk of fkResult.rows || []) {
+            try {
+                const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
+                await connection.execute(dropFKQuery);
+                console.log(`Dropped foreign key: ${fk[1]} from table ${fk[0]}`);
+            } catch (err) {
+                console.log(`Error dropping foreign key ${fk[1]}:`, err.message);
+            }
+        }
 
         await connection.execute( `
                     DELETE FROM Warehouse
                     WHERE PortAddress =:addy
             `,
+            { addy }
+        );
+
+        await connection.execute(`
+                    UPDATE Ship1
+                    SET DockedAtPortAddress = 'Ship is currently at sea.'
+                    WHERE DockedAtPortAddress = :addy
+            `,
+            { addy }
+        );
+
+        await connection.execute(`
+                    DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
+                 `,
             { addy }
         );
 
@@ -1622,13 +1659,6 @@ async function deletePort(addy) {
             { addy }
         );
 
-        await connection.execute(`
-                 UPDATE Ship1
-                 SET DockedAtPortAddress = 'Ship is currently at sea.'
-                 WHERE DockedAtPortAddress = :addy
-                 `,
-            { addy }
-        );
 
         const deletion = await connection.execute( `
         DELETE FROM Port WHERE PortAddress =:addy
