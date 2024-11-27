@@ -638,7 +638,15 @@ async function insertHomeCountry(name, population, government, gdp, portaddress)
             { autoCommit: true }
         );
 
-        return result.rowsAffected && result.rowsAffected > 0;
+        const result2 = await connection.execute(
+            `INSERT INTO FOREIGNCOUNTRY (name, population, government, gdp, PortAddress, DockingFee) 
+             VALUES (:name, :population, :government, :gdp, :portaddress, 500.0)`,
+            [name, population, government, gdp, portaddress],
+            { autoCommit: true }
+        );
+
+
+        return result.rowsAffected > 0 && result2.rowsAffected > 0;
     }).catch(() => {
         return false;
     });
