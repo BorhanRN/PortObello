@@ -1773,16 +1773,16 @@ async function portsNumShips(num) {
 async function maxAvgContainer() {
     return await withOracleDB(async (connection) =>  {
         const result = await connection.execute(`
-            SELECT ShipName, MAX(avg_value) AS result
+            SELECT ShipName, MAX(avg_value) AS max_avg
             FROM (
-                    SELECT s1.ShipName, AVG(s2.GoodValue) AS avg_value
-                    FROM Ship1 s1
-                    JOIN ShipmentContainer2 s2
-                    ON s1.ShipName = s2.ShipName
-                    GROUP BY s1.ShipName
-                 )`,
-        { autoCommit: true }
-        );
+                     SELECT s1.ShipName, AVG(s2.GoodValue) AS avg_value
+                     FROM Ship1 s1
+                              JOIN ShipmentContainer2 s2
+                                   ON s1.ShipName = s2.ShipName
+                     GROUP BY s1.ShipName
+                 )
+            GROUP BY ShipName
+        `);
 
         console.log('result table for max created.');
 
