@@ -125,23 +125,36 @@ router.post("/initiate-homecountry", async (req, res) => {
     }
 });
 
+// router.post("/insert-homecountry", async (req, res) => {
+//     try {
+//         const { name, population, government, gdp, portaddress } = req.body;
+//         console.log('Received request:', req.body);
+//
+//         const insertResult = await appService.insertHomeCountry(name, population, government, gdp, portaddress);
+//
+//         if (insertResult) {
+//             res.json({ success: true });
+//         } else {
+//             res.status(400).json({ success: false, error: "Failed to insert record." });
+//         }
+//     } catch (err) {
+//         console.error("Insert error:", err.message); // Log error for debugging
+//         res.status(500).json({ success: false, error: err.message || "Unknown server error." });
+//     }
+// });
+
 router.post("/insert-homecountry", async (req, res) => {
-    try {
-        const { name, population, government, gdp, portaddress } = req.body;
-        console.log('Received request:', req.body);
+    console.log('Received request:', req.body);
+    const { name, population, government, gdp, portaddress } = req.body;
+    const insertResult = await appService.insertHomeCountry(name, population, government, gdp, portaddress);
 
-        const insertResult = await appService.insertHomeCountry(name, population, government, gdp, portaddress);
-
-        if (insertResult) {
-            res.json({ success: true });
-        } else {
-            res.status(400).json({ success: false, error: "Failed to insert record." });
-        }
-    } catch (err) {
-        console.error("Insert error:", err.message); // Log error for debugging
-        res.status(500).json({ success: false, error: err.message || "Unknown server error." });
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
     }
 });
+
 
 // router.post("/insert-homecountry", async (req, res) => {
 //     console.log('Received request:', req.body);
