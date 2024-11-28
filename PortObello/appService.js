@@ -1003,7 +1003,15 @@ async function initiateTariff() {
                 ['USA - Russia Agreement', 6,'USA','Russia', new Date('1998-04-09')],
                 ['USA - India Agreement', 6,'USA','India', new Date('1998-04-09')],
                 ['USA - Brazil Agreement', 6,'USA','Brazil', new Date('1998-04-09')],
-                ['USA - Canada Agreement', 6,'USA','Canada', new Date('1998-04-09')]
+                ['USA - Canada Agreement', 6,'USA','Canada', new Date('1998-04-09')],
+                ['Japan - China Agreement', 9,'Japan','China', new Date('2024-10-25')],
+                ['Japan - Netherlands Agreement', 8,'Japan','Netherlands', new Date('2020-06-12')],
+                ['Japan - USA Agreement', 5,'Japan','USA', new Date('2020-01-30')],
+                ['Japan - Japan Agreement', 6,'Japan','Japan', new Date('1998-04-09')],
+                ['Japan - Russia Agreement', 6,'Japan','Russia', new Date('1998-04-09')],
+                ['Japan - India Agreement', 6,'Japan','India', new Date('1998-04-09')],
+                ['Japan - Brazil Agreement', 6,'Japan','Brazil', new Date('1998-04-09')],
+                ['Japan - Canada Agreement', 6,'Japan','Canada', new Date('1998-04-09')]
             ];
 
             // Use bind variables for safer insertion
@@ -1033,7 +1041,15 @@ async function initiateTariff() {
                 [6,'Wheat','USA','Russia', new Date('1998-04-09')],
                 [6,'Wheat','USA','India', new Date('1998-04-09')],
                 [6,'Wheat','USA','Brazil', new Date('1998-04-09')],
-                [6,'Wheat','USA','Canada', new Date('1998-04-09')]
+                [6,'Wheat','USA','Canada', new Date('1998-04-09')],
+                [9,'Lumber','Japan','China', new Date('2024-10-25')],
+                [8,'Maple Syrup','Japan','Netherlands', new Date('2020-06-12')],
+                [5,'Oil','Japan','USA', new Date('2020-01-30')],
+                [6,'Wheat','Japan','Japan', new Date('1998-04-09')],
+                [6,'Wheat','Japan','Russia', new Date('1998-04-09')],
+                [6,'Wheat','Japan','India', new Date('1998-04-09')],
+                [6,'Wheat','Japan','Brazil', new Date('1998-04-09')],
+                [6,'Wheat','Japan','Canada', new Date('1998-04-09')]
 
         ];
 
