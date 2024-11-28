@@ -255,26 +255,42 @@ async function insertCountry(name, population, government, gdp, portaddress) {
 async function updateCountry(cname, population, government, portaddress, gdp) {
     return await withOracleDB(async (connection) => {
 
-        const checkC = await connection.execute(
-            `SELECT COUNT(*) AS COUNT
-                FROM COUNTRY
-                WHERE government = :government`,
+        const checkResult = await connection.execute(
+            `SELECT COUNT(*) AS COUNT FROM (
+                SELECT government FROM COUNTRY 
+                UNION 
+                SELECT government FROM HOMECCOUNTRY 
+                UNION 
+                SELECT government FROM FOREIGNCOUNTRY
+            ) WHERE government = :government`,
             [government]
         );
 
-        const checkHC = await connection.execute(
-            `SELECT COUNT(*) AS COUNT
-                FROM HOMECOUNTRY
-                WHERE government = :government`,
-            [government]
-        );
+        if (checkResult.rows[0].COUNT > 0) {
+            // Government value already exists
+            throw new Error(`Government value '${government}' already exists and must be unique.`);
+        }
 
-        const checkFC = await connection.execute(
-            `SELECT COUNT(*) AS COUNT
-             FROM FOREIGNCOUNTRY
-             WHERE government = :government`,
-            [government]
-        );
+        // const checkC = await connection.execute(
+        //     `SELECT COUNT(*) AS COUNT
+        //         FROM COUNTRY
+        //         WHERE government = :government`,
+        //     [government]
+        // );
+        //
+        // const checkHC = await connection.execute(
+        //     `SELECT COUNT(*) AS COUNT
+        //         FROM HOMECOUNTRY
+        //         WHERE government = :government`,
+        //     [government]
+        // );
+        //
+        // const checkFC = await connection.execute(
+        //     `SELECT COUNT(*) AS COUNT
+        //      FROM FOREIGNCOUNTRY
+        //      WHERE government = :government`,
+        //     [government]
+        // );
 
         if (checkC.rows[0].COUNT > 0 || checkHC.rows[0].COUNT > 0 || checkFC.rows[0].COUNT > 0) {
             throw new Error(`Government value '${government}' already exists and must be unique.`);
