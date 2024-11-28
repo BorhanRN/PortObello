@@ -214,6 +214,7 @@
 <div class="tab">
     <button class="homeCountryTab" onclick="openHomeCountry(event, 'HomeCountry Table')">Table</button>
     <button class="homeCountryTab" onclick="openHomeCountry(event, 'Insert HomeCountry')">Insert</button>
+    <button class="homeCountryTab" onclick="openHomeCountry(event, 'Division')">Division</button>
 </div>
 <div id="HomeCountry Table" class="homeCountryContent">
 <!-- Show 'Warehouse'.
@@ -259,6 +260,22 @@
         <button type="submit"> insert </button> <br>
     </form>
     <div id="insertHomeResultMsg"></div>
+    <br><hr><br> <!-- ========================================================================= -->
+
+</div>
+
+<div id="Division" class="homeCountryContent">
+    <h2> All HomeCountries that have TradeAgreements with EVERY ForeignCountry </h2>
+        <button id="fetchHomeCountriesWithAllTradeAgreements">Fetch Data</button>
+        <table id="homeCountriesWithAllTradeAgreements" border="1" style="display: none;">
+            <thead>
+            <tr>
+                <th>Home Country</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="homeCountriesWithAllTradeAgreementsMessage"></div>
     <br><hr><br> <!-- ========================================================================= -->
 
 </div>

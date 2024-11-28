@@ -989,6 +989,41 @@ async function resetShipmentContainer() {
     }
 }
 
+async function fetchAndDisplayHomeCountriesWithAllTradeAgreements() {
+    const messageElement = document.getElementById('homeCountriesWithAllTradeAgreementsMessage');
+    const tableElement = document.getElementById('homeCountriesWithAllTradeAgreements');
+    const tableBody = tableElement.querySelector('tbody');
+
+    try {
+        const response = await fetch('/homecountries-with-all-tradeagreements', { method: 'GET' });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+
+        if (responseData.success && Array.isArray(responseData.data)) {
+            tableBody.innerHTML = ''; // Clear old content
+
+            responseData.data.forEach(row => {
+                const tableRow = tableBody.insertRow();
+                const cell = tableRow.insertCell();
+                cell.textContent = row.NAME || 'N/A';
+            });
+
+            tableElement.style.display = 'block';
+            messageElement.textContent = '';
+        } else {
+            throw new Error('Unexpected response format or data');
+        }
+    } catch (error) {
+        console.error('Error fetching home countries with all trade agreements:', error);
+        messageElement.textContent = 'Failed to load data.';
+        tableElement.style.display = 'none';
+    }
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -1082,6 +1117,11 @@ window.onload = async function() {
     });
 
     document.getElementById("countCountry").addEventListener("click", countCountry);
+
+    document.getElementById("fetchHomeCountriesWithAllTradeAgreements").addEventListener("click", async (e) => {
+        await fetchAndDisplayHomeCountriesWithAllTradeAgreements(e);
+        await fetchTableData();
+    });
 }
 
 // General function to refresh the displayed table data.

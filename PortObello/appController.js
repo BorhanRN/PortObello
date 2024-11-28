@@ -328,5 +328,15 @@ router.post("/port-num-ship", async (req, res) => {
     }
 });
 
+router.get("/homecountries-with-all-tradeagreements", async (req, res) => {
+    try {
+        const data = await appService.fetchHomeCountriesWithAllTradeAgreements();
+        res.json({ success: true, data });
+    } catch (err) {
+        console.error('Error fetching home countries with all trade agreements:', err);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
 
 module.exports = router;

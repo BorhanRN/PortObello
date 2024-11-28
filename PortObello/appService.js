@@ -848,6 +848,33 @@ async function initiateForeignCountry() {
     });
 }
 
+// selects all foreign countries that have a trade agreement with EVERY home country
+async function fetchHomeCountriesWithAllTradeAgreements() {
+    return await withOracleDB(async (connection) =>  {
+        try {
+            const query = `
+                SELECT hc.Name
+                FROM HomeCountry hc
+                WHERE NOT EXISTS (
+                    SELECT fc.Name
+                    FROM ForeignCountry fc
+                    WHERE NOT EXISTS (
+                        SELECT 1
+                        FROM Tariff1 t
+                        WHERE t.HomeName = hc.Name
+                          AND t.ForeignName = fc.Name
+                    )
+                )`;
+
+            const result = await connection.execute(query, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            return result.rows;
+        } catch (err) {
+            console.error('Error executing division query:', err);
+            throw err;
+        }
+    });
+}
+
 async function fetchTariffFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -2055,6 +2082,7 @@ module.exports = {
 
     fetchForeignCountryFromDb,
     initiateForeignCountry,
+    fetchHomeCountriesWithAllTradeAgreements,
 
     fetchTariffFromDb,
     initiateTariff,
