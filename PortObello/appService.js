@@ -256,7 +256,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
     return await withOracleDB(async (connection) => {
 
         const checkResult = await connection.execute(
-            `SELECT COUNT(*) AS COUNT FROM (
+            `SELECT COUNT(*) AS COUNT1 FROM (
                 SELECT government FROM COUNTRY 
                 UNION 
                 SELECT government FROM HOMECOUNTRY 
@@ -266,7 +266,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
             [government]
         );
 
-        const existingCount = checkResult.rows.length > 0 ? checkResult.rows[0]["COUNT"] : 0;
+        const existingCount = checkResult.rows.length > 0 ? checkResult.rows[0]["COUNT1"] : 0;
 
         if (existingCount > 0) {
             // Government value already exists
