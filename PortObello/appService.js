@@ -266,7 +266,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
             [government]
         );
 
-        const existingCount = checkResult.rows[0]?.COUNT || 0;
+        const existingCount = checkResult.rows.length > 0 ? checkResult.rows[0]["COUNT"] : 0;
 
         if (existingCount > 0) {
             // Government value already exists
