@@ -1614,21 +1614,21 @@ async function deletePort(addy) {
             { autoCommit: true }
         );
 
-        await connection.execute(`
-                    UPDATE Ship1
-                    SET DockedAtPortAddress = 'Ship is currently at sea.'
-                    WHERE DockedAtPortAddress =:addy
-            `,
-            [addy],
-            { autoCommit: true }
-        );
-
-        await connection.execute(`
-                    DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
-                 `,
-            [addy],
-            { autoCommit: true }
-        );
+        // await connection.execute(`
+        //             UPDATE Ship1
+        //             SET DockedAtPortAddress = 'Ship is currently at sea.'
+        //             WHERE DockedAtPortAddress =:addy
+        //     `,
+        //     [addy],
+        //     { autoCommit: true }
+        // );
+        //
+        // await connection.execute(`
+        //             DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
+        //          `,
+        //     [addy],
+        //     { autoCommit: true }
+        // );
 
         await connection.execute( `
                     UPDATE Country
