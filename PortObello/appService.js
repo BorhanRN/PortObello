@@ -271,31 +271,6 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
             throw new Error(`Government value '${government}' already exists and must be unique.`);
         }
 
-        // const checkC = await connection.execute(
-        //     `SELECT COUNT(*) AS COUNT
-        //         FROM COUNTRY
-        //         WHERE government = :government`,
-        //     [government]
-        // );
-        //
-        // const checkHC = await connection.execute(
-        //     `SELECT COUNT(*) AS COUNT
-        //         FROM HOMECOUNTRY
-        //         WHERE government = :government`,
-        //     [government]
-        // );
-        //
-        // const checkFC = await connection.execute(
-        //     `SELECT COUNT(*) AS COUNT
-        //      FROM FOREIGNCOUNTRY
-        //      WHERE government = :government`,
-        //     [government]
-        // );
-
-        if (checkC.rows[0].COUNT > 0 || checkHC.rows[0].COUNT > 0 || checkFC.rows[0].COUNT > 0) {
-            throw new Error(`Government value '${government}' already exists and must be unique.`);
-        }
-
         const result = await connection.execute(
             `UPDATE COUNTRY 
                 SET population=:population,
