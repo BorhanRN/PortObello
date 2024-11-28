@@ -264,7 +264,7 @@ async function portNumShip(event){
     event.preventDefault();
     const num = document.getElementById('numberOfShips').value;
 
-    const response = await fetch( '/port-num-ship', {
+    const response = await fetch('/port-num-ship', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
