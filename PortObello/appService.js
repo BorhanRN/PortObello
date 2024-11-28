@@ -255,28 +255,15 @@ async function insertCountry(name, population, government, gdp, portaddress) {
 async function updateCountry(cname, population, government, portaddress, gdp) {
     return await withOracleDB(async (connection) => {
 
-        const checkC = await connection.execute(
-            `SELECT COUNT(*) AS COUNT
-                FROM COUNTRY
-                WHERE government = :government`,
+        const checkResult = await connection.execute(
+            `SELECT COUNT(*) AS COUNT1 FROM COUNTRY WHERE government = :government`,
             [government]
         );
 
-        const checkHC = await connection.execute(
-            `SELECT COUNT(*) AS COUNT
-                FROM HOMECOUNTRY
-                WHERE government = :government`,
-            [government]
-        );
+        const existingCount = checkResult.rows.length > 0 ? checkResult.rows[0]["COUNT1"] : 0;
 
-        const checkFC = await connection.execute(
-            `SELECT COUNT(*) AS COUNT
-             FROM FOREIGNCOUNTRY
-             WHERE government = :government`,
-            [government]
-        );
-
-        if (checkC.rows[0].COUNT > 0 || checkHC.rows[0].COUNT > 0 || checkFC.rows[0].COUNT > 0) {
+        if (existingCount > 0) {
+            // Government value already exists
             throw new Error(`Government value '${government}' already exists and must be unique.`);
         }
 
@@ -288,7 +275,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     gdp=:gdp
                    WHERE name=:cname`,
             [population, government, portaddress, gdp, cname],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
         const result2 = await connection.execute(
@@ -299,7 +286,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     gdp=:gdp
                    WHERE name=:cname`,
             [population, government, portaddress, gdp, cname],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
         const result3 = await connection.execute(
@@ -310,10 +297,10 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     gdp=:gdp
                    WHERE name=:cname`,
             [population, government, portaddress, gdp, cname],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
-
+        await connection.commit();
 
         return result.rowsAffected > 0 && result2.rowsAffected > 0 && result3.rowsAffected > 0;
     }).catch(() => {
@@ -2033,7 +2020,7 @@ async function joinCompanyShipments(companyName, companyCEO) {
             JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
             WHERE sc.CompanyName = companyName AND sc.CompanyCEO = companyCEO)
             `,
-            {companyName, companyCEO}
+            {companyName, companyCEO},
             { autoCommit: true }
             );
         })
