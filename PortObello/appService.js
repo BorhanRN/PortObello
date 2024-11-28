@@ -259,7 +259,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
             `SELECT COUNT(*) AS COUNT FROM (
                 SELECT government FROM COUNTRY 
                 UNION 
-                SELECT government FROM HOMECCOUNTRY 
+                SELECT government FROM HOMECOUNTRY 
                 UNION 
                 SELECT government FROM FOREIGNCOUNTRY
             ) WHERE government = :government`,
