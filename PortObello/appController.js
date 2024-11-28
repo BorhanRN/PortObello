@@ -97,6 +97,20 @@ router.post("/initiate-warehouse", async (req, res) => {
     }
 });
 
+router.get('/numShips', async (req, res) => {
+    const tableContent = await appService.fetchNumShipsFromDb();
+    res.json({data: tableContent});
+});
+
+router.post("/initiate-numShips", async (req, res) => {
+    const initiateResult = await appService.initiateNumShips();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 router.get('/port', async (req, res) => {
     const tableContent = await appService.fetchPortFromDb();
     res.json({data: tableContent});

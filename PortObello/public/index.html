@@ -536,6 +536,7 @@
         document.querySelector(".countryTab").click();
         document.querySelector(".portTab").click();
         document.querySelector(".shipTab").click();
+        document.querySelector(".homeCountryTab").click();
     });
 </script>
 
@@ -567,6 +568,17 @@
     }
 
     .shipContent {
+        display: none;
+        padding: 6px 12px;
+        -webkit-animation: fadeEffect 1s;
+        animation: fadeEffect 1s;
+    }
+
+    .homeCountryTab button.active {
+        background-color: #ccc;
+    }
+
+    .homeCountryContent {
         display: none;
         padding: 6px 12px;
         -webkit-animation: fadeEffect 1s;

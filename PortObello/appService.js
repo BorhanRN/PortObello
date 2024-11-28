@@ -1614,14 +1614,18 @@ async function deletePort(addy) {
             { autoCommit: true }
         );
 
-        // await connection.execute(`
-        //             UPDATE Ship1
-        //             SET DockedAtPortAddress = 'Ship is currently at sea.'
-        //             WHERE DockedAtPortAddress =:addy
-        //     `,
-        //     [addy],
-        //     { autoCommit: true }
-        // );
+        await connection.execute(
+
+        )
+
+        await connection.execute(`
+                    UPDATE Ship1
+                    SET DockedAtPortAddress = 'International Waters.'
+                    WHERE DockedAtPortAddress =:addy
+            `,
+            [addy],
+            { autoCommit: true }
+        );
         //
         // await connection.execute(`
         //             DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
@@ -1783,10 +1787,10 @@ async function portsNumShips(num) {
         SELECT DockedAtPortAddress, COUNT(ShipName) AS shipPorts
         FROM Ship1
         GROUP BY DockedAtPortAddress
-        HAVING COUNT(ShipName) >= num;
+        HAVING COUNT(ShipName) >=:num;
         `,
-            { autoCommit: true },
-            { num }
+            { num },
+            { autoCommit: true }
         );
 
         return res.rowsAffected && res.rowsAffected > 0;
@@ -1921,6 +1925,11 @@ module.exports = {
 //-X- AGGREGATION with GROUP BY (count implemented on COUNTRY)
 //  -> e.g., min, max, average, or count
 //  -> must provide an interface (e.g., button, dropdown, etc.)
+//-X- NESTED AGGREGATION WITH GROUP BY
+//  -> must find some aggregated value for each group
+//  -> must provide an interface (e.g., button, dropdown, etc.)
+//  -> can use VIEW if easier
+//  -> see pdf for example
 
 //DIVISION
 //  -> must do division (no shit)
@@ -1937,11 +1946,7 @@ module.exports = {
 //AGGREGATION WITH HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
 //  -> must include a HAVING clause.
 //  -> must provide an interface (e.g., button, dropdown, etc.)
-//NESTED AGGREGATION WITH GROUP BY
-//  -> must find some aggregated value for each group
-//  -> must provide an interface (e.g., button, dropdown, etc.)
-//  -> can use VIEW if easier
-//  -> see pdf for example
+
 
 
 //------------------OTHER REQUIREMENTS------------------
@@ -1967,6 +1972,7 @@ module.exports = {
 //  -> For SQL queries 2.1.7 through 2.1.10 inclusive, include a copy of your SQL query
 //      and a maximum of 1-2 sentences describing what that query does. You can embed
 //      this in your above list of queries.
+// Cite the work that we used from the demo
 
 
 
