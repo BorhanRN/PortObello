@@ -2037,11 +2037,48 @@ async function joinCompanyShipments(companyName, companyCEO) {
             { autoCommit: true }
             );
         })
-            .catch((error) => {
-                console.error("company / shipment not found", error);
-                return false;
-            });
+        .catch((error) => {
+            console.error("company / shipment not found", error);
+            return false;
+        });
 
+}
+
+// displays any number of attributes selected from Shipping Route
+async function projectShippingRoute(attributes) {
+    // list of possible attributes
+    const validAttributes = [
+          "ShippingRoute1.AnnualVolumeOfGoods",
+          "ShippingRoute1.OriginCountryName",
+          "ShippingRoute1.TerminalPortAddress",
+          "ShippingRoute2.ShippingRouteName",
+          "ShippingRoute2.Length",
+        ];
+
+        //filter selected attributes
+        const selectedAttributes = attributes.filter(attr => validAttributes.includes(attr));
+        //make sure they are valid
+        if (selectedAttributes.length === 0) {
+              throw new Error("No valid attributes selected.");
+            }
+        //append for the select clause
+        const selectClause = selectedAttributes.join(", ");
+        //query
+        await withOracleDB(async (connection) => {
+                    await connection.execute(`
+                        SELECT ${selectClause}
+                        FROM ShippingRoute1
+                        JOIN ShippingRoute2
+                        ON ShippingRoute1.OriginCountryName = ShippingRoute2.OriginCountryName
+                        AND ShippingRoute1.TerminalPortAddress = ShippingRoute2.TerminalPortAddress
+                    `,
+                    { autoCommit: true }
+                    );
+                })
+        .catch((error) => {
+            console.error(error);
+            return false;
+        });
 }
 
 
@@ -2106,8 +2143,10 @@ module.exports = {
     addShipmentContainer,
     removeShipmentContainer,
     updateNumContainers,
+    CapacityError,
 
-    CapacityError
+    projectShippingRoute,
+    joinCompanyShipments
 };
 
 //!!TODO
@@ -2142,7 +2181,7 @@ module.exports = {
 //PROJECTION -- Choose which attributes to view on this table --- PORT (using buttons on frontend)
 //  -> The user can choose any number of attributes to view from this relation
 //  -> Non-selected attributes must not appear in the result
-//JOIN -- Find all shipments from a specific COMPANY
+//JOIN -- Find all shipments from a specific COMPANY -- backend done
 //  -> join at least two relations
 //  -> user must provide at least one value to qualify in the WHERE clause
 //AGGREGATION WITH HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
