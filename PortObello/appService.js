@@ -1977,6 +1977,29 @@ async function updateNumContainers(portAddress, section, n) {
         });
 }
 
+//Finds all shipments from a specific COMPANY
+async function joinCompanyShipments(companyName, companyCEO) {
+    await withOracleDB(async (connection) => {
+            await connection.execute(`
+            CREATE TABLE CompanyShipments AS (
+            SELECT sc.ShipOwner, sc.ShipName, sc.GoodType, sc.TrackingNumber, sc.CompanyName, sc.CompanyCEO,
+                   c.Industry, c.YearlyRevenue
+            FROM ShipmentContainer2 sc
+            JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
+            WHERE sc.CompanyName = companyName AND sc.CompanyCEO = companyCEO)
+            `,
+            {companyName, companyCEO}
+            { autoCommit: true }
+            );
+        })
+            .catch((error) => {
+                console.error("company / shipment not found", error);
+                return false;
+            });
+
+}
+
+
 class CapacityError extends Error {
 }
 
