@@ -1900,7 +1900,7 @@ async function addShipmentContainer(shipOwner, shipName, portAddress, section) {
                              FROM Warehouse
                              WHERE PortAddress = portAddress AND Section = section
                              `,
-                             {portAddress, section}
+                             {portAddress, section},
                              { autoCommit: true }
                              );
                          })
@@ -1915,7 +1915,7 @@ async function addShipmentContainer(shipOwner, shipName, portAddress, section) {
             SET WarehouseSection = wSection
             WHERE ShipOwner = shipOwner AND ShipName = shipName
             `,
-            {shipOwner, shipName, wSection}
+            {shipOwner, shipName, wSection},
             { autoCommit: true }
             );
         })
@@ -1935,7 +1935,7 @@ async function removeShipmentContainer(shipOwner, shipName, portAddress, section
             SET WarehouseSection = NULL
             WHERE ShipOwner = shipOwner AND ShipName = shipName
             `,
-            {shipOwner, shipName}
+            {shipOwner, shipName},
             { autoCommit: true }
             );
         })
@@ -1955,7 +1955,7 @@ async function updateNumContainers(portAddress, section, n) {
                         FROM Warehouse
                         WHERE PortAddress = portAddress AND Section = section
                         `,
-                        {portAddress, section}
+                        {portAddress, section},
                         { autoCommit: true }
                         );
                     })
@@ -1978,7 +1978,7 @@ async function updateNumContainers(portAddress, section, n) {
         SET NumContainers = num
         WHERE PortAddress = portAddress AND Section = section
         `,
-        {portAddress, section, num: num + n}
+        {portAddress, section, num: num + n},
         { autoCommit: true }
         );
     })
@@ -2044,7 +2044,7 @@ module.exports = {
     deleteShip,
     deletePort,
     deleteTariff,
-    deleteWarehouse
+    deleteWarehouse,
 
     addShipmentContainer,
     removeShipmentContainer,
