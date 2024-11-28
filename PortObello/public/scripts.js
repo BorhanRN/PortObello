@@ -493,7 +493,7 @@ async function fetchAndDisplayPortsNumShip() {
 
         responseData.data.forEach(homecountry => {
             const row = tableBody.insertRow();
-            const columns = ['PORTADDRESS', 'NUM OF WORKERS'];
+            const columns = ['PORTADDRESS', 'NUMSHIPS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
                 cell.textContent = homecountry[col] || 'N/A';

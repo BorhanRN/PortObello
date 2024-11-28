@@ -1809,7 +1809,8 @@ async function deleteTariff(tName) {
 async function portsNumShips(num) {
     return await withOracleDB(async (connection) =>  {
         const res = await connection.execute(`
-        SELECT DockedAtPortAddress, COUNT(ShipName) AS shipPorts
+        CREATE TABLE shipPorts AS
+        SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
         FROM Ship1
         GROUP BY DockedAtPortAddress
         HAVING COUNT(ShipName) >=:num
