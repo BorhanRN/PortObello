@@ -256,13 +256,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
     return await withOracleDB(async (connection) => {
 
         const checkResult = await connection.execute(
-            `SELECT COUNT(*) AS COUNT1 FROM (
-                SELECT government FROM COUNTRY 
-                UNION 
-                SELECT government FROM HOMECOUNTRY 
-                UNION 
-                SELECT government FROM FOREIGNCOUNTRY
-            ) WHERE government = :government`,
+            `SELECT COUNT(*) AS COUNT1 FROM COUNTRY WHERE government = :government`,
             [government]
         );
 
