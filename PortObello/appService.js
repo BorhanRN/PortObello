@@ -991,7 +991,11 @@ async function initiateTariff() {
                 ['Canada - China Agreement', 9,'Canada','China', new Date('2024-10-25')],
                 ['Canada - Netherlands Agreement', 8,'Canada','Netherlands', new Date('2020-06-12')],
                 ['Canada - USA Agreement', 5,'Canada','USA', new Date('2020-01-30')],
-                ['Canada - Japan Agreement', 6,'Canada','Japan', new Date('1998-04-09')]
+                ['Canada - Japan Agreement', 6,'Canada','Japan', new Date('1998-04-09')],
+                ['Canada - Russia Agreement', 6,'Canada','Russia', new Date('1998-04-09')],
+                ['Canada - India Agreement', 6,'Canada','India', new Date('1998-04-09')],
+                ['Canada - Brazil Agreement', 6,'Canada','Brazil', new Date('1998-04-09')],
+                ['Canada - Canada Agreement', 6,'Canada','Canada', new Date('1998-04-09')]
             ];
 
             // Use bind variables for safer insertion
@@ -1009,7 +1013,12 @@ async function initiateTariff() {
                 [9,'Lumber','Canada','China', new Date('2024-10-25')],
                 [8,'Maple Syrup','Canada','Netherlands', new Date('2020-06-12')],
                 [5,'Oil','Canada','USA', new Date('2020-01-30')],
-                [6,'Wheat','Canada','Japan', new Date('1998-04-09')]
+                [6,'Wheat','Canada','Japan', new Date('1998-04-09')],
+                [6,'Wheat','Canada','Russia', new Date('1998-04-09')],
+                [6,'Wheat','Canada','India', new Date('1998-04-09')],
+                [6,'Wheat','Canada','Brazil', new Date('1998-04-09')],
+                [6,'Wheat','Canada','Canada', new Date('1998-04-09')]
+
         ];
 
             // Use bind variables for safer insertion
