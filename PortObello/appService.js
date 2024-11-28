@@ -1617,7 +1617,7 @@ async function deletePort(addy) {
         await connection.execute(`
                     UPDATE Ship1
                     SET DockedAtPortAddress = 'Ship is currently at sea.'
-                    WHERE DockedAtPortAddress = :addy
+                    WHERE DockedAtPortAddress =:addy
             `,
             [addy],
             { autoCommit: true }
