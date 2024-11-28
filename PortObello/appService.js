@@ -265,7 +265,18 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
             { autoCommit: true }
         );
 
-        return result.rowsAffected && result.rowsAffected > 0;
+        const result2 = await connection.execute(
+            `UPDATE HOMECOUNTRY 
+                SET population=:population,
+                    government=:government,
+                    portaddress=:portaddress,
+                    gdp=:gdp
+                   WHERE name=:cname`,
+            [population, government, portaddress, gdp, cname],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected > 0 && result2.rowsAffected > 0;
     }).catch(() => {
         return false;
     });
@@ -1875,6 +1886,106 @@ async function updateShipValues() {
             return false;
         });
 }
+
+// assigns shipment container to warehouse, increments warehouse numContainers
+async function addShipmentContainer(shipOwner, shipName, portAddress, section) {
+    const wSection = await withOracleDB(async (connection) => {
+                             await connection.execute(`
+                             SELECT Section
+                             FROM Warehouse
+                             WHERE PortAddress = portAddress AND Section = section
+                             `,
+                             {portAddress, section},
+                             { autoCommit: true }
+                             );
+                         })
+
+    if (!wSection.rows || wSection.rows.length <= 0) {
+                    return false;
+                }
+
+    await withOracleDB(async (connection) => {
+            await connection.execute(`
+            UPDATE ShipmentContainer1
+            SET WarehouseSection = wSection
+            WHERE ShipOwner = shipOwner AND ShipName = shipName
+            `,
+            {shipOwner, shipName, wSection},
+            { autoCommit: true }
+            );
+        })
+            .catch((error) => {
+                console.error("Warehouse at max capacity", error);
+                return false;
+            });
+
+    return await updateNumContainers(portAddress, section, 1);
+}
+
+// removes shipment container from warehouse, decrements warehouse numContainers
+async function removeShipmentContainer(shipOwner, shipName, portAddress, section) {
+    await withOracleDB(async (connection) => {
+            await connection.execute(`
+            UPDATE ShipmentContainer1
+            SET WarehouseSection = NULL
+            WHERE ShipOwner = shipOwner AND ShipName = shipName
+            `,
+            {shipOwner, shipName},
+            { autoCommit: true }
+            );
+        })
+            .catch((error) => {
+                console.error("Warehouse at max capacity", error);
+                return false;
+            });
+
+    return await updateNumContainers(portAddress, section, -1);
+}
+
+//increments or decrements Warehouse numContainers
+async function updateNumContainers(portAddress, section, n) {
+    const result = await withOracleDB(async (connection) => {
+                        await connection.execute(`
+                        SELECT NumContainers, Capacity
+                        FROM Warehouse
+                        WHERE PortAddress = portAddress AND Section = section
+                        `,
+                        {portAddress, section},
+                        { autoCommit: true }
+                        );
+                    })
+
+    if (!result.rows || result.rows.length <= 0) {
+                return false;
+            }
+
+    const rowResult = result.rows[0];
+    const num = rowResult[0];
+    const capacity = rowResult[1];
+
+    if (num + n > capacity && num + n < 0) {
+        throw new CapacityError();
+    }
+
+    return await withOracleDB(async (connection) => {
+        await connection.execute(`
+        UPDATE Warehouse
+        SET NumContainers = num
+        WHERE PortAddress = portAddress AND Section = section
+        `,
+        {portAddress, section, num: num + n},
+        { autoCommit: true }
+        );
+    })
+        .catch((error) => {
+            console.error("Warehouse at max capacity", error);
+            return false;
+        });
+}
+
+class CapacityError extends Error {
+}
+
 module.exports = {
     testOracleConnection,
     initiateAll,
@@ -1928,7 +2039,13 @@ module.exports = {
     deleteShip,
     deletePort,
     deleteTariff,
-    deleteWarehouse
+    deleteWarehouse,
+
+    addShipmentContainer,
+    removeShipmentContainer,
+    updateNumContainers,
+
+    CapacityError
 };
 
 //!!TODO
