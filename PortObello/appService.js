@@ -178,7 +178,7 @@ async function initiateCountry() {
                 CREATE TABLE COUNTRY (
                     Name        VARCHAR2(100) NOT NULL,
                     Population  NUMBER,
-                    Government  VARCHAR2(100),
+                    Government  VARCHAR2(100) UNIQUE,
                     GDP         NUMBER,
                     PortAddress VARCHAR2(200) NOT NULL,
                     PRIMARY KEY (Name)
@@ -2175,16 +2175,15 @@ module.exports = {
 
 //!!TODO
 //------------------REQUIRED------------------
-//-X-INSERT (implement on HOMECOUNTRY)
+//-X- INSERT (implement on HOMECOUNTRY)
 //  -> specify what values to insert
 //  -> affects more than one relationship
 //  -> handle the case where the foreign key value in the tuple being inserted does not exist in the relation that is being referred to
 //      -> user notification - rejection
-//UPDATE
+//UPDATE - NOT RESPECTING UNIQUE CONSTRAINT
 //  -> relation must have at least 2 non-primary-key attributes
 //  -> At least one non-primary key attribute must have either a UNIQUE constraint or be a foreign key that references another relation.
 //  -> display the tuples that are available for the relation so the user can select which tuple they want to update (just show table? probably)
-//      -> UPDATECOUNTRYNAME -- need to update all things that reference country MANUALLY
 //-X- DELETE (implemented on PORT and cascades to related tables)
 //  -> cascade-on-delete situation
 //-X- AGGREGATION with GROUP BY (count implemented on COUNTRY)
@@ -2195,10 +2194,11 @@ module.exports = {
 //  -> must provide an interface (e.g., button, dropdown, etc.)
 //  -> can use VIEW if easier
 //  -> see pdf for example
-
-//DIVISION
+//-X- DIVISION
 //  -> must do division (no shit)
 //  -> must provide an interface (e.g., button, dropdown, etc.)
+
+
 //SELECT -- Search through all attributes --- SHIP
 //  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
 //  -> using a dynamically generated dropdown of AND/OR options or parsing user string
