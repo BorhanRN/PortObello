@@ -1817,10 +1817,10 @@ async function portsNumShips(num) {
     return await withOracleDB(async (connection) =>  {
         const res = await connection.execute(`
             CREATE TABLE shipPorts AS
-            SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
+            (SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
             FROM Ship1
             GROUP BY DockedAtPortAddress
-            HAVING COUNT(ShipName) >=:num
+            HAVING COUNT(ShipName) >=:num)
         `,
             [num],
             {autoCommit: true}
