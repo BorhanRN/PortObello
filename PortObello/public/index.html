@@ -83,14 +83,18 @@
 <div id="Country Functions" class="countryContent">
 <h2>Update Name in Country</h2>
 <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
-<form id="updateNameCountry">
-    Old Name: <input type="text" id="updateOldName" placeholder="Enter Old Name" required> <br><br>
-    New Name: <input type="text" id="updateNewName" placeholder="Enter New Name" maxlength="20"> <br><br>
+    <p>Write the name of the Country you want to update, and then enter the values you want to update it with.</p>
+<form id="updateCountry">
+    Name: <input type="text" id="updateName" placeholder="Enter New Name" maxlength="20"> <br><br>
+    Population: <input type="number" id="updatePopulation" placeholder="Enter Population" required> <br><br>
+    Government: <input type="text" id="updateGovernment" placeholder="Enter Government" maxlength="20"> <br><br>
+    PortAddress: <input type="text" id="updatePortAddress" placeholder="Enter Port Address" maxlength="20"> <br><br>
+    GDP: <input type="number" id="updateGDP" placeholder="Enter GDP" required> <br><br>
 
     <button type="submit"> update </button> <br>
 </form>
 <!-- A placeholder to display messages related to the update operation. -->
-<div id="updateNameResultMsg"></div>
+<div id="updateResultMsg"></div>
 
 <br><hr><br> <!-- ========================================================================= -->
 
@@ -144,7 +148,7 @@
 <form id="deletePort">
     Coordinates for Nuke: <input type="text" id="portAddress" placeholder="Port Address goes here." required> <br><br>
 
-    <button type="submit"> launch </button> <br>
+    <button type="submit"> Launch </button> <br>
 </form>
 <!-- A placeholder to display messages related to the update operation. -->
 <div id="deletePortResultsMsg"></div>
@@ -153,15 +157,15 @@
 </div>
 
 <div id="Find Populated Ports" class="portContent">
-    <h2>Delete Port</h2>
+    <h2>Find Populated Ports</h2>
     <p>This page allows you to find all ports with a certain (or more) number of ships docked.</p>
     <form id="numShips">
         Minimum number of ships: <input type="number" id="numberOfShips" placeholder="Number here..." required> <br><br>
 
-        <button type="submit"> launch </button> <br>
+        <button type="submit"> Find Ports </button> <br>
     </form>
     <!-- A placeholder to display messages related to the update operation. -->
-    <div id="deletePortResultsMsg"></div>
+    <div id="portNumShipsMessage"></div>
 
     <br><hr><br> <!-- ========================================================================= -->
 </div>
