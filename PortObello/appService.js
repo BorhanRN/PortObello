@@ -266,7 +266,9 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
             [government]
         );
 
-        if (checkResult.rows[0].COUNT > 0) {
+        const existingCount = checkResult.rows[0]?.COUNT || 0;
+
+        if (existingCount > 0) {
             // Government value already exists
             throw new Error(`Government value '${government}' already exists and must be unique.`);
         }
@@ -279,7 +281,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     gdp=:gdp
                    WHERE name=:cname`,
             [population, government, portaddress, gdp, cname],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
         const result2 = await connection.execute(
@@ -290,7 +292,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     gdp=:gdp
                    WHERE name=:cname`,
             [population, government, portaddress, gdp, cname],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
         const result3 = await connection.execute(
@@ -301,10 +303,10 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     gdp=:gdp
                    WHERE name=:cname`,
             [population, government, portaddress, gdp, cname],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
-
+        await connection.commit();
 
         return result.rowsAffected > 0 && result2.rowsAffected > 0 && result3.rowsAffected > 0;
     }).catch(() => {
