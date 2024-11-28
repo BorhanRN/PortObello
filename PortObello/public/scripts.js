@@ -264,7 +264,7 @@ async function portNumShip(event){
     event.preventDefault();
     const num = document.getElementById('numberOfShips').value;
 
-    const response = await fetch( '/port-num-ship', {
+    const response = await fetch('/port-num-ship', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -460,6 +460,49 @@ async function fetchAndDisplayHomeCountry() {
         console.log('Table populated successfully');
     } catch (error) {
         console.error('Error in fetchAndDisplayHomeCountry:', error);
+    }
+
+}
+
+// Fetches data from PORT and displays it. CL1
+async function fetchAndDisplayPortsNumShip() {
+    try {
+        console.log('Fetching homecountry data...');
+        const response = await fetch('/numShips', { method: 'GET' });
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response JSON:', responseData);
+
+        const tableElement = document.getElementById('populatedPorts');
+        if (!tableElement) throw new Error('Table element with id "populatedPorts" not found');
+
+        const tableBody = tableElement.querySelector('tbody');
+        if (!tableBody) throw new Error('No <tbody> found in table');
+
+        // Clear old content
+        tableBody.innerHTML = '';
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error('Data format error: data is not an array');
+        }
+
+        responseData.data.forEach(homecountry => {
+            const row = tableBody.insertRow();
+            const columns = ['PORTADDRESS', 'NUMSHIPS'];
+            columns.forEach(col => {
+                const cell = row.insertCell();
+                cell.textContent = homecountry[col] || 'N/A';
+            });
+        });
+
+        console.log('Table populated successfully');
+    } catch (error) {
+        console.error('Error in populated ports:', error);
     }
 
 }
@@ -1031,6 +1074,7 @@ window.onload = async function() {
 
     document.getElementById("numShips").addEventListener("submit", async (e) => {
         await portNumShip(e);
+        await fetchAndDisplayPortsNumShip();
     });
 
     document.getElementById("groupBy").addEventListener("submit", async (e) => {
