@@ -254,6 +254,32 @@ async function insertCountry(name, population, government, gdp, portaddress) {
 
 async function updateCountry(cname, population, government, portaddress, gdp) {
     return await withOracleDB(async (connection) => {
+
+        const checkC = await connection.execute(
+            `SELECT COUNT(*) AS COUNT
+                FROM COUNTRY
+                WHERE government = :government`,
+            [government]
+        );
+
+        const checkHC = await connection.execute(
+            `SELECT COUNT(*) AS COUNT
+                FROM HOMECOUNTRY
+                WHERE government = :government`,
+            [government]
+        );
+
+        const checkFC = await connection.execute(
+            `SELECT COUNT(*) AS COUNT
+             FROM FOREIGNCOUNTRY
+             WHERE government = :government`,
+            [government]
+        );
+
+        if (checkC.rows[0].COUNT > 0 || checkHC.rows[0].COUNT > 0 || checkFC.rows[0].COUNT > 0) {
+            throw new Error(`Government value '${government}' already exists and must be unique.`);
+        }
+
         const result = await connection.execute(
             `UPDATE COUNTRY 
                 SET population=:population,
@@ -265,7 +291,31 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
             { autoCommit: true }
         );
 
-        return result.rowsAffected && result.rowsAffected > 0;
+        const result2 = await connection.execute(
+            `UPDATE HOMECOUNTRY 
+                SET population=:population,
+                    government=:government,
+                    portaddress=:portaddress,
+                    gdp=:gdp
+                   WHERE name=:cname`,
+            [population, government, portaddress, gdp, cname],
+            { autoCommit: true }
+        );
+
+        const result3 = await connection.execute(
+            `UPDATE FOREIGNCOUNTRY 
+                SET population=:population,
+                    government=:government,
+                    portaddress=:portaddress,
+                    gdp=:gdp
+                   WHERE name=:cname`,
+            [population, government, portaddress, gdp, cname],
+            { autoCommit: true }
+        );
+
+
+
+        return result.rowsAffected > 0 && result2.rowsAffected > 0 && result3.rowsAffected > 0;
     }).catch(() => {
         return false;
     });
@@ -311,7 +361,7 @@ async function fetchNumShipsFromDB() {
         try {
             console.log('Grabbing the new NumShips table...');
             const result = await connection.execute(
-                'SELECT * FROM shipPorts',
+                'SELECT * FROM NumShips',
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
 
@@ -1639,18 +1689,14 @@ async function deletePort(addy) {
             { autoCommit: true }
         );
 
-        await connection.execute(
-
-        )
-
-        await connection.execute(`
-                    UPDATE Ship1
-                    SET DockedAtPortAddress = 'International Waters.'
-                    WHERE DockedAtPortAddress =:addy
-            `,
-            [addy],
-            { autoCommit: true }
-        );
+        // await connection.execute(`
+        //             UPDATE Ship1
+        //             SET DockedAtPortAddress = 'International Waters.'
+        //             WHERE DockedAtPortAddress =:addy
+        //     `,
+        //     [addy],
+        //     { autoCommit: true }
+        // );
         //
         // await connection.execute(`
         //             DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
@@ -1809,21 +1855,20 @@ async function deleteTariff(tName) {
 async function portsNumShips(num) {
     return await withOracleDB(async (connection) =>  {
         const res = await connection.execute(`
-        CREATE TABLE shipPorts AS
-        SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
-        FROM Ship1
-        GROUP BY DockedAtPortAddress
-        HAVING COUNT(ShipName) >=:num
+            CREATE TABLE shipPorts AS
+            (SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
+            FROM Ship1
+            GROUP BY DockedAtPortAddress
+            HAVING COUNT(ShipName) >=:num)
         `,
             [num],
+            {autoCommit: true}
         );
-
-        await connection.commit();
         console.log('Query result:', res);
-        return res.rowsAffected && res.rowsAffected > 0;
+        return true;
     })
         .catch((error) => {
-            console.error("Error deleting port:", error);
+            console.error("Error finding ports with numships:", error);
             return false;
         });
 }
@@ -1889,7 +1934,7 @@ async function addShipmentContainer(shipOwner, shipName, portAddress, section) {
                              FROM Warehouse
                              WHERE PortAddress = portAddress AND Section = section
                              `,
-                             {portAddress, section}
+                             {portAddress, section},
                              { autoCommit: true }
                              );
                          })
@@ -1904,7 +1949,7 @@ async function addShipmentContainer(shipOwner, shipName, portAddress, section) {
             SET WarehouseSection = wSection
             WHERE ShipOwner = shipOwner AND ShipName = shipName
             `,
-            {shipOwner, shipName, wSection}
+            {shipOwner, shipName, wSection},
             { autoCommit: true }
             );
         })
@@ -1924,7 +1969,7 @@ async function removeShipmentContainer(shipOwner, shipName, portAddress, section
             SET WarehouseSection = NULL
             WHERE ShipOwner = shipOwner AND ShipName = shipName
             `,
-            {shipOwner, shipName}
+            {shipOwner, shipName},
             { autoCommit: true }
             );
         })
@@ -1944,7 +1989,7 @@ async function updateNumContainers(portAddress, section, n) {
                         FROM Warehouse
                         WHERE PortAddress = portAddress AND Section = section
                         `,
-                        {portAddress, section}
+                        {portAddress, section},
                         { autoCommit: true }
                         );
                     })
@@ -1967,7 +2012,7 @@ async function updateNumContainers(portAddress, section, n) {
         SET NumContainers = num
         WHERE PortAddress = portAddress AND Section = section
         `,
-        {portAddress, section, num: num + n}
+        {portAddress, section, num: num + n},
         { autoCommit: true }
         );
     })
@@ -2056,7 +2101,7 @@ module.exports = {
     deleteShip,
     deletePort,
     deleteTariff,
-    deleteWarehouse
+    deleteWarehouse,
 
     addShipmentContainer,
     removeShipmentContainer,

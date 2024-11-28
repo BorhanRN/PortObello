@@ -661,7 +661,7 @@ async function fetchAndDisplayForeignCountry() {
 
         responseData.data.forEach(foreigncountry => {
             const row = tableBody.insertRow();
-            const columns = ['NAME', 'POPULATION', 'GDP', 'GOVERNMENT', 'DOCKINGFEE'];
+            const columns = ['NAME', 'POPULATION', 'GDP', 'GOVERNMENT', 'DOCKINGFEE', 'PORTADDRESS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
                 cell.textContent = foreigncountry[col] || 'N/A';
