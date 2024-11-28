@@ -1639,18 +1639,14 @@ async function deletePort(addy) {
             { autoCommit: true }
         );
 
-        await connection.execute(
-
-        )
-
-        await connection.execute(`
-                    UPDATE Ship1
-                    SET DockedAtPortAddress = 'International Waters.'
-                    WHERE DockedAtPortAddress =:addy
-            `,
-            [addy],
-            { autoCommit: true }
-        );
+        // await connection.execute(`
+        //             UPDATE Ship1
+        //             SET DockedAtPortAddress = 'International Waters.'
+        //             WHERE DockedAtPortAddress =:addy
+        //     `,
+        //     [addy],
+        //     { autoCommit: true }
+        // );
         //
         // await connection.execute(`
         //             DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
@@ -1809,21 +1805,20 @@ async function deleteTariff(tName) {
 async function portsNumShips(num) {
     return await withOracleDB(async (connection) =>  {
         const res = await connection.execute(`
-        CREATE TABLE shipPorts AS
-        SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
-        FROM Ship1
-        GROUP BY DockedAtPortAddress
-        HAVING COUNT(ShipName) >=:num
+            CREATE TABLE shipPorts AS
+            SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
+            FROM Ship1
+            GROUP BY DockedAtPortAddress
+            HAVING COUNT(ShipName) >=:num
         `,
             [num],
+            {autoCommit: true}
         );
-
-        await connection.commit();
         console.log('Query result:', res);
-        return res.rowsAffected && res.rowsAffected > 0;
+        return true;
     })
         .catch((error) => {
-            console.error("Error deleting port:", error);
+            console.error("Error finding ports with numships:", error);
             return false;
         });
 }
