@@ -1026,7 +1026,6 @@ async function initiateTariff() {
                 [6,'Wheat','Canada','India', new Date('1998-04-09')],
                 [6,'Wheat','Canada','Brazil', new Date('1998-04-09')],
                 [6,'Wheat','Canada','Canada', new Date('1998-04-09')],
-                [9,'Lumber','Canada','China', new Date('2024-10-25')],
                 [9,'Lumber','USA','China', new Date('2024-10-25')],
                 [8,'Maple Syrup','USA','Netherlands', new Date('2020-06-12')],
                 [5,'Oil','USA','USA', new Date('2020-01-30')],
