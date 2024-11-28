@@ -322,7 +322,7 @@ async function fetchNumShipsFromDB() {
         try {
             console.log('Grabbing the new NumShips table...');
             const result = await connection.execute(
-                'SELECT * FROM shipPorts',
+                'SELECT * FROM NumShips',
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
 
