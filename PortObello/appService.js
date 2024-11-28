@@ -2049,7 +2049,7 @@ async function joinCompanyShipments(companyName, companyCEO) {
             JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
             WHERE sc.CompanyName = companyName AND sc.CompanyCEO = companyCEO)
             `,
-            {companyName, companyCEO}
+            {companyName, companyCEO},
             { autoCommit: true }
             );
         })
