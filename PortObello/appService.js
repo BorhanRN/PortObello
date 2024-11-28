@@ -265,7 +265,18 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
             { autoCommit: true }
         );
 
-        return result.rowsAffected && result.rowsAffected > 0;
+        const result2 = await connection.execute(
+            `UPDATE HOMECOUNTRY 
+                SET population=:population,
+                    government=:government,
+                    portaddress=:portaddress,
+                    gdp=:gdp
+                   WHERE name=:cname`,
+            [population, government, portaddress, gdp, cname],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected > 0 && result2.rowsAffected > 0;
     }).catch(() => {
         return false;
     });
