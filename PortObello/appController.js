@@ -328,5 +328,64 @@ router.post("/port-num-ship", async (req, res) => {
     }
 });
 
+router.post("/join-Company-Shipment", async (req, res) => {
+    const { companyName, companyCEO } = req.body;
+    const initiateResult = await appService.joinCompanyShipments(companyName, companyCEO)
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/project-Shipping-Route", async (req, res) => {
+    const { attributes } = req.body;
+    const initiateResult = await appService.projectShippingRoute(attributes)
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/project-Shipping-Route", async (req, res) => {
+    const { attributes } = req.body;
+    const initiateResult = await appService.projectShippingRoute(attributes)
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/remove-Shipment-Container", async (req, res) => {
+    const { shipOwner, shipName, portAddress, section } = req.body;
+    const initiateResult = await appService.removeShipmentContainer(shipOwner, shipName, portAddress, section)
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/add-Shipment-Container", async (req, res) => {
+    const { shipOwner, shipName, portAddress, section } = req.body;
+    const initiateResult = await appService.addShipmentContainer(shipOwner, shipName, portAddress, section)
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/update-Num-Containers", async (req, res) => {
+    const { portAddress, section, n } = req.body;
+    const initiateResult = await appService.updateNumContainers(portAddress, section, n)
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
 
 module.exports = router;

@@ -2011,7 +2011,7 @@ async function updateNumContainers(portAddress, section, n) {
 
 //Finds all shipments from a specific COMPANY
 async function joinCompanyShipments(companyName, companyCEO) {
-    await withOracleDB(async (connection) => {
+    return await withOracleDB(async (connection) => {
             await connection.execute(`
             CREATE TABLE CompanyShipments AS (
             SELECT sc.ShipOwner, sc.ShipName, sc.GoodType, sc.TrackingNumber, sc.CompanyName, sc.CompanyCEO,
@@ -2051,7 +2051,7 @@ async function projectShippingRoute(attributes) {
         //append for the select clause
         const selectClause = selectedAttributes.join(", ");
         //query
-        await withOracleDB(async (connection) => {
+        return await withOracleDB(async (connection) => {
                     await connection.execute(`
                         SELECT ${selectClause}
                         FROM ShippingRoute1
@@ -2165,7 +2165,7 @@ module.exports = {
 //SELECT -- Search through all attributes --- SHIP
 //  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
 //  -> using a dynamically generated dropdown of AND/OR options or parsing user string
-//PROJECTION -- Choose which attributes to view on this table --- PORT (using buttons on frontend)
+//PROJECTION -- Choose which attributes to view on this table --- Shipping Route done in backend
 //  -> The user can choose any number of attributes to view from this relation
 //  -> Non-selected attributes must not appear in the result
 //JOIN -- Find all shipments from a specific COMPANY -- backend done
