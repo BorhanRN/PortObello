@@ -1020,3 +1020,12 @@ async function fetchTableData() {
     await fetchAndDisplayCompany();
     await fetchAndDisplayShipmentContainer();
 }
+
+async function test() {
+    try {
+    incNumContainers(aa, aa)
+    } catch (error) {
+        if(error instanceof CapacityError) {
+        }
+    }
+}
