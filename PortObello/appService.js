@@ -2003,6 +2003,10 @@ module.exports = {
     deleteTariff,
     deleteWarehouse
 
+    addShipmentContainer,
+    removeShipmentContainer,
+    updateNumContainers,
+
     CapacityError
 };
 
