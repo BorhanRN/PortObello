@@ -995,7 +995,15 @@ async function initiateTariff() {
                 ['Canada - Russia Agreement', 6,'Canada','Russia', new Date('1998-04-09')],
                 ['Canada - India Agreement', 6,'Canada','India', new Date('1998-04-09')],
                 ['Canada - Brazil Agreement', 6,'Canada','Brazil', new Date('1998-04-09')],
-                ['Canada - Canada Agreement', 6,'Canada','Canada', new Date('1998-04-09')]
+                ['Canada - Canada Agreement', 6,'Canada','Canada', new Date('1998-04-09')],
+                ['USA - China Agreement', 9,'USA','China', new Date('2024-10-25')],
+                ['USA - Netherlands Agreement', 8,'USA','Netherlands', new Date('2020-06-12')],
+                ['USA - USA Agreement', 5,'USA','USA', new Date('2020-01-30')],
+                ['USA - Japan Agreement', 6,'USA','Japan', new Date('1998-04-09')],
+                ['USA - Russia Agreement', 6,'USA','Russia', new Date('1998-04-09')],
+                ['USA - India Agreement', 6,'USA','India', new Date('1998-04-09')],
+                ['USA - Brazil Agreement', 6,'USA','Brazil', new Date('1998-04-09')],
+                ['USA - Canada Agreement', 6,'USA','Canada', new Date('1998-04-09')]
             ];
 
             // Use bind variables for safer insertion
@@ -1017,7 +1025,16 @@ async function initiateTariff() {
                 [6,'Wheat','Canada','Russia', new Date('1998-04-09')],
                 [6,'Wheat','Canada','India', new Date('1998-04-09')],
                 [6,'Wheat','Canada','Brazil', new Date('1998-04-09')],
-                [6,'Wheat','Canada','Canada', new Date('1998-04-09')]
+                [6,'Wheat','Canada','Canada', new Date('1998-04-09')],
+                [9,'Lumber','Canada','China', new Date('2024-10-25')],
+                [9,'Lumber','USA','China', new Date('2024-10-25')],
+                [8,'Maple Syrup','USA','Netherlands', new Date('2020-06-12')],
+                [5,'Oil','USA','USA', new Date('2020-01-30')],
+                [6,'Wheat','USA','Japan', new Date('1998-04-09')],
+                [6,'Wheat','USA','Russia', new Date('1998-04-09')],
+                [6,'Wheat','USA','India', new Date('1998-04-09')],
+                [6,'Wheat','USA','Brazil', new Date('1998-04-09')],
+                [6,'Wheat','USA','Canada', new Date('1998-04-09')]
 
         ];
 
@@ -2180,7 +2197,7 @@ module.exports = {
 //  -> affects more than one relationship
 //  -> handle the case where the foreign key value in the tuple being inserted does not exist in the relation that is being referred to
 //      -> user notification - rejection
-//UPDATE - NOT RESPECTING UNIQUE CONSTRAINT
+//-X- UPDATE
 //  -> relation must have at least 2 non-primary-key attributes
 //  -> At least one non-primary key attribute must have either a UNIQUE constraint or be a foreign key that references another relation.
 //  -> display the tuples that are available for the relation so the user can select which tuple they want to update (just show table? probably)
@@ -2216,7 +2233,7 @@ module.exports = {
 
 //------------------OTHER REQUIREMENTS------------------
 //-X-NOT ALL ON ONE PAGE
-//-X-sufficient user data?
+//sufficient user data? - NEED MORE
 // basic security practices
 //  -> values from the user are not directly used in the database
 //  -> prevent injection and rainbow attacks
