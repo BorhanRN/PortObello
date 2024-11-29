@@ -348,7 +348,7 @@ async function fetchNumShipsFromDB() {
         try {
             console.log('Grabbing the new NumShips table...');
             const result = await connection.execute(
-                'SELECT * FROM NumShips',
+                'SELECT * FROM shipPorts',
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
 
@@ -1924,23 +1924,72 @@ async function deleteTariff(tName) {
 //aggregation with having
 async function portsNumShips(num) {
     return await withOracleDB(async (connection) =>  {
-        const res = await connection.execute(`
-            CREATE TABLE shipPorts AS
-            (SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
-            FROM Ship1
-            GROUP BY DockedAtPortAddress
-            HAVING COUNT(ShipName) >=:num)
-        `,
+        await connection.execute( `
+                    DELETE FROM Warehouse
+                    WHERE PortAddress =:addy
+            `,
             [num],
-            {autoCommit: true}
+            { autoCommit: true }
         );
-        console.log('Query result:', res);
-        return true;
+
+        // await connection.execute(`
+        //             UPDATE Ship1
+        //             SET DockedAtPortAddress = 'International Waters.'
+        //             WHERE DockedAtPortAddress =:addy
+        //     `,
+        //     [addy],
+        //     { autoCommit: true }
+        // );
+        //
+        // await connection.execute(`
+        //             DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
+        //          `,
+        //     [addy],
+        //     { autoCommit: true }
+        // );
+
+        await connection.execute( `
+                    UPDATE Country
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
+            `,
+            [num],
+            { autoCommit: true }
+        );
+
+
+        const deletion = await connection.execute( `
+        DELETE FROM Port WHERE PortAddress =:addy
+        `,
+            [num]
+        );
+
+        await connection.commit();
+
+        return deletion.rowsAffected && deletion.rowsAffected > 0;
     })
         .catch((error) => {
-            console.error("Error finding ports with numships:", error);
+            console.error("Error deleting port:", error);
             return false;
         });
+    // return await withOracleDB(async (connection) =>  {
+    //     const res = await connection.execute(`
+    //         CREATE TABLE shipPorts AS
+    //         (SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
+    //         FROM Ship1
+    //         GROUP BY DockedAtPortAddress
+    //         HAVING COUNT(ShipName) >=:num)
+    //     `,
+    //         [num],
+    //         {autoCommit: true}
+    //     );
+    //     console.log('Query result:', res);
+    //     return true;
+    // })
+    //     .catch((error) => {
+    //         console.error("Error finding ports with numships:", error);
+    //         return false;
+    //     });
 }
 
 //group by

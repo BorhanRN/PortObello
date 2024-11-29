@@ -260,7 +260,7 @@ async function maxAverage(event) {
     }
 }
 
-async function portNumShip(event){
+async function numShip(event){
     event.preventDefault();
     const num = document.getElementById('numberOfShips').value;
 
@@ -467,7 +467,7 @@ async function fetchAndDisplayHomeCountry() {
 // Fetches data from PORT and displays it. CL1
 async function fetchAndDisplayPortsNumShip() {
     try {
-        console.log('Fetching homecountry data...');
+        console.log('Fetching NumShipx data...');
         const response = await fetch('/numShips', { method: 'GET' });
         console.log('Response status:', response.status);
 
@@ -491,12 +491,12 @@ async function fetchAndDisplayPortsNumShip() {
             throw new Error('Data format error: data is not an array');
         }
 
-        responseData.data.forEach(homecountry => {
+        responseData.data.forEach(shipPorts => {
             const row = tableBody.insertRow();
-            const columns = ['PORTADDRESS', 'NUMSHIPS'];
+            const columns = ['DOCKEDATPORTADDRESS', 'NUMSHIPS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
-                cell.textContent = homecountry[col] || 'N/A';
+                cell.textContent = shipPorts[col] || 'N/A';
             });
         });
 
@@ -1149,8 +1149,8 @@ window.onload = async function() {
     });
 
     document.getElementById("numShips").addEventListener("submit", async (e) => {
-        await portNumShip(e);
-        await fetchAndDisplayPortsNumShip();
+        await numShip(e);
+        //await fetchAndDisplayPortsNumShip();
     });
 
     document.getElementById("groupBy").addEventListener("submit", async (e) => {
