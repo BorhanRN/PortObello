@@ -1924,16 +1924,12 @@ async function deleteTariff(tName) {
 //aggregation with having
 async function portsNumShips(min, max) {
     return await withOracleDB(async (connection) =>  {
-        const sql = `
-        CREATE VIEW shipPorts AS
-        SELECT 
-            S.DockedAtPortAddress AS PortAddress, 
-            COUNT(S.ShipName) AS NumShips
-        FROM Ship1 S
-        WHERE S.ShipSize >= ${min} AND S.ShipSize <= ${min}
-        GROUP BY S.DockedAtPortAddress
-        HAVING COUNT(S.ShipName) > 0
-        `;
+        let s1 = 'CREATE VIEW shipPorts AS SELECT S.DockedAtPortAddress AS PortAddress, COUNT(S.ShipName) AS NumShips FROM Ship1 S WHERE S.ShipSize >= ';
+        let s2 = min.toString();
+        let s3 = " AND S.ShipSize <= ";
+        let s4 = max.toString();
+        let s5 = 'GROUP BY S.DockedAtPortAddress HAVING COUNT(S.ShipName) > 0';
+        const sql = s1 + s2 + s3 + s4 + s5;
 
         await connection.execute(sql,  { autoCommit: true });
         return true;
