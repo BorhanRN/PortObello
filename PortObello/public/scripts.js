@@ -260,7 +260,7 @@ async function maxAverage(event) {
     }
 }
 
-async function numShip(event){
+async function numShip(event) {
 //     event.preventDefault();
 //     const min = document.getElementById('minNumb').value;
 //     const max = document.getElementById('maxNumb').value;
@@ -288,20 +288,20 @@ async function numShip(event){
 // }
     event.preventDefault();
 
-     const min = document.getElementById('minNumb').value;
-     const max = document.getElementById('maxNumb').value;
+    const min = document.getElementById('minNumb').value;
+    const max = document.getElementById('maxNumb').value;
 
     try {
         const response = await fetch('/port-num-ship', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            min: min,
-            max: max,
-        })
-    });
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                min: min,
+                max: max,
+            })
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -330,6 +330,7 @@ async function numShip(event){
     } catch (error) {
         console.error('Error running populated ports query:', error);
     }
+}
 
 // // Counts rows in country.
 // // Modify the function accordingly if using different aggregate functions or procedures.
