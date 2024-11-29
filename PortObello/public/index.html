@@ -81,7 +81,7 @@
 </div>
 
 <div id="Country Functions" class="countryContent">
-<h2>Update Value in Country</h2>
+<h2>Update Name in Country</h2>
 <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
     <p>Write the name of the Country you want to update, and then enter the values you want to update it with.</p>
 <form id="updateCountry">
@@ -98,27 +98,10 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 
-<!--<h2>Count the Tuples in Country</h2>-->
-<!--<button id="countCountry"> count </button> <br><br>-->
-<!--&lt;!&ndash; A placeholder to display the count result. &ndash;&gt;-->
-<!--<div id="countResultMsg"></div> <br>-->
-<!--<br><hr><br> &lt;!&ndash; ========================================================================= &ndash;&gt;-->
-
-
-<h1>Countries by GDP Range</h1>
-<button id="countCountriesByGDPButton">Get GDP Ranges</button>
-
-<table id="countriesByGDPTable" border="1" style="display: none;">
-    <thead>
-    <tr>
-        <th>GDP Range</th>
-        <th>Number of Countries</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-<div id="countriesByGDPMessage"></div>
-
+<h2>Count the Tuples in Country</h2>
+<button id="countCountry"> count </button> <br><br>
+<!-- A placeholder to display the count result. -->
+<div id="countResultMsg"></div> <br>
 <br><hr><br> <!-- ========================================================================= -->
 </div>
 
@@ -175,11 +158,9 @@
 
 <div id="Find Populated Ports" class="portContent">
     <h2>Find Populated Ports</h2>
-    <p>This page allows you to find all ports with ships between a certain size, as well as shows you the number of ships within this range.</p>
+    <p>This page allows you to find all ports with a certain (or more) number of ships docked.</p>
     <form id="numShips">
-        Size range of ships:
-        <input type="number" id="minNumb" placeholder="Minimum size here..." required>
-        <input type="number" id="maxNumb" placeholder="Maximum size here..." required> <br><br>
+        Minimum number of ships: <input type="number" id="numberOfShips" placeholder="Number here..." required> <br><br>
 
         <button type="submit"> Find Ports </button> <br>
     </form>

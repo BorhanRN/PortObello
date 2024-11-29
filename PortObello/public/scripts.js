@@ -1108,6 +1108,52 @@ async function runDynamicShipQuery(event) {
     }
 }
 
+async function joinCompanyShipment(event) {
+    event.preventDefault();
+
+    const companyName = document.getElementById('inputCompanyName').value;
+    const companyCEO = document.getElementById('inputCompanyCEO').value;
+
+    try {
+            const response = await fetch('/join-Company-Shipment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    companyName: companyName,
+                    companyCEO: companyCEO,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            const tableBody = document.getElementById('joinCompanyShipmentResultsTable').querySelector('tbody');
+
+            // Clear old results
+            tableBody.innerHTML = '';
+
+            if (responseData.success && Array.isArray(responseData.data)) {
+                responseData.data.forEach(company => {
+                    const row = tableBody.insertRow();
+                    ['CEO', 'NAME', 'INDUSTRY', 'YEARLYREVENUE', 'COUNTRYNAME'].forEach(attr => {
+                        const cell = row.insertCell();
+                        cell.textContent = company[attr] || 'N/A';
+                    });
+                });
+            } else {
+                const row = tableBody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 5;
+                cell.textContent = 'No results found';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -1212,7 +1258,9 @@ window.onload = async function() {
 
     document.getElementById('shipQueryForm').addEventListener('submit', runDynamicShipQuery);
 
-}
+    document.getElementById("joinCompanyShipmentInput").addEventListener("submitButton", async (e) => {
+            await joinCompanyShipment(e);
+        });
 
 // General function to refresh the displayed table data.
 // You can invoke this after any table-modifying operation to keep consistency.
