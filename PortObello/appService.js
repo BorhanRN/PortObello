@@ -726,8 +726,18 @@ async function insertHomeCountry(name, population, government, gdp, portaddress)
             { autoCommit: true }
         );
 
+        const result3 = await connection.execute(
+            `UPDATE COUNTRY
+             SET population = :population,
+                 government = :government,
+                 gdp = :gdp,
+                 portaddress = :portaddress
+             WHERE Name = :name
+            `
+        );
 
-        return result.rowsAffected > 0 && result2.rowsAffected > 0;
+
+        return result.rowsAffected > 0 && result2.rowsAffected > 0 && result3.rowsAffected > 0;
     }).catch(() => {
         return false;
     });
