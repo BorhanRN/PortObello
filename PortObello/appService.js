@@ -716,14 +716,14 @@ async function insertHomeCountry(name, population, government, gdp, portaddress)
             `INSERT INTO HOMECOUNTRY (name, population, government, gdp, PortAddress) 
              VALUES (:name, :population, :government, :gdp, :portaddress)`,
             [name, population, government, gdp, portaddress],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
         const result2 = await connection.execute(
             `INSERT INTO FOREIGNCOUNTRY (name, population, government, gdp, PortAddress, DockingFee) 
              VALUES (:name, :population, :government, :gdp, :portaddress, 500.0)`,
             [name, population, government, gdp, portaddress],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
         const result3 = await connection.execute(
@@ -734,10 +734,12 @@ async function insertHomeCountry(name, population, government, gdp, portaddress)
                  portaddress = :portaddress
              WHERE name = :name
             `,
-            [name, population, government, gdp, portaddress],
-            { autoCommit: true }
+            [population, government, gdp, portaddress, name],
+            { autoCommit: false }
 
         );
+
+        await connection.commit();
 
 
         return result.rowsAffected > 0 && result2.rowsAffected > 0 && result3.rowsAffected > 0;
