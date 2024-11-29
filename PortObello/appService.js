@@ -2195,9 +2195,10 @@ async function joinCompanyShipments(companyName, companyCEO) {
             JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
             WHERE sc.CompanyName = companyName AND sc.CompanyCEO = companyCEO)
             `,
-            {companyName, companyCEO},
-            { autoCommit: true }
+            {companyName, companyCEO}
             );
+
+            await connection.commit();
         })
         .catch((error) => {
             console.error("company / shipment not found", error);
