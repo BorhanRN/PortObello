@@ -2251,7 +2251,7 @@ async function projectShippingRoute(attributes) {
         "ShippingRoute1.AnnualVolumeOfGoods",
         "ShippingRoute1.OriginCountryName",
         "ShippingRoute1.TerminalCountryName",
-        "ShippingRoute2.ShippingRouteName",
+        "ShippingRoute2.Name",
         "ShippingRoute2.Length",
     ];
 
@@ -2283,7 +2283,7 @@ async function projectShippingRoute(attributes) {
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT } // Ensure results are returned as objects
             );
-
+            console.log("Query Results:", result.rows);
             return result.rows; // Return query results
         } catch (error) {
             console.error("Error in projectShippingRoute:", error);
@@ -2309,7 +2309,7 @@ async function runDynamicShipQuery(userInput) {
                     s1.ShipName AS ShipName,
                     s1.ShipSize AS ShipSize,
                     s2.Capacity AS Capacity,
-                    s1.ShippingRouteName AS ShippingRouteName,
+                    s1.Name AS ShippingRouteName,
                     s1.DockedAtPortAddress AS DockedAtPortAddress
                 FROM Ship1 s1
                          LEFT JOIN Ship2 s2 ON s1.ShipSize = s2.ShipSize
