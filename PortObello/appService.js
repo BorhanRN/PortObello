@@ -2250,7 +2250,7 @@ async function projectShippingRoute(attributes) {
     const validAttributes = [
         "ShippingRoute1.AnnualVolumeOfGoods",
         "ShippingRoute1.OriginCountryName",
-        "ShippingRoute1.TerminalPortAddress",
+        "ShippingRoute1.TerminalCountryName",
         "ShippingRoute2.ShippingRouteName",
         "ShippingRoute2.Length",
     ];
@@ -2278,7 +2278,7 @@ async function projectShippingRoute(attributes) {
                 FROM ShippingRoute1
                 JOIN ShippingRoute2
                 ON ShippingRoute1.OriginCountryName = ShippingRoute2.OriginCountryName
-                AND ShippingRoute1.TerminalPortAddress = ShippingRoute2.TerminalPortAddress
+                AND ShippingRoute1.TerminalCountryName = ShippingRoute2.TerminalCountryName
                 `,
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT } // Ensure results are returned as objects
