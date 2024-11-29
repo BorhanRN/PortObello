@@ -1821,6 +1821,24 @@ async function deletePort(addy) {
             { autoCommit: true }
         );
 
+        await connection.execute( `
+                    UPDATE HomeCountry
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
+            `,
+            [addy],
+            { autoCommit: true }
+        );
+
+        await connection.execute( `
+                    UPDATE ForeignCountry
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
+            `,
+            [addy],
+            { autoCommit: true }
+        );
+
 
         const deletion = await connection.execute( `
         DELETE FROM Port WHERE PortAddress =:addy
@@ -2350,11 +2368,10 @@ module.exports = {
 //-X- DIVISION
 //  -> must do division (no shit)
 //  -> must provide an interface (e.g., button, dropdown, etc.)
-
-
-//SELECT -- Search through all attributes --- SHIP
+//-X- SELECT -- Search through all attributes --- SHIP
 //  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
 //  -> using a dynamically generated dropdown of AND/OR options or parsing user string
+
 //PROJECTION -- Choose which attributes to view on this table --- Shipping Route done in backend
 //  -> The user can choose any number of attributes to view from this relation
 //  -> Non-selected attributes must not appear in the result
