@@ -380,30 +380,30 @@ async function fetchPortFromDb() {
     });
 }
 
-async function fetchNumShipsFromDB() {
-    return await withOracleDB(async (connection) => {
-        try {
-            console.log('Grabbing the new NumShips table...');
-            const result = await connection.execute(
-                'SELECT * FROM shipPorts',
-                [],
-                { outFormat: oracledb.OUT_FORMAT_OBJECT }
-
-            );
-            console.log('Query result:', result);
-            return result.rows;
-
-
-
-        } catch (err) {
-            console.error('Error fetching port data:', err);
-            throw err;
-        }
-    }).catch((err) => {
-        console.error('fetchNumShipsFromDB:', err);
-        return [];
-    });
-}
+// async function fetchNumShipsFromDB() {
+//     return await withOracleDB(async (connection) => {
+//         try {
+//             console.log('Grabbing the new NumShips table...');
+//             const result = await connection.execute(
+//                 'SELECT * FROM shipPorts',
+//                 [],
+//                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
+//
+//             );
+//             console.log('Query result:', result);
+//             return result.rows;
+//
+//
+//
+//         } catch (err) {
+//             console.error('Error fetching port data:', err);
+//             throw err;
+//         }
+//     }).catch((err) => {
+//         console.error('fetchNumShipsFromDB:', err);
+//         return [];
+//     });
+// }
 
 async function initiatePort() {
     return await withOracleDB(async (connection) => {
@@ -2379,7 +2379,7 @@ module.exports = {
 
     maxAvgContainer,
     updateShipValues,
-    fetchNumShipsFromDB,
+    //fetchNumShipsFromDB,
 
     insertCountry,
     //updateNameCountry,
@@ -2388,7 +2388,6 @@ module.exports = {
 
     shipToPort,
     portsNumShips,
-    createNumShips,
 
     deleteCompany,
     deleteShippingRoute,
@@ -2400,7 +2399,7 @@ module.exports = {
     addShipmentContainer,
     removeShipmentContainer,
     updateNumContainers,
-    CapacityError,
+   // CapacityError,
 
     projectShippingRoute,
     joinCompanyShipments
