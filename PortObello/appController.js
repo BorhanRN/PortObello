@@ -107,10 +107,10 @@ router.post("/initiate-warehouse", async (req, res) => {
     }
 });
 
-router.get('/numShips', async (req, res) => {
-    const tableContent = await appService.fetchNumShipsFromDB();
-    res.json({data: tableContent});
-});
+// router.get('/numShips', async (req, res) => {
+//     const tableContent = await appService.fetchNumShipsFromDB();
+//     res.json({data: tableContent});
+// });
 
 
 router.get('/port', async (req, res) => {
@@ -329,16 +329,13 @@ router.get("/max-ship-average", async (req, res) => {
 });
 
 router.post("/port-num-ship", async (req, res) => {
-    const creation = await appService.createNumShips();
-    if (!creation) {
-        res.status(500).json({ success: false });
-    }
-    const { min, max } = req.body;
-    const initiateResult = await appService.portsNumShips(min, max)
-    if (initiateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
+    const {min, max} = req.body;
+    try {
+        const result = await appService.portsNumShips(min, max);
+        res.json({ success: true, data: result });
+    } catch (err) {
+        console.error('Error finding populated ports:', err);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 

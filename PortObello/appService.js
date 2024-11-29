@@ -1980,58 +1980,55 @@ async function deleteTariff(tName) {
 
 }
 
-async function createNumShips() {
-    return await withOracleDB(async (connection) => {
-        try{
-        try{
-            connection.execute(`
-            DROP TABLE shipPorts`,
-                {autoCommit : true});
-        }catch (e) {
-
-        }
-      await connection.execute( `
-                    CREATE TABLE shipPorts (
-                       PortLocation VARCHAR2(200) NOT NULL,
-                       NumOfShips NUMBER,
-                       PRIMARY KEY (PortLocation)
-                    )
-            `);
-
-        await connection.commit();
-
-        console.log("shipPorts table created successfully.");
-        return true;
-    }catch (error) {
-            console.error("Error creating shipPorts table:", error);
-            return false;
-        }
-    });
-}
+// async function createNumShips() {
+//     return await withOracleDB(async (connection) => {
+//         try{
+//         try{
+//             connection.execute(`
+//             DROP TABLE shipPorts`,
+//                 {autoCommit : true});
+//         }catch (e) {
+//
+//         }
+//       await connection.execute( `
+//                     CREATE TABLE shipPorts (
+//                        PortLocation VARCHAR2(200) NOT NULL,
+//                        NumOfShips NUMBER,
+//                        PRIMARY KEY (PortLocation)
+//                     )
+//             `);
+//
+//         await connection.commit();
+//
+//         console.log("shipPorts table created successfully.");
+//         return true;
+//     }catch (error) {
+//             console.error("Error creating shipPorts table:", error);
+//             return false;
+//         }
+//     });
+// }
 //aggregation with having
 async function portsNumShips(min, max) {
     return await withOracleDB(async (connection) => {
-        await connection.execute(`
-            INSERT INTO shipPorts (PortLocation, NumOfShips)
-            SELECT 
-                P.PortAddress AS PortLocation, 
-                COUNT(S.ShipName) AS NumOfShips
-            FROM 
-                Ship1 S
-                JOIN Port P ON S.DockedAtPortAddress = P.PortAddress
-            WHERE 
-                S.ShipSize BETWEEN :min AND :max
-            GROUP BY 
-                P.PortAddress
-            HAVING 
-                COUNT(S.ShipName) > 0
-        `,
-            { min, max },
-            { autoCommit: true });
+        try {
+            const result = await connection.execute(
+                `
+                    SELECT P.PortAddress     AS PortLocation,
+                           COUNT(S.ShipName) AS NumOfShips
+                    FROM Ship1 S
+                             JOIN Port P ON S.DockedAtPortAddress = P.PortAddress
+                    WHERE S.ShipSize BETWEEN :min AND :max
+                    GROUP BY P.PortAddress
+                    HAVING COUNT(S.ShipName) > 0
+                `,
+                {min, max}, // Bind variables for the range
+                {outFormat: oracledb.OUT_FORMAT_OBJECT} // Return rows as objects
+            );
 
-        return true;
-    })
-        .catch((error) => {
+            console.log("Query executed successfully. Results:", result.rows);
+            return result.rows; // Return the selected rows
+        }catch((error) => {
             console.error("Error updating shipPorts table:", error);
             console.error("Detailed error:", error.message, error.stack);
             return false;

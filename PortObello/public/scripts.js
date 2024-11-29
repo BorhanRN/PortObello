@@ -261,11 +261,38 @@ async function maxAverage(event) {
 }
 
 async function numShip(event){
+//     event.preventDefault();
+//     const min = document.getElementById('minNumb').value;
+//     const max = document.getElementById('maxNumb').value;
+//
+//     const response = await fetch('/port-num-ship', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             min: min,
+//             max: max,
+//         })
+//     });
+//
+//     const responseData = await response.json();
+//     const messageElement = document.getElementById('portNumShipsMessage');
+//
+//     if (responseData.success) {
+//         messageElement.textContent = "Ports loaded successfully!";
+//         fetchTableData();
+//     } else {
+//         messageElement.textContent = "Error finding ports!";
+//     }
+// }
     event.preventDefault();
-    const min = document.getElementById('minNumb').value;
-    const max = document.getElementById('maxNumb').value;
 
-    const response = await fetch('/port-num-ship', {
+     const min = document.getElementById('minNumb').value;
+     const max = document.getElementById('maxNumb').value;
+
+    try {
+        const response = await fetch('/port-num-ship', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -276,16 +303,33 @@ async function numShip(event){
         })
     });
 
-    const responseData = await response.json();
-    const messageElement = document.getElementById('portNumShipsMessage');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    if (responseData.success) {
-        messageElement.textContent = "Ports loaded successfully!";
-        fetchTableData();
-    } else {
-        messageElement.textContent = "Error finding ports!";
+        const responseData = await response.json();
+        const tableBody = document.getElementById('populatedPorts').querySelector('tbody');
+
+        // Clear old results
+        tableBody.innerHTML = '';
+
+        if (responseData.success && Array.isArray(responseData.data)) {
+            responseData.data.forEach(ship => {
+                const row = tableBody.insertRow();
+                ['PORTLOCATION', 'NUMOFSHIPS'].forEach(attr => {
+                    const cell = row.insertCell();
+                    cell.textContent = ship[attr] || 'N/A';
+                });
+            });
+        } else {
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 6;
+            cell.textContent = 'No results found';
+        }
+    } catch (error) {
+        console.error('Error running populated ports query:', error);
     }
-}
 
 // // Counts rows in country.
 // // Modify the function accordingly if using different aggregate functions or procedures.
@@ -508,47 +552,47 @@ async function fetchAndDisplayHomeCountry() {
 }
 
 // Fetches data from PORT and displays it. CL1
-async function fetchAndDisplayPortsNumShip() {
-    try {
-        console.log('Fetching NumShips data...');
-        const response = await fetch('/numShips', { method: 'GET' });
-        console.log('Response status:', response.status);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const responseData = await response.json();
-        console.log('Response JSON:', responseData);
-
-        const tableElement = document.getElementById('populatedPorts');
-        if (!tableElement) throw new Error('Table element with id "populatedPorts" not found');
-
-        const tableBody = tableElement.querySelector('tbody');
-        if (!tableBody) throw new Error('No <tbody> found in table');
-
-        // Clear old content
-        tableBody.innerHTML = '';
-
-        if (!responseData.data || !Array.isArray(responseData.data)) {
-            throw new Error('Data format error: data is not an array');
-        }
-
-        responseData.data.forEach(shipPorts => {
-            const row = tableBody.insertRow();
-            const columns = ['PORTLOCATION', 'NUMOFSHIPS'];
-            columns.forEach(col => {
-                const cell = row.insertCell();
-                cell.textContent = shipPorts[col] || 'N/A';
-            });
-        });
-
-        console.log('Table populated successfully');
-    } catch (error) {
-        console.error('Error in populated ports:', error);
-    }
-
-}
+// async function fetchAndDisplayPortsNumShip() {
+//     try {
+//         console.log('Fetching NumShips data...');
+//         const response = await fetch('/numShips', { method: 'GET' });
+//         console.log('Response status:', response.status);
+//
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//
+//         const responseData = await response.json();
+//         console.log('Response JSON:', responseData);
+//
+//         const tableElement = document.getElementById('populatedPorts');
+//         if (!tableElement) throw new Error('Table element with id "populatedPorts" not found');
+//
+//         const tableBody = tableElement.querySelector('tbody');
+//         if (!tableBody) throw new Error('No <tbody> found in table');
+//
+//         // Clear old content
+//         tableBody.innerHTML = '';
+//
+//         if (!responseData.data || !Array.isArray(responseData.data)) {
+//             throw new Error('Data format error: data is not an array');
+//         }
+//
+//         responseData.data.forEach(shipPorts => {
+//             const row = tableBody.insertRow();
+//             const columns = ['PORTLOCATION', 'NUMOFSHIPS'];
+//             columns.forEach(col => {
+//                 const cell = row.insertCell();
+//                 cell.textContent = shipPorts[col] || 'N/A';
+//             });
+//         });
+//
+//         console.log('Table populated successfully');
+//     } catch (error) {
+//         console.error('Error in populated ports:', error);
+//     }
+//
+// }
 
 // This function resets or initializes PORT.
 async function resetHomeCountry() {
