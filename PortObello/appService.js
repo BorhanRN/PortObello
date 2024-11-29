@@ -1392,6 +1392,9 @@ async function initiateShip() {
             // Insert initial data
             const insertStatements = [
                 ['Maersk', 'Ocean Breeze', 'Great Circle','999 Canada Pl, Vancouver, BC V6C 3T4', 100.5],
+                ['Maersk', 'Dirty Harry', 'Great Circle','999 Canada Pl, Vancouver, BC V6C 3T4', 113.6],
+                ['Atlantic Trade', 'Challenger', 'Rotterdam - Vancouver','999 Canada Pl, Vancouver, BC V6C 3T4', 85.5],
+                ['Atlantic Trade', 'Killer', 'Great Circle','Shengsi County, Zhoushan, China, 202461', 11.23],
                 ['Mediterranean Shipping Company', 'Seawolf', 'PANZ Seattle Loop', 'Shengsi County, Zhoushan, China, 202461', 150.75],
                 ['Atlantic Trade', 'Blue Horizon','Trans - Pacific Route', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 200.0],
                 ['Pacific Vessels', 'Tidal Wave', 'Rotterdam - Vancouver', 'Signal St, San Pedro, CA 90731, United States', 175.4],
@@ -1976,21 +1979,60 @@ async function deleteTariff(tName) {
         });
 
 }
+
+async function createNumShips() {
+    return await withOracleDB(async (connection) => {
+        try{
+        try{
+            connection.execute(`
+            DROP TABLE shipPorts`,
+                {autoCommit : true});
+        }catch (e) {
+
+        }
+      await connection.execute( `
+                    CREATE TABLE shipPorts (
+                       PortLocation VARCHAR2(200) NOT NULL,
+                       NumOfShips NUMBER,
+                       PRIMARY KEY (PortLocation)
+                    )
+            `);
+
+        await connection.commit();
+
+        console.log("shipPorts table created successfully.");
+        return true;
+    }catch (error) {
+            console.error("Error creating shipPorts table:", error);
+            return false;
+        }
+    });
+}
 //aggregation with having
 async function portsNumShips(min, max) {
-    return await withOracleDB(async (connection) =>  {
-        let s1 = 'CREATE VIEW shipPorts AS SELECT S.DockedAtPortAddress AS PortAddress, COUNT(S.ShipName) AS NumShips FROM Ship1 S WHERE S.ShipSize >= ';
-        let s2 = min.toString();
-        let s3 = " AND S.ShipSize <= ";
-        let s4 = max.toString();
-        let s5 = 'GROUP BY S.DockedAtPortAddress HAVING COUNT(S.ShipName) > 0';
-        const sql = s1 + s2 + s3 + s4 + s5;
+    return await withOracleDB(async (connection) => {
+        await connection.execute(`
+            INSERT INTO shipPorts (PortLocation, NumOfShips)
+            SELECT 
+                P.PortAddress AS PortLocation, 
+                COUNT(S.ShipName) AS NumOfShips
+            FROM 
+                Ship1 S
+                JOIN Port P ON S.DockedAtPortAddress = P.PortAddress
+            WHERE 
+                S.ShipSize BETWEEN :min AND :max
+            GROUP BY 
+                P.PortAddress
+            HAVING 
+                COUNT(S.ShipName) > 0
+        `,
+            { min, max },
+            { autoCommit: true });
 
-        await connection.execute(sql,  { autoCommit: true });
         return true;
     })
         .catch((error) => {
-            console.error("Error creating shipPorts view:", error);
+            console.error("Error updating shipPorts table:", error);
             console.error("Detailed error:", error.message, error.stack);
             return false;
         });
@@ -2156,9 +2198,10 @@ async function joinCompanyShipments(companyName, companyCEO) {
             JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
             WHERE sc.CompanyName = companyName AND sc.CompanyCEO = companyCEO)
             `,
-            {companyName, companyCEO},
-            { autoCommit: true }
+            {companyName, companyCEO}
             );
+
+            await connection.commit();
         })
         .catch((error) => {
             console.error("company / shipment not found", error);
@@ -2323,6 +2366,7 @@ module.exports = {
 
     shipToPort,
     portsNumShips,
+    createNumShips,
 
     deleteCompany,
     deleteShippingRoute,
@@ -2367,6 +2411,9 @@ module.exports = {
 //-X- SELECT -- Search through all attributes --- SHIP
 //  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
 //  -> using a dynamically generated dropdown of AND/OR options or parsing user string
+//-X- AGGREGATION WITH HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
+//  -> must include a HAVING clause.
+//  -> must provide an interface (e.g., button, dropdown, etc.)
 
 //PROJECTION -- Choose which attributes to view on this table --- Shipping Route done in backend
 //  -> The user can choose any number of attributes to view from this relation
@@ -2374,9 +2421,7 @@ module.exports = {
 //JOIN -- Find all shipments from a specific COMPANY -- backend done
 //  -> join at least two relations
 //  -> user must provide at least one value to qualify in the WHERE clause
-//AGGREGATION WITH HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
-//  -> must include a HAVING clause.
-//  -> must provide an interface (e.g., button, dropdown, etc.)
+
 
 
 

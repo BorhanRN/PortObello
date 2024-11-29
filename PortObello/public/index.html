@@ -425,87 +425,25 @@
 <hr>
 <br> <!-- ========================================================================= -->
 
-<div class="Shipping route contents">
-    <h1>ShippingRoute</h1>
-    <!-- Show 'ShippingRoute'.
-        Data will be fetched and inserted here dynamically using JavaScript. -->
-    <h2>Show ShippingRoute</h2>
-    <table id="shipping route" border="1">
-        <thead>
-        <tr>
-            <!--Table head, need to be adjusted accordingly to align with your own.-->
-            <th>Name</th>
-            <th>Length</th>
-            <th>OriginCountryName</th>
-            <th>TerminalCountryName</th>
-            <th>VolumeOfGoods</th>
+<h1>ShippingRoute</h1>
+<!-- Show 'ShippingRoute'.
+    Data will be fetched and inserted here dynamically using JavaScript. -->
+<h2>Show ShippingRoute</h2>
+<table id="shippingroute" border="1">
+    <thead>
+    <tr>
+        <!--Table head, need to be adjusted accordingly to align with your own.-->
+        <th>Name</th>
+        <th>Length</th>
+        <th>OriginCountryName</th>
+        <th>TerminalCountryName</th>
+        <th>VolumeOfGoods</th>
 
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <h2>Filter Shipping Route</h2>
-
-    <button id="showFilterButton">Select Filters</button>
-
-    <div id="filterContainer" style="display: none;">
-        <form id="attributeForm">
-            <label>
-                <input type="checkbox" name="attributes" value="ShippingRoute2.ShippingRouteName">
-                Shipping Route Name
-            </label><br>
-
-            <label>
-                <input type="checkbox" name="attributes" value="ShippingRoute2.Length">
-                Length
-            </label><br>
-
-            <label>
-                <input type="checkbox" name="attributes" value="ShippingRoute1.OriginCountryName">
-                Origin Country Name
-            </label><br>
-
-            <label>
-                <input type="checkbox" name="attributes" value="ShippingRoute1.TerminalPortAddress">
-                Terminal Country Name
-            </label><br>
-
-            <label>
-                <input type="checkbox" name="attributes" value="ShippingRoute1.AnnualVolumeOfGoods">
-                Volume of Goods
-            </label><br>
-
-            <button type="button" id="filterButton">Submit</button>
-        </form>
-    </div>
-
-    <table id="resultsTable" border="1" style="margin-top: 20px; display: none;">
-        <thead id="tableHeader"></thead>
-        <tbody id="tableBody"></tbody>
-    </table>
-
-    <script>
-    // Show checkboxes when button is pressed
-    document.getElementById("showFilterButton").addEventListener("click", () => {
-        document.getElementById("filterContainer").style.display = "block";
-    });
-
-    // Handle form submission
-    document.getElementById("filterButton").addEventListener("click", async () => {
-        const selectedAttributes = Array.from(
-            document.querySelectorAll('input[name="attributes"]:checked')
-        ).map(input => input.value);
-
-        if (selectedAttributes.length === 0) {
-            alert("Please select at least one attribute.");
-            return;
-        }
-    });
-    </script>
-
-</div>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 
 <br>
 <hr>
@@ -642,7 +580,7 @@
     <form id="joinCompanyShipmentInput" style="display: none;">
         <input type="text" id="inputCompanyName" placeholder="Enter Company Name">
         <input type="text" id="inputCompanyCEO" placeholder="Enter Company CEO">
-        <button id="submitButton">Submit</button>
+        <button id="submitButton" type="submit">Submit</button>
     </form>
 
     <script>
@@ -830,7 +768,6 @@
     });
 
 
-
 </script>
 
 <style>
@@ -888,7 +825,6 @@
         from {opacity: 0;}
         to {opacity: 1;}
     }
-
 
 
 </style>

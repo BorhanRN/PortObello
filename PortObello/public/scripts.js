@@ -536,7 +536,7 @@ async function fetchAndDisplayPortsNumShip() {
 
         responseData.data.forEach(shipPorts => {
             const row = tableBody.insertRow();
-            const columns = ['PORTADDRESS', 'NUMSHIPS'];
+            const columns = ['PORTLOCATION', 'NUMOFSHIPS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
                 cell.textContent = shipPorts[col] || 'N/A';
@@ -1108,51 +1108,89 @@ async function runDynamicShipQuery(event) {
     }
 }
 
-async function joinCompanyShipment(event) {
-    event.preventDefault();
+// async function joinCompanyShipment(event) {
+//     event.preventDefault();
+//
+//     const companyName = document.getElementById('inputCompanyName').value;
+//     const companyCEO = document.getElementById('inputCompanyCEO').value;
+//
+//     try {
+//             const response = await fetch('/join-Company-Shipment', {
+//                 method: 'POST',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify({
+//                     companyName: companyName,
+//                     companyCEO: companyCEO,
+//                 }),
+//             });
+//
+//             if (!response.ok) {
+//                 throw new Error(`HTTP error! status: ${response.status}`);
+//             }
+//
+//             const responseData = await response.json();
+//             const tableBody = document.getElementById('joinCompanyShipmentResultsTable').querySelector('tbody');
+//
+//             // Clear old results
+//             tableBody.innerHTML = '';
+//
+//             if (responseData.success && Array.isArray(responseData.data)) {
+//                 responseData.data.forEach(company => {
+//                     const row = tableBody.insertRow();
+//                     ['CEO', 'NAME', 'INDUSTRY', 'YEARLYREVENUE', 'COUNTRYNAME'].forEach(attr => {
+//                         const cell = row.insertCell();
+//                         cell.textContent = company[attr] || 'N/A';
+//                     });
+//                 });
+//             } else {
+//                 const row = tableBody.insertRow();
+//                 const cell = row.insertCell();
+//                 cell.colSpan = 5;
+//                 cell.textContent = 'No results found';
+//             }
+//         } catch (error) {
+//             console.error('Error:', error);
+//         }
+//
+// }
 
-    const companyName = document.getElementById('inputCompanyName').value;
-    const companyCEO = document.getElementById('inputCompanyCEO').value;
-
+async function joinCompanyShipment({ companyName, companyCEO }) {
     try {
-            const response = await fetch('/join-Company-Shipment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    companyName: companyName,
-                    companyCEO: companyCEO,
-                }),
-            });
+        const response = await fetch('/join-Company-Shipment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ companyName, companyCEO }),
+        });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const responseData = await response.json();
-            const tableBody = document.getElementById('joinCompanyShipmentResultsTable').querySelector('tbody');
-
-            // Clear old results
-            tableBody.innerHTML = '';
-
-            if (responseData.success && Array.isArray(responseData.data)) {
-                responseData.data.forEach(company => {
-                    const row = tableBody.insertRow();
-                    ['CEO', 'NAME', 'INDUSTRY', 'YEARLYREVENUE', 'COUNTRYNAME'].forEach(attr => {
-                        const cell = row.insertCell();
-                        cell.textContent = company[attr] || 'N/A';
-                    });
-                });
-            } else {
-                const row = tableBody.insertRow();
-                const cell = row.insertCell();
-                cell.colSpan = 5;
-                cell.textContent = 'No results found';
-            }
-        } catch (error) {
-            console.error('Error:', error);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        const responseData = await response.json();
+        const tableBody = document.getElementById('joinCompanyShipmentResultsTable').querySelector('tbody');
+
+        // Clear old results
+        tableBody.innerHTML = '';
+
+        if (responseData.success && Array.isArray(responseData.data)) {
+            responseData.data.forEach(company => {
+                const row = tableBody.insertRow();
+                ['CEO', 'NAME', 'INDUSTRY', 'YEARLYREVENUE', 'COUNTRYNAME'].forEach(attr => {
+                    const cell = row.insertCell();
+                    cell.textContent = company[attr] || 'N/A';
+                });
+            });
+        } else {
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 5;
+            cell.textContent = 'No results found';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
+
 
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
@@ -1256,8 +1294,40 @@ window.onload = async function() {
 
     document.getElementById('shipQueryForm').addEventListener('submit', runDynamicShipQuery);
 
-    document.getElementById("joinCompanyShipmentInput").addEventListener("submitButton", async (e) => {
-        await joinCompanyShipment(e);
+    // document.getElementById("joinCompanyShipmentInput").addEventListener("submitButton", async (e) => {
+    //     await joinCompanyShipment(e);
+    // // });
+    // document.getElementById("submitButton").addEventListener("click", async (event) => {
+    //     event.preventDefault(); // Prevent the default form submission behavior
+    //
+    //     const companyName = document.getElementById("inputCompanyName").value;
+    //     const companyCEO = document.getElementById("inputCompanyCEO").value;
+    //
+    //     if (!companyName || !companyCEO) {
+    //         alert("Please fill in both fields.");
+    //         return;
+    //     }
+    //
+    //     // Call the function to process the form
+    //     joinCompanyShipment(event);
+    // });
+    document.getElementById('joinCompanyShipmentInput').addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        const companyName = document.getElementById('inputCompanyName').value;
+        const companyCEO = document.getElementById('inputCompanyCEO').value;
+
+        if (!companyName || !companyCEO) {
+            alert("Please fill in both fields.");
+            return;
+        }
+
+        // Call the joinCompanyShipment function
+        await joinCompanyShipment({ companyName, companyCEO });
+    });
+
+    document.getElementById("showInputButton").addEventListener("click", () => {
+        document.getElementById("joinCompanyShipmentInput").style.display = "block";
     });
 }
 
