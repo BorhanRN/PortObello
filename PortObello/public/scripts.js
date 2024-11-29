@@ -260,9 +260,10 @@ async function maxAverage(event) {
     }
 }
 
-async function portNumShip(event){
+async function numShip(event){
     event.preventDefault();
-    const num = document.getElementById('numberOfShips').value;
+    const min = document.getElementById('minNumb').value;
+    const max = document.getElementById('maxNumb').value;
 
     const response = await fetch('/port-num-ship', {
         method: 'POST',
@@ -270,7 +271,8 @@ async function portNumShip(event){
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            num: num,
+            min: min,
+            max: max,
         })
     });
 
@@ -285,23 +287,64 @@ async function portNumShip(event){
     }
 }
 
-// Counts rows in country.
-// Modify the function accordingly if using different aggregate functions or procedures.
+// // Counts rows in country.
+// // Modify the function accordingly if using different aggregate functions or procedures.
+// async function countCountry() {
+//     const response = await fetch("/count-country", {
+//         method: 'GET'
+//     });
+//
+//     const responseData = await response.json();
+//     const messageElement = document.getElementById('countResultMsg');
+//
+//     if (responseData.success) {
+//         const tupleCount = responseData.count;
+//         messageElement.textContent = `The number of tuples in country: ${tupleCount}`;
+//     } else {
+//         alert("Error in count country!");
+//     }
+// }
+
 async function countCountry() {
-    const response = await fetch("/count-country", {
-        method: 'GET'
-    });
+    const messageElement = document.getElementById('countriesByGDPMessage');
+    const tableElement = document.getElementById('countriesByGDPTable');
+    const tableBody = tableElement.querySelector('tbody');
 
-    const responseData = await response.json();
-    const messageElement = document.getElementById('countResultMsg');
+    try {
+        const response = await fetch('/count-country', { method: 'GET' });
 
-    if (responseData.success) {
-        const tupleCount = responseData.count;
-        messageElement.textContent = `The number of tuples in country: ${tupleCount}`;
-    } else {
-        alert("Error in count country!");
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+
+        if (responseData.success && Array.isArray(responseData.data)) {
+            tableBody.innerHTML = ''; // Clear old content
+
+            responseData.data.forEach(row => {
+                const tableRow = tableBody.insertRow();
+                const gdpRangeCell = tableRow.insertCell();
+                gdpRangeCell.textContent = row.GDPRANGE;
+
+                const countCell = tableRow.insertCell();
+                countCell.textContent = row.COUNTRYCOUNT;
+            });
+
+            tableElement.style.display = 'table';
+            messageElement.textContent = 'Data loaded successfully!';
+            messageElement.style.color = 'green';
+        } else {
+            throw new Error('Unexpected response format or data');
+        }
+    } catch (error) {
+        console.error('Error fetching countries by GDP range:', error);
+        messageElement.textContent = 'Failed to load data.';
+        messageElement.style.color = 'red';
     }
 }
+
+
 
 // Fetches data from PORT and displays it. CL1
 async function fetchAndDisplayPort() {
@@ -467,7 +510,7 @@ async function fetchAndDisplayHomeCountry() {
 // Fetches data from PORT and displays it. CL1
 async function fetchAndDisplayPortsNumShip() {
     try {
-        console.log('Fetching homecountry data...');
+        console.log('Fetching NumShips data...');
         const response = await fetch('/numShips', { method: 'GET' });
         console.log('Response status:', response.status);
 
@@ -491,12 +534,12 @@ async function fetchAndDisplayPortsNumShip() {
             throw new Error('Data format error: data is not an array');
         }
 
-        responseData.data.forEach(homecountry => {
+        responseData.data.forEach(shipPorts => {
             const row = tableBody.insertRow();
             const columns = ['PORTADDRESS', 'NUMSHIPS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
-                cell.textContent = homecountry[col] || 'N/A';
+                cell.textContent = shipPorts[col] || 'N/A';
             });
         });
 
@@ -1195,7 +1238,7 @@ window.onload = async function() {
     });
 
     document.getElementById("numShips").addEventListener("submit", async (e) => {
-        await portNumShip(e);
+        await numShip(e);
         await fetchAndDisplayPortsNumShip();
     });
 
@@ -1203,7 +1246,10 @@ window.onload = async function() {
         await maxAverage(e);
     });
 
-    document.getElementById("countCountry").addEventListener("click", countCountry);
+    // document.getElementById("countCountry").addEventListener("click", countCountry);
+    document.getElementById('countCountriesByGDPButton').addEventListener('click', countCountry);
+
+
 
     document.getElementById("fetchHomeCountriesWithAllTradeAgreements").addEventListener("click", async (e) => {
         await fetchAndDisplayHomeCountriesWithAllTradeAgreements(e);

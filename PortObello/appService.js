@@ -309,14 +309,51 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
 }
 
 
+// async function countCountry() {
+//     return await withOracleDB(async (connection) => {
+//         const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
+//         return result.rows[0][0];
+//     }).catch(() => {
+//         return -1;
+//     });
+// }
+
 async function countCountry() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
-        return result.rows[0][0];
+        try {
+            const result = await connection.execute(
+                `SELECT 
+                    CASE 
+                        WHEN GDP < 1 THEN '0-1'
+                        WHEN GDP BETWEEN 1 AND 5 THEN '1-5'
+                        WHEN GDP BETWEEN 5 AND 10 THEN '5-10'
+                        WHEN GDP BETWEEN 10 AND 15 THEN '10-15'
+                        ELSE '15+'
+                    END AS GDPRange,
+                    COUNT(*) AS CountryCount
+                 FROM COUNTRY
+                 GROUP BY 
+                    CASE
+                        WHEN GDP < 1 THEN '0-1'
+                        WHEN GDP BETWEEN 1 AND 5 THEN '1-5'
+                        WHEN GDP BETWEEN 5 AND 10 THEN '5-10'
+                        WHEN GDP BETWEEN 10 AND 15 THEN '10-15'
+                        ELSE '15+'
+                    END
+                 ORDER BY GDPRange`,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            return result.rows;
+        } catch (err) {
+            console.error('Error in countCountry:', err);
+            throw err;
+        }
     }).catch(() => {
-        return -1;
+        return [];
     });
 }
+
 
 async function fetchPortFromDb() {
     return await withOracleDB(async (connection) => {
@@ -348,7 +385,7 @@ async function fetchNumShipsFromDB() {
         try {
             console.log('Grabbing the new NumShips table...');
             const result = await connection.execute(
-                'SELECT * FROM NumShips',
+                'SELECT * FROM shipPorts',
                 [],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
 
@@ -716,18 +753,33 @@ async function insertHomeCountry(name, population, government, gdp, portaddress)
             `INSERT INTO HOMECOUNTRY (name, population, government, gdp, PortAddress) 
              VALUES (:name, :population, :government, :gdp, :portaddress)`,
             [name, population, government, gdp, portaddress],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
         const result2 = await connection.execute(
             `INSERT INTO FOREIGNCOUNTRY (name, population, government, gdp, PortAddress, DockingFee) 
              VALUES (:name, :population, :government, :gdp, :portaddress, 500.0)`,
             [name, population, government, gdp, portaddress],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
+        const result3 = await connection.execute(
+            `UPDATE COUNTRY
+             SET population = :population,
+                 government = :government,
+                 gdp = :gdp,
+                 portaddress = :portaddress
+             WHERE name = :name
+            `,
+            [population, government, gdp, portaddress, name],
+            { autoCommit: false }
 
-        return result.rowsAffected > 0 && result2.rowsAffected > 0;
+        );
+
+        await connection.commit();
+
+
+        return result.rowsAffected > 0 && result2.rowsAffected > 0 && result3.rowsAffected > 0;
     }).catch(() => {
         return false;
     });
@@ -1769,6 +1821,24 @@ async function deletePort(addy) {
             { autoCommit: true }
         );
 
+        await connection.execute( `
+                    UPDATE HomeCountry
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
+            `,
+            [addy],
+            { autoCommit: true }
+        );
+
+        await connection.execute( `
+                    UPDATE ForeignCountry
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
+            `,
+            [addy],
+            { autoCommit: true }
+        );
+
 
         const deletion = await connection.execute( `
         DELETE FROM Port WHERE PortAddress =:addy
@@ -1907,23 +1977,25 @@ async function deleteTariff(tName) {
 
 }
 //aggregation with having
-async function portsNumShips(num) {
+async function portsNumShips(min, max) {
     return await withOracleDB(async (connection) =>  {
-        const res = await connection.execute(`
-            CREATE TABLE shipPorts AS
-            (SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
-            FROM Ship1
-            GROUP BY DockedAtPortAddress
-            HAVING COUNT(ShipName) >=:num)
-        `,
-            [num],
-            {autoCommit: true}
-        );
-        console.log('Query result:', res);
+        const sql = `
+        CREATE VIEW shipPorts AS
+        SELECT 
+            S.DockedAtPortAddress AS PortAddress, 
+            COUNT(S.ShipName) AS NumShips
+        FROM Ship1 S
+        WHERE S.ShipSize >= ${min} AND S.ShipSize <= ${min}
+        GROUP BY S.DockedAtPortAddress
+        HAVING COUNT(S.ShipName) > 0
+        `;
+
+        await connection.execute(sql,  { autoCommit: true });
         return true;
     })
         .catch((error) => {
-            console.error("Error finding ports with numships:", error);
+            console.error("Error creating shipPorts view:", error);
+            console.error("Detailed error:", error.message, error.stack);
             return false;
         });
 }
@@ -2296,11 +2368,10 @@ module.exports = {
 //-X- DIVISION
 //  -> must do division (no shit)
 //  -> must provide an interface (e.g., button, dropdown, etc.)
-
-
-//SELECT -- Search through all attributes --- SHIP
+//-X- SELECT -- Search through all attributes --- SHIP
 //  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
 //  -> using a dynamically generated dropdown of AND/OR options or parsing user string
+
 //PROJECTION -- Choose which attributes to view on this table --- Shipping Route done in backend
 //  -> The user can choose any number of attributes to view from this relation
 //  -> Non-selected attributes must not appear in the result
