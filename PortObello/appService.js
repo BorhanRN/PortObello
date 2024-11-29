@@ -1935,7 +1935,7 @@ async function portsNumShips(min, max) {
         HAVING COUNT(S.ShipName) > 0
         `;
 
-        const res = await connection.execute(sql, [], { autoCommit: true });
+        const res = await connection.execute(sql, { autoCommit: true });
         console.log('Query result:', res);
         return true;
     })
