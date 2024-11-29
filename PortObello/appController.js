@@ -107,11 +107,6 @@ router.post("/initiate-warehouse", async (req, res) => {
     }
 });
 
-// router.get('/numShips', async (req, res) => {
-//     const tableContent = await appService.fetchNumShipsFromDB();
-//     res.json({data: tableContent});
-// });
-
 
 router.get('/port', async (req, res) => {
     const tableContent = await appService.fetchPortFromDb();
