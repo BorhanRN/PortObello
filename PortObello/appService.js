@@ -2137,6 +2137,57 @@ async function projectShippingRoute(attributes) {
 }
 
 
+async function runDynamicShipQuery(userInput) {
+    return await withOracleDB(async (connection) => {
+        try {
+            // Parse userInput to construct a safe WHERE clause
+            const { whereClause, bindParams } = parseShipQuery(userInput);
+
+            const query = `
+                SELECT s1.Owner, s1.ShipName, s1.ShipSize, s2.Capacity, s1.ShippingRouteName, s1.DockedAtPortAddress
+                FROM Ship1 s1
+                LEFT JOIN Ship2 s2 ON s1.ShipSize = s2.ShipSize
+                WHERE ${whereClause}`;
+
+            const result = await connection.execute(query, bindParams, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            return result.rows;
+        } catch (err) {
+            console.error('Error in runDynamicShipQuery:', err);
+            throw err;
+        }
+    });
+}
+
+// Utility to parse and validate user input
+function parseShipQuery(input) {
+    const allowedOperators = ['=', '<', '<=', '>', '>=', '!=', 'AND', 'OR'];
+    const allowedAttributes = ['Owner', 'ShipName', 'ShipSize', 'Capacity', 'ShippingRouteName', 'DockedAtPortAddress'];
+
+    const tokens = input.split(/\s+/);
+    const whereParts = [];
+    const bindParams = {};
+
+    let bindIndex = 1;
+
+    tokens.forEach(token => {
+        if (allowedOperators.includes(token.toUpperCase())) {
+            whereParts.push(token.toUpperCase());
+        } else if (allowedAttributes.includes(token)) {
+            whereParts.push(token);
+        } else if (/^'.*'$/.test(token) || /^\d+(\.\d+)?$/.test(token)) { // Strings or numbers
+            const bindKey = `:param${bindIndex++}`;
+            bindParams[bindKey] = token.startsWith("'") ? token.slice(1, -1) : Number(token);
+            whereParts.push(bindKey);
+        } else {
+            throw new Error(`Invalid token: ${token}`);
+        }
+    });
+
+    return { whereClause: whereParts.join(' '), bindParams };
+}
+
+
+
 class CapacityError extends Error {
 }
 
@@ -2170,6 +2221,7 @@ module.exports = {
 
     fetchShipFromDb,
     initiateShip,
+    runDynamicShipQuery,
 
     fetchCompanyFromDb,
     initiateCompany,

@@ -377,6 +377,7 @@
 <div class="tab">
     <button class="shipTab" onclick="openShip(event, 'Ship Table')">Table</button>
     <button class="shipTab" onclick="openShip(event, 'Highest Value')">Highest Average</button>
+    <button class="shipTab" onclick="openShip(event, 'Select')">Select</button>
 </div>
 
 <div id="Ship Table" class="shipContent">
@@ -412,6 +413,7 @@
 
 <br><hr><br> <!-- ========================================================================= -->
 </div>
+
 <div id="Highest Value" class="shipContent">
     <p>If you would like to calculate the ship with the highest average shipment container value, please click this magic button!</p>
     <form id="groupBy">
@@ -421,6 +423,34 @@
     <div id="getMaxMessage"></div>
     <br><hr><br> <!-- ========================================================================= -->
 </div>
+
+<div id="Select" class="shipContent">
+<h2>Dynamic Ship Query</h2>
+<p>Enter your search conditions for Ship attributes (e.g., `ShipSize > 150 AND Owner = 'Maersk' OR Capacity < 1000`).</p>
+<form id="shipQueryForm">
+    <label for="shipQueryInput">Search Conditions:</label>
+    <textarea id="shipQueryInput" placeholder="Enter your conditions here..." rows="4" cols="50"></textarea>
+    <br><br>
+    <button type="submit">Run Query</button>
+</form>
+<div id="shipQueryResults">
+    <h3>Results:</h3>
+    <table border="1" id="shipQueryResultsTable">
+        <thead>
+        <tr>
+            <th>Owner</th>
+            <th>ShipName</th>
+            <th>ShipSize</th>
+            <th>Capacity</th>
+            <th>ShippingRouteName</th>
+            <th>DockedAtPortAddress</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <br><hr><br> <!-- ========================================================================= -->
+</div>
+
 
 <h1>Company</h1>
 <!-- Show 'Company'.

@@ -397,5 +397,18 @@ router.get("/homecountries-with-all-tradeagreements", async (req, res) => {
     }
 });
 
+router.post('/ship-query', async (req, res) => {
+    const { query } = req.body;
+
+    try {
+        const result = await appService.runDynamicShipQuery(query);
+        res.json({ success: true, data: result });
+    } catch (err) {
+        console.error('Error running dynamic ship query:', err);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
+
 
 module.exports = router;

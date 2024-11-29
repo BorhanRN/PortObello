@@ -1024,6 +1024,47 @@ async function fetchAndDisplayHomeCountriesWithAllTradeAgreements() {
     }
 }
 
+async function runDynamicShipQuery(event) {
+    event.preventDefault();
+
+    const queryInput = document.getElementById('shipQueryInput').value;
+
+    try {
+        const response = await fetch('/ship-query', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: queryInput }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        const tableBody = document.getElementById('shipQueryResultsTable').querySelector('tbody');
+
+        // Clear old results
+        tableBody.innerHTML = '';
+
+        if (responseData.success && Array.isArray(responseData.data)) {
+            responseData.data.forEach(ship => {
+                const row = tableBody.insertRow();
+                ['OWNER', 'SHIPNAME', 'SHIPSIZE', 'CAPACITY', 'SHIPPINGROUTENAME', 'DOCKEDATPORTADDRESS'].forEach(attr => {
+                    const cell = row.insertCell();
+                    cell.textContent = ship[attr] || 'N/A';
+                });
+            });
+        } else {
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 6;
+            cell.textContent = 'No results found';
+        }
+    } catch (error) {
+        console.error('Error running dynamic ship query:', error);
+    }
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -1122,6 +1163,9 @@ window.onload = async function() {
         await fetchAndDisplayHomeCountriesWithAllTradeAgreements(e);
         await fetchTableData();
     });
+
+    document.getElementById('shipQueryForm').addEventListener('submit', runDynamicShipQuery);
+
 }
 
 // General function to refresh the displayed table data.
