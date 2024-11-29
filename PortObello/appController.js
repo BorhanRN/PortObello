@@ -329,8 +329,8 @@ router.get("/max-ship-average", async (req, res) => {
 });
 
 router.post("/port-num-ship", async (req, res) => {
-    const { num } = req.body;
-    const initiateResult = await appService.portsNumShips(num)
+    const { min, max } = req.body;
+    const initiateResult = await appService.portsNumShips(min, max)
     if (initiateResult) {
         res.json({ success: true });
     } else {
