@@ -583,25 +583,6 @@
         <button id="submitButton" type="submit">Submit</button>
     </form>
 
-    <script>
-    event.preventDefault();
-    // Display the input fields when the button is pressed
-    document.getElementById("showInputButton").addEventListener("click", () => {
-        document.getElementById("joinCompanyShipmentInput").style.display = "block";
-    });
-
-    // Handle the form
-    document.getElementById("submitButton").addEventListener("click", async () => {
-        const companyName = document.getElementById("inputCompanyName").value;
-        const companyCEO = document.getElementById("inputCompanyCEO").value;
-
-        if (!companyName || !companyCEO) {
-            alert("Please fill in both fields.");
-            return;
-        }
-    });
-    </script>
-
     <div id="joinCompanyShipmentResults">
         <h3>Results:</h3>
         <table border="1" id="joinCompanyShipmentResultsTable">
