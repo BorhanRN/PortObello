@@ -1981,16 +1981,21 @@ async function portsNumShips(min, max) {
     return await withOracleDB(async (connection) => {
         // Create the shipPorts table (no min/max involved here compiler HAHAHAHHAHAH)
         await connection.execute(`
-            CREATE TABLE shipPorts AS
+            CREATE TABLE shipPorts (
+            PortAddress VARCHAR2(255),
+             NumShips INT
+            )
+        `, { autoCommit: true });
+
+        await connection.execute(`
+            INSERT INTO shipPorts (PortAddress, NumShips)
             SELECT 
                 S.DockedAtPortAddress AS PortAddress, 
                 COUNT(S.ShipName) AS NumShips
             FROM Ship1 S
             GROUP BY S.DockedAtPortAddress
             HAVING COUNT(S.ShipName) > 0
-        `,
-        { autoCommit: true }
-        );
+        `, { autoCommit: true });
 
         // Update the shipPorts table with ships that fall within the min and max size range
         await connection.execute(`
