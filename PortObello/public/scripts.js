@@ -989,6 +989,82 @@ async function resetShipmentContainer() {
     }
 }
 
+async function fetchAndDisplayHomeCountriesWithAllTradeAgreements() {
+    const messageElement = document.getElementById('homeCountriesWithAllTradeAgreementsMessage');
+    const tableElement = document.getElementById('homeCountriesWithAllTradeAgreements');
+    const tableBody = tableElement.querySelector('tbody');
+
+    try {
+        const response = await fetch('/homecountries-with-all-tradeagreements', { method: 'GET' });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+
+        if (responseData.success && Array.isArray(responseData.data)) {
+            tableBody.innerHTML = ''; // Clear old content
+
+            responseData.data.forEach(row => {
+                const tableRow = tableBody.insertRow();
+                const cell = tableRow.insertCell();
+                cell.textContent = row.NAME || 'N/A';
+            });
+
+            tableElement.style.display = 'block';
+            messageElement.textContent = '';
+        } else {
+            throw new Error('Unexpected response format or data');
+        }
+    } catch (error) {
+        console.error('Error fetching home countries with all trade agreements:', error);
+        messageElement.textContent = 'Failed to load data.';
+        tableElement.style.display = 'none';
+    }
+}
+
+async function runDynamicShipQuery(event) {
+    event.preventDefault();
+
+    const queryInput = document.getElementById('shipQueryInput').value;
+
+    try {
+        const response = await fetch('/ship-query', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: queryInput }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        const tableBody = document.getElementById('shipQueryResultsTable').querySelector('tbody');
+
+        // Clear old results
+        tableBody.innerHTML = '';
+
+        if (responseData.success && Array.isArray(responseData.data)) {
+            responseData.data.forEach(ship => {
+                const row = tableBody.insertRow();
+                ['OWNER', 'SHIPNAME', 'SHIPSIZE', 'CAPACITY', 'SHIPPINGROUTENAME', 'DOCKEDATPORTADDRESS'].forEach(attr => {
+                    const cell = row.insertCell();
+                    cell.textContent = ship[attr] || 'N/A';
+                });
+            });
+        } else {
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 6;
+            cell.textContent = 'No results found';
+        }
+    } catch (error) {
+        console.error('Error running dynamic ship query:', error);
+    }
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -1082,6 +1158,14 @@ window.onload = async function() {
     });
 
     document.getElementById("countCountry").addEventListener("click", countCountry);
+
+    document.getElementById("fetchHomeCountriesWithAllTradeAgreements").addEventListener("click", async (e) => {
+        await fetchAndDisplayHomeCountriesWithAllTradeAgreements(e);
+        await fetchTableData();
+    });
+
+    document.getElementById('shipQueryForm').addEventListener('submit', runDynamicShipQuery);
+
 }
 
 // General function to refresh the displayed table data.

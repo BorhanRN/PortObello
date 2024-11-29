@@ -178,7 +178,7 @@ async function initiateCountry() {
                 CREATE TABLE COUNTRY (
                     Name        VARCHAR2(100) NOT NULL,
                     Population  NUMBER,
-                    Government  VARCHAR2(100),
+                    Government  VARCHAR2(100) UNIQUE,
                     GDP         NUMBER,
                     PortAddress VARCHAR2(200) NOT NULL,
                     PRIMARY KEY (Name)
@@ -254,6 +254,19 @@ async function insertCountry(name, population, government, gdp, portaddress) {
 
 async function updateCountry(cname, population, government, portaddress, gdp) {
     return await withOracleDB(async (connection) => {
+
+        const checkResult = await connection.execute(
+            `SELECT COUNT(*) AS COUNT1 FROM COUNTRY WHERE government = :government`,
+            [government]
+        );
+
+        const existingCount = checkResult.rows.length > 0 ? checkResult.rows[0]["COUNT1"] : 0;
+
+        if (existingCount > 0) {
+            // Government value already exists
+            throw new Error(`Government value '${government}' already exists and must be unique.`);
+        }
+
         const result = await connection.execute(
             `UPDATE COUNTRY 
                 SET population=:population,
@@ -262,7 +275,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     gdp=:gdp
                    WHERE name=:cname`,
             [population, government, portaddress, gdp, cname],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
         const result2 = await connection.execute(
@@ -273,7 +286,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     gdp=:gdp
                    WHERE name=:cname`,
             [population, government, portaddress, gdp, cname],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
         const result3 = await connection.execute(
@@ -284,10 +297,10 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
                     gdp=:gdp
                    WHERE name=:cname`,
             [population, government, portaddress, gdp, cname],
-            { autoCommit: true }
+            { autoCommit: false }
         );
 
-
+        await connection.commit();
 
         return result.rowsAffected > 0 && result2.rowsAffected > 0 && result3.rowsAffected > 0;
     }).catch(() => {
@@ -835,6 +848,33 @@ async function initiateForeignCountry() {
     });
 }
 
+// selects all foreign countries that have a trade agreement with EVERY home country
+async function fetchHomeCountriesWithAllTradeAgreements() {
+    return await withOracleDB(async (connection) =>  {
+        try {
+            const query = `
+                SELECT hc.Name
+                FROM HomeCountry hc
+                WHERE NOT EXISTS (
+                    SELECT fc.Name
+                    FROM ForeignCountry fc
+                    WHERE NOT EXISTS (
+                        SELECT 1
+                        FROM Tariff1 t
+                        WHERE t.HomeName = hc.Name
+                          AND t.ForeignName = fc.Name
+                    )
+                )`;
+
+            const result = await connection.execute(query, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            return result.rows;
+        } catch (err) {
+            console.error('Error executing division query:', err);
+            throw err;
+        }
+    });
+}
+
 async function fetchTariffFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -951,7 +991,27 @@ async function initiateTariff() {
                 ['Canada - China Agreement', 9,'Canada','China', new Date('2024-10-25')],
                 ['Canada - Netherlands Agreement', 8,'Canada','Netherlands', new Date('2020-06-12')],
                 ['Canada - USA Agreement', 5,'Canada','USA', new Date('2020-01-30')],
-                ['Canada - Japan Agreement', 6,'Canada','Japan', new Date('1998-04-09')]
+                ['Canada - Japan Agreement', 6,'Canada','Japan', new Date('1998-04-09')],
+                ['Canada - Russia Agreement', 6,'Canada','Russia', new Date('1998-04-09')],
+                ['Canada - India Agreement', 6,'Canada','India', new Date('1998-04-09')],
+                ['Canada - Brazil Agreement', 6,'Canada','Brazil', new Date('1998-04-09')],
+                ['Canada - Canada Agreement', 6,'Canada','Canada', new Date('1998-04-09')],
+                ['USA - China Agreement', 9,'USA','China', new Date('2024-10-25')],
+                ['USA - Netherlands Agreement', 8,'USA','Netherlands', new Date('2020-06-12')],
+                ['USA - USA Agreement', 5,'USA','USA', new Date('2020-01-30')],
+                ['USA - Japan Agreement', 6,'USA','Japan', new Date('1998-04-09')],
+                ['USA - Russia Agreement', 6,'USA','Russia', new Date('1998-04-09')],
+                ['USA - India Agreement', 6,'USA','India', new Date('1998-04-09')],
+                ['USA - Brazil Agreement', 6,'USA','Brazil', new Date('1998-04-09')],
+                ['USA - Canada Agreement', 6,'USA','Canada', new Date('1998-04-09')],
+                ['Japan - China Agreement', 9,'Japan','China', new Date('2024-10-25')],
+                ['Japan - Netherlands Agreement', 8,'Japan','Netherlands', new Date('2020-06-12')],
+                ['Japan - USA Agreement', 5,'Japan','USA', new Date('2020-01-30')],
+                ['Japan - Japan Agreement', 6,'Japan','Japan', new Date('1998-04-09')],
+                ['Japan - Russia Agreement', 6,'Japan','Russia', new Date('1998-04-09')],
+                ['Japan - India Agreement', 6,'Japan','India', new Date('1998-04-09')],
+                ['Japan - Brazil Agreement', 6,'Japan','Brazil', new Date('1998-04-09')],
+                ['Japan - Canada Agreement', 6,'Japan','Canada', new Date('1998-04-09')]
             ];
 
             // Use bind variables for safer insertion
@@ -969,7 +1029,28 @@ async function initiateTariff() {
                 [9,'Lumber','Canada','China', new Date('2024-10-25')],
                 [8,'Maple Syrup','Canada','Netherlands', new Date('2020-06-12')],
                 [5,'Oil','Canada','USA', new Date('2020-01-30')],
-                [6,'Wheat','Canada','Japan', new Date('1998-04-09')]
+                [6,'Wheat','Canada','Japan', new Date('1998-04-09')],
+                [6,'Wheat','Canada','Russia', new Date('1998-04-09')],
+                [6,'Wheat','Canada','India', new Date('1998-04-09')],
+                [6,'Wheat','Canada','Brazil', new Date('1998-04-09')],
+                [6,'Wheat','Canada','Canada', new Date('1998-04-09')],
+                [9,'Lumber','USA','China', new Date('2024-10-25')],
+                [8,'Maple Syrup','USA','Netherlands', new Date('2020-06-12')],
+                [5,'Oil','USA','USA', new Date('2020-01-30')],
+                [6,'Wheat','USA','Japan', new Date('1998-04-09')],
+                [6,'Wheat','USA','Russia', new Date('1998-04-09')],
+                [6,'Wheat','USA','India', new Date('1998-04-09')],
+                [6,'Wheat','USA','Brazil', new Date('1998-04-09')],
+                [6,'Wheat','USA','Canada', new Date('1998-04-09')],
+                [9,'Lumber','Japan','China', new Date('2024-10-25')],
+                [8,'Maple Syrup','Japan','Netherlands', new Date('2020-06-12')],
+                [5,'Oil','Japan','USA', new Date('2020-01-30')],
+                [6,'Wheat','Japan','Japan', new Date('1998-04-09')],
+                [6,'Wheat','Japan','Russia', new Date('1998-04-09')],
+                [6,'Wheat','Japan','India', new Date('1998-04-09')],
+                [6,'Wheat','Japan','Brazil', new Date('1998-04-09')],
+                [6,'Wheat','Japan','Canada', new Date('1998-04-09')]
+
         ];
 
             // Use bind variables for safer insertion
@@ -1996,6 +2077,132 @@ async function updateNumContainers(portAddress, section, n) {
         });
 }
 
+//Finds all shipments from a specific COMPANY
+async function joinCompanyShipments(companyName, companyCEO) {
+    return await withOracleDB(async (connection) => {
+            await connection.execute(`
+            CREATE TABLE CompanyShipments AS (
+            SELECT sc.ShipOwner, sc.ShipName, sc.GoodType, sc.TrackingNumber, sc.CompanyName, sc.CompanyCEO,
+                   c.Industry, c.YearlyRevenue
+            FROM ShipmentContainer2 sc
+            JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
+            WHERE sc.CompanyName = companyName AND sc.CompanyCEO = companyCEO)
+            `,
+            {companyName, companyCEO},
+            { autoCommit: true }
+            );
+        })
+        .catch((error) => {
+            console.error("company / shipment not found", error);
+            return false;
+        });
+
+}
+
+// displays any number of attributes selected from Shipping Route
+async function projectShippingRoute(attributes) {
+    // list of possible attributes
+    const validAttributes = [
+          "ShippingRoute1.AnnualVolumeOfGoods",
+          "ShippingRoute1.OriginCountryName",
+          "ShippingRoute1.TerminalPortAddress",
+          "ShippingRoute2.ShippingRouteName",
+          "ShippingRoute2.Length",
+        ];
+
+        //filter selected attributes
+        const selectedAttributes = attributes.filter(attr => validAttributes.includes(attr));
+        //make sure they are valid
+        if (selectedAttributes.length === 0) {
+              throw new Error("No valid attributes selected.");
+            }
+        //append for the select clause
+        const selectClause = selectedAttributes.join(", ");
+        //query
+        return await withOracleDB(async (connection) => {
+                    await connection.execute(`
+                        SELECT ${selectClause}
+                        FROM ShippingRoute1
+                        JOIN ShippingRoute2
+                        ON ShippingRoute1.OriginCountryName = ShippingRoute2.OriginCountryName
+                        AND ShippingRoute1.TerminalPortAddress = ShippingRoute2.TerminalPortAddress
+                    `,
+                    { autoCommit: true }
+                    );
+                })
+        .catch((error) => {
+            console.error(error);
+            return false;
+        });
+}
+
+
+async function runDynamicShipQuery(userInput) {
+    return await withOracleDB(async (connection) => {
+        try {
+            // Parse userInput to construct a safe WHERE clause
+            const { whereClause, bindParams } = parseShipQuery(userInput);
+
+            console.log('parsed whereClause:', whereClause);
+
+
+            const query = `
+                SELECT
+                    s1.Owner AS Owner,
+                    s1.ShipName AS ShipName,
+                    s1.ShipSize AS ShipSize,
+                    s2.Capacity AS Capacity,
+                    s1.ShippingRouteName AS ShippingRouteName,
+                    s1.DockedAtPortAddress AS DockedAtPortAddress
+                FROM Ship1 s1
+                         LEFT JOIN Ship2 s2 ON s1.ShipSize = s2.ShipSize
+                WHERE ${whereClause}`;
+
+            console.log('Final Query:', query);
+            console.log('Bind Parameters:', bindParams);
+
+            const result = await connection.execute(query, bindParams, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            return result.rows;
+        } catch (err) {
+            console.error('Error in runDynamicShipQuery:', err);
+            throw err;
+        }
+    });
+}
+
+// Utility to parse and validate user input
+function parseShipQuery(input) {
+    const allowedOperators = ['=', '<', '<=', '>', '>=', '!=', 'AND', 'OR'];
+    const ship1Attributes = ['Owner', 'ShipName', 'ShipSize', 'ShippingRouteName', 'DockedAtPortAddress'];
+    const ship2Attributes = ['ShipSize', 'Capacity'];
+
+    const tokens = input.split(/\s+/);
+    const whereParts = [];
+    const bindParams = {};
+
+    let bindIndex = 1;
+
+    tokens.forEach(token => {
+        if (allowedOperators.includes(token.toUpperCase())) {
+            whereParts.push(token.toUpperCase());
+        } else if (ship1Attributes.includes(token)) {
+            whereParts.push(`s1.${token}`);
+        } else if (ship2Attributes.includes(token)) {
+            whereParts.push(`s2.${token}`);
+        } else if (/^'.*'$/.test(token) || /^\d+(\.\d+)?$/.test(token)) { // Strings or numbers
+            const bindKey = `:param${bindIndex++}`;
+            bindParams[bindKey] = token.startsWith("'") ? token.slice(1, -1) : Number(token);
+            whereParts.push(bindKey);
+        } else {
+            throw new Error(`Invalid token: ${token}`);
+        }
+    });
+
+    return { whereClause: whereParts.join(' '), bindParams };
+}
+
+
+
 class CapacityError extends Error {
 }
 
@@ -2019,6 +2226,7 @@ module.exports = {
 
     fetchForeignCountryFromDb,
     initiateForeignCountry,
+    fetchHomeCountriesWithAllTradeAgreements,
 
     fetchTariffFromDb,
     initiateTariff,
@@ -2028,6 +2236,7 @@ module.exports = {
 
     fetchShipFromDb,
     initiateShip,
+    runDynamicShipQuery,
 
     fetchCompanyFromDb,
     initiateCompany,
@@ -2057,22 +2266,23 @@ module.exports = {
     addShipmentContainer,
     removeShipmentContainer,
     updateNumContainers,
+    CapacityError,
 
-    CapacityError
+    projectShippingRoute,
+    joinCompanyShipments
 };
 
 //!!TODO
 //------------------REQUIRED------------------
-//-X-INSERT (implement on HOMECOUNTRY)
+//-X- INSERT (implement on HOMECOUNTRY)
 //  -> specify what values to insert
 //  -> affects more than one relationship
 //  -> handle the case where the foreign key value in the tuple being inserted does not exist in the relation that is being referred to
 //      -> user notification - rejection
-//UPDATE
+//-X- UPDATE
 //  -> relation must have at least 2 non-primary-key attributes
 //  -> At least one non-primary key attribute must have either a UNIQUE constraint or be a foreign key that references another relation.
 //  -> display the tuples that are available for the relation so the user can select which tuple they want to update (just show table? probably)
-//      -> UPDATECOUNTRYNAME -- need to update all things that reference country MANUALLY
 //-X- DELETE (implemented on PORT and cascades to related tables)
 //  -> cascade-on-delete situation
 //-X- AGGREGATION with GROUP BY (count implemented on COUNTRY)
@@ -2083,17 +2293,18 @@ module.exports = {
 //  -> must provide an interface (e.g., button, dropdown, etc.)
 //  -> can use VIEW if easier
 //  -> see pdf for example
-
-//DIVISION
+//-X- DIVISION
 //  -> must do division (no shit)
 //  -> must provide an interface (e.g., button, dropdown, etc.)
+
+
 //SELECT -- Search through all attributes --- SHIP
 //  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
 //  -> using a dynamically generated dropdown of AND/OR options or parsing user string
-//PROJECTION -- Choose which attributes to view on this table --- PORT (using buttons on frontend)
+//PROJECTION -- Choose which attributes to view on this table --- Shipping Route done in backend
 //  -> The user can choose any number of attributes to view from this relation
 //  -> Non-selected attributes must not appear in the result
-//JOIN -- Find all shipments from a specific COMPANY
+//JOIN -- Find all shipments from a specific COMPANY -- backend done
 //  -> join at least two relations
 //  -> user must provide at least one value to qualify in the WHERE clause
 //AGGREGATION WITH HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
@@ -2104,7 +2315,7 @@ module.exports = {
 
 //------------------OTHER REQUIREMENTS------------------
 //-X-NOT ALL ON ONE PAGE
-//-X-sufficient user data?
+//sufficient user data? - NEED MORE
 // basic security practices
 //  -> values from the user are not directly used in the database
 //  -> prevent injection and rainbow attacks
