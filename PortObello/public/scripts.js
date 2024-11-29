@@ -1150,7 +1150,7 @@ window.onload = async function() {
 
     document.getElementById("numShips").addEventListener("submit", async (e) => {
         await numShip(e);
-        //await fetchAndDisplayPortsNumShip();
+        await fetchAndDisplayPortsNumShip();
     });
 
     document.getElementById("groupBy").addEventListener("submit", async (e) => {

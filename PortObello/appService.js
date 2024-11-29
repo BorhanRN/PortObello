@@ -1929,7 +1929,7 @@ async function portsNumShips(num) {
             SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
             FROM Ship1
             GROUP BY DockedAtPortAddress
-            HAVING COUNT(ShipName) >= ${num}
+            HAVING DockedShips >= ${num}
         `;
 
         const res = await connection.execute(sql, [], { autoCommit: true });
