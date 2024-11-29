@@ -1924,18 +1924,15 @@ async function deleteTariff(tName) {
 //aggregation with having
 async function portsNumShips(num) {
     return await withOracleDB(async (connection) =>  {
-
-        const res = await connection.execute(`
+        const sql = `
             CREATE OR REPLACE VIEW shipPorts AS
             SELECT DockedAtPortAddress, COUNT(ShipName) AS NumShips
             FROM Ship1
             GROUP BY DockedAtPortAddress
-            HAVING COUNT(ShipName) >= :num;
+            HAVING COUNT(ShipName) >= ${num}
+        `;
 
-        `,
-            [num],
-            {autoCommit: true}
-        );
+        const res = await connection.execute(sql, [], { autoCommit: true });
         console.log('Query result:', res);
         return true;
     })
