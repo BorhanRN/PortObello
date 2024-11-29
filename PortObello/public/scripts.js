@@ -260,7 +260,7 @@ async function maxAverage(event) {
     }
 }
 
-async function portNumShip(event){
+async function numShip(event){
     event.preventDefault();
     const num = document.getElementById('numberOfShips').value;
 
@@ -1149,8 +1149,8 @@ window.onload = async function() {
     });
 
     document.getElementById("numShips").addEventListener("submit", async (e) => {
-        await portNumShip(e);
-        await fetchAndDisplayPortsNumShip();
+        await numShip(e);
+        //await fetchAndDisplayPortsNumShip();
     });
 
     document.getElementById("groupBy").addEventListener("submit", async (e) => {
