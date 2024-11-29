@@ -262,7 +262,8 @@ async function maxAverage(event) {
 
 async function numShip(event){
     event.preventDefault();
-    const num = document.getElementById('numberOfShips').value;
+    const min = document.getElementById('minNumb').value;
+    const max = document.getElementById('maxNumb').value;
 
     const response = await fetch('/port-num-ship', {
         method: 'POST',
@@ -270,7 +271,8 @@ async function numShip(event){
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            num: num,
+            min: min,
+            max: max,
         })
     });
 
@@ -508,7 +510,7 @@ async function fetchAndDisplayHomeCountry() {
 // Fetches data from PORT and displays it. CL1
 async function fetchAndDisplayPortsNumShip() {
     try {
-        console.log('Fetching NumShipx data...');
+        console.log('Fetching NumShips data...');
         const response = await fetch('/numShips', { method: 'GET' });
         console.log('Response status:', response.status);
 
@@ -534,7 +536,7 @@ async function fetchAndDisplayPortsNumShip() {
 
         responseData.data.forEach(shipPorts => {
             const row = tableBody.insertRow();
-            const columns = ['DOCKEDATPORTADDRESS', 'NUMSHIPS'];
+            const columns = ['PORTADDRESS', 'NUMSHIPS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
                 cell.textContent = shipPorts[col] || 'N/A';
@@ -1191,7 +1193,7 @@ window.onload = async function() {
 
     document.getElementById("numShips").addEventListener("submit", async (e) => {
         await numShip(e);
-        //await fetchAndDisplayPortsNumShip();
+        await fetchAndDisplayPortsNumShip();
     });
 
     document.getElementById("groupBy").addEventListener("submit", async (e) => {
