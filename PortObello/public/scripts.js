@@ -536,7 +536,7 @@ async function fetchAndDisplayPortsNumShip() {
 
         responseData.data.forEach(shipPorts => {
             const row = tableBody.insertRow();
-            const columns = ['PORTADDRESS', 'NUMSHIPS'];
+            const columns = ['PORTLOCATION', 'NUMSOFSHIPS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
                 cell.textContent = shipPorts[col] || 'N/A';
