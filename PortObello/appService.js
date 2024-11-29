@@ -1392,6 +1392,9 @@ async function initiateShip() {
             // Insert initial data
             const insertStatements = [
                 ['Maersk', 'Ocean Breeze', 'Great Circle','999 Canada Pl, Vancouver, BC V6C 3T4', 100.5],
+                ['Maersk', 'Dirty Harry', 'Great Circle','999 Canada Pl, Vancouver, BC V6C 3T4', 113.6],
+                ['Atlantic Trade', 'Challenger', 'Rotterdam - Vancouver','999 Canada Pl, Vancouver, BC V6C 3T4', 85.5],
+                ['Atlantic Trade', 'Killer', 'Great Circle','Shengsi County, Zhoushan, China, 202461', 11.23],
                 ['Mediterranean Shipping Company', 'Seawolf', 'PANZ Seattle Loop', 'Shengsi County, Zhoushan, China, 202461', 150.75],
                 ['Atlantic Trade', 'Blue Horizon','Trans - Pacific Route', 'Wilhelminakade 909, 3072 AP Rotterdam, Netherlands', 200.0],
                 ['Pacific Vessels', 'Tidal Wave', 'Rotterdam - Vancouver', 'Signal St, San Pedro, CA 90731, United States', 175.4],
