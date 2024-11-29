@@ -329,6 +329,10 @@ router.get("/max-ship-average", async (req, res) => {
 });
 
 router.post("/port-num-ship", async (req, res) => {
+    const creation = await appService.createNumShips();
+    if (!creation) {
+        res.status(500).json({ success: false });
+    }
     const { min, max } = req.body;
     const initiateResult = await appService.portsNumShips(min, max)
     if (initiateResult) {
