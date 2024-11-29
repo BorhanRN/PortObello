@@ -732,8 +732,11 @@ async function insertHomeCountry(name, population, government, gdp, portaddress)
                  government = :government,
                  gdp = :gdp,
                  portaddress = :portaddress
-             WHERE Name = :name
-            `
+             WHERE name = :name
+            `,
+            [name, population, government, gdp, portaddress],
+            { autoCommit: true }
+
         );
 
 
