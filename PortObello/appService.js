@@ -1980,6 +1980,7 @@ async function deleteTariff(tName) {
 async function createNumShips() {
     return await withOracleDB(async (connection) => {
         try{
+        try{
             connection.execute(`
             DROP TABLE shipPorts`,
                 {autoCommit : true});
@@ -1992,17 +1993,17 @@ async function createNumShips() {
                        NumOfShips NUMBER,
                        PRIMARY KEY (PortLocation)
                     )
-            `,
-            {autoCommit : true}
-        );
+            `);
 
+        await connection.commit();
+
+        console.log("shipPorts table created successfully.");
         return true;
-    })
-        .catch((error) => {
+    }catch (error) {
             console.error("Error creating shipPorts table:", error);
-            console.error("Detailed error:", error.message, error.stack);
             return false;
-        });
+        }
+    });
 }
 //aggregation with having
 async function portsNumShips(min, max) {
