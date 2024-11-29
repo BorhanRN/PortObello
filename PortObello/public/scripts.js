@@ -1286,7 +1286,7 @@ async function projectShippingRoute(attributes) {
                 responseData.data.forEach(rowData => {
                     const row = tableBody.insertRow();
                     attributes.forEach(attr => {
-                        const key = attr.split('.').pop();
+                        const key = attr.split('.').pop().toUpperCase(); // Convert to uppercase to match Oracle keys
                         const value = rowData[key];
                         console.log(`Key: ${key}, Value: ${value}`); // Debugging output
                         const cell = row.insertCell();
