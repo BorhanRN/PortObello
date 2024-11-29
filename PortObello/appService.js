@@ -2144,9 +2144,15 @@ async function runDynamicShipQuery(userInput) {
             const { whereClause, bindParams } = parseShipQuery(userInput);
 
             const query = `
-                SELECT s1.Owner, s1.ShipName, s1.ShipSize, s2.Capacity, s1.ShippingRouteName, s1.DockedAtPortAddress
+                SELECT
+                    s1.Owner AS Owner,
+                    s1.ShipName AS ShipName,
+                    s1.ShipSize AS ShipSize,
+                    s2.Capacity AS Capacity,
+                    s1.ShippingRouteName AS ShippingRouteName,
+                    s1.DockedAtPortAddress AS DockedAtPortAddress
                 FROM Ship1 s1
-                LEFT JOIN Ship2 s2 ON s1.ShipSize = s2.ShipSize
+                         LEFT JOIN Ship2 s2 ON s1.ShipSize = s2.ShipSize
                 WHERE ${whereClause}`;
 
             const result = await connection.execute(query, bindParams, { outFormat: oracledb.OUT_FORMAT_OBJECT });
