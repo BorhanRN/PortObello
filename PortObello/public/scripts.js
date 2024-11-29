@@ -1259,6 +1259,7 @@ window.onload = async function() {
     document.getElementById("joinCompanyShipmentInput").addEventListener("submitButton", async (e) => {
         await joinCompanyShipment(e);
     });
+}
 
 // General function to refresh the displayed table data.
 // You can invoke this after any table-modifying operation to keep consistency.
@@ -1284,4 +1285,3 @@ window.onload = async function() {
         }
     }
 
-}
