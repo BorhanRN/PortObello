@@ -2232,42 +2232,91 @@ async function joinCompanyShipments(companyName, companyCEO) {
 }
 
 
+// // displays any number of attributes selected from Shipping Route
+// async function projectShippingRoute(attributes) {
+//     // list of possible attributes
+//     const validAttributes = [
+//           "ShippingRoute1.AnnualVolumeOfGoods",
+//           "ShippingRoute1.OriginCountryName",
+//           "ShippingRoute1.TerminalPortAddress",
+//           "ShippingRoute2.ShippingRouteName",
+//           "ShippingRoute2.Length",
+//         ];
+//
+//         //filter selected attributes
+//         const selectedAttributes = attributes.filter(attr => validAttributes.includes(attr));
+//         //make sure they are valid
+//         if (selectedAttributes.length === 0) {
+//               throw new Error("No valid attributes selected.");
+//             }
+//         //append for the select clause
+//         const selectClause = selectedAttributes.join(", ");
+//         //query
+//         return await withOracleDB(async (connection) => {
+//                     await connection.execute(`
+//                         SELECT ${selectClause}
+//                         FROM ShippingRoute1
+//                         JOIN ShippingRoute2
+//                         ON ShippingRoute1.OriginCountryName = ShippingRoute2.OriginCountryName
+//                         AND ShippingRoute1.TerminalPortAddress = ShippingRoute2.TerminalPortAddress
+//                     `,
+//                     { autoCommit: true }
+//                     );
+//                 })
+//         .catch((error) => {
+//             console.error(error);
+//             return false;
+//         });
+// }
+
 // displays any number of attributes selected from Shipping Route
 async function projectShippingRoute(attributes) {
-    // list of possible attributes
+    // List of possible attributes
     const validAttributes = [
-          "ShippingRoute1.AnnualVolumeOfGoods",
-          "ShippingRoute1.OriginCountryName",
-          "ShippingRoute1.TerminalPortAddress",
-          "ShippingRoute2.ShippingRouteName",
-          "ShippingRoute2.Length",
-        ];
+        "ShippingRoute1.AnnualVolumeOfGoods",
+        "ShippingRoute1.OriginCountryName",
+        "ShippingRoute1.TerminalPortAddress",
+        "ShippingRoute2.ShippingRouteName",
+        "ShippingRoute2.Length",
+    ];
 
-        //filter selected attributes
-        const selectedAttributes = attributes.filter(attr => validAttributes.includes(attr));
-        //make sure they are valid
-        if (selectedAttributes.length === 0) {
-              throw new Error("No valid attributes selected.");
-            }
-        //append for the select clause
-        const selectClause = selectedAttributes.join(", ");
-        //query
-        return await withOracleDB(async (connection) => {
-                    await connection.execute(`
-                        SELECT ${selectClause}
-                        FROM ShippingRoute1
-                        JOIN ShippingRoute2
-                        ON ShippingRoute1.OriginCountryName = ShippingRoute2.OriginCountryName
-                        AND ShippingRoute1.TerminalPortAddress = ShippingRoute2.TerminalPortAddress
-                    `,
-                    { autoCommit: true }
-                    );
-                })
-        .catch((error) => {
-            console.error(error);
-            return false;
-        });
+    // Ensure attributes is an array
+    if (!Array.isArray(attributes)) {
+        throw new Error("Attributes must be an array.");
+    }
+
+    // Filter and validate selected attributes
+    const selectedAttributes = attributes.filter(attr => validAttributes.includes(attr));
+    if (selectedAttributes.length === 0) {
+        throw new Error("No valid attributes selected.");
+    }
+
+    // Build SELECT clause safely
+    const selectClause = selectedAttributes.join(", ");
+
+    // Query the database
+    return await withOracleDB(async (connection) => {
+        try {
+            const result = await connection.execute(
+                `
+                SELECT ${selectClause}
+                FROM ShippingRoute1
+                JOIN ShippingRoute2
+                ON ShippingRoute1.OriginCountryName = ShippingRoute2.OriginCountryName
+                AND ShippingRoute1.TerminalPortAddress = ShippingRoute2.TerminalPortAddress
+                `,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT } // Ensure results are returned as objects
+            );
+
+            return result.rows; // Return query results
+        } catch (error) {
+            console.error("Error in projectShippingRoute:", error);
+            throw new Error("Failed to project shipping routes.");
+        }
+    });
 }
+
 
 
 async function runDynamicShipQuery(userInput) {

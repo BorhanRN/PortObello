@@ -460,12 +460,59 @@
 <br>
 <hr>
 <br> <!-- ========================================================================= -->
+
+<h2>Project Shipping Route</h2>
+
+<!-- Form to select attributes -->
+<form id="shippingRouteForm">
+    <fieldset>
+        <legend>Select Attributes to View:</legend>
+        <label>
+            <input type="checkbox" name="attribute" value="ShippingRoute1.AnnualVolumeOfGoods">
+            Annual Volume of Goods
+        </label>
+        <label>
+            <input type="checkbox" name="attribute" value="ShippingRoute1.OriginCountryName">
+            Origin Country Name
+        </label>
+        <label>
+            <input type="checkbox" name="attribute" value="ShippingRoute1.TerminalPortAddress">
+            Terminal Port Address
+        </label>
+        <label>
+            <input type="checkbox" name="attribute" value="ShippingRoute2.ShippingRouteName">
+            Shipping Route Name
+        </label>
+        <label>
+            <input type="checkbox" name="attribute" value="ShippingRoute2.Length">
+            Route Length
+        </label>
+        <br><br>
+        <button type="submit">Project</button>
+    </fieldset>
+</form>
+
+<!-- Table to display results -->
+<div id="shippingRouteResults">
+    <h3>Results:</h3>
+    <table border="1" id="shippingRouteResultsTable">
+        <thead>
+        <tr id="shippingRouteTableHeader"></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
 <h1>Ship</h1>
 <div class="tab">
     <button class="shipTab" onclick="openShip(event, 'Ship Table')">Table</button>
     <button class="shipTab" onclick="openShip(event, 'Highest Value')">Highest Average</button>
     <button class="shipTab" onclick="openShip(event, 'Select')">Select</button>
 </div>
+
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <div id="Ship Table" class="shipContent">
     <!-- Show 'Ship'.
