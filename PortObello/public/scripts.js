@@ -469,7 +469,7 @@ async function fetchAndDisplayHomeCountry() {
 // Fetches data from PORT and displays it. CL1
 async function fetchAndDisplayPortsNumShip() {
     try {
-        console.log('Fetching NumShipx data...');
+        console.log('Fetching NumShips data...');
         const response = await fetch('/numShips', { method: 'GET' });
         console.log('Response status:', response.status);
 
@@ -495,7 +495,7 @@ async function fetchAndDisplayPortsNumShip() {
 
         responseData.data.forEach(shipPorts => {
             const row = tableBody.insertRow();
-            const columns = ['DOCKEDATPORTADDRESS', 'NUMSHIPS'];
+            const columns = ['PORTADDRESS', 'NUMSHIPS'];
             columns.forEach(col => {
                 const cell = row.insertCell();
                 cell.textContent = shipPorts[col] || 'N/A';

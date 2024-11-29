@@ -1932,7 +1932,7 @@ async function portsNumShips(min, max) {
         JOIN Ship1 S ON P.PortAddress = S.DockedAtPortAddress
         WHERE S.ShipSize BETWEEN ${min} AND ${max}
         GROUP BY P.PortAddress
-        HAVING COUNT(S.ShipName) > 0;
+        HAVING COUNT(S.ShipName) > 0
         `;
 
         const res = await connection.execute(sql, [], { autoCommit: true });
