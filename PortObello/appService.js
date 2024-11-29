@@ -1926,20 +1926,21 @@ async function portsNumShips(min, max) {
     return await withOracleDB(async (connection) =>  {
         const sql = `
         CREATE VIEW shipPorts AS
-        SELECT P.PortAddress, 
+        SELECT 
+            S.DockedAtPortAddress AS PortAddress, 
             COUNT(S.ShipName) AS NumShips
-        FROM Port P
-        JOIN Ship1 S ON P.PortAddress = S.DockedAtPortAddress
-        WHERE S.ShipSize BETWEEN ${min} AND ${max}
-        GROUP BY P.PortAddress
+        FROM Ship1 S
+        WHERE S.ShipSize >= ${min} AND S.ShipSize <= ${min}
+        GROUP BY S.DockedAtPortAddress
         HAVING COUNT(S.ShipName) > 0
         `;
 
-        await connection.execute(sql);
+        await connection.execute(sql,  { autoCommit: true });
         return true;
     })
         .catch((error) => {
-            console.error("Error finding ports with numships:", error);
+            console.error("Error creating shipPorts view:", error);
+            console.error("Detailed error:", error.message, error.stack);
             return false;
         });
 }
