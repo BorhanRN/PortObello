@@ -309,14 +309,51 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
 }
 
 
+// async function countCountry() {
+//     return await withOracleDB(async (connection) => {
+//         const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
+//         return result.rows[0][0];
+//     }).catch(() => {
+//         return -1;
+//     });
+// }
+
 async function countCountry() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
-        return result.rows[0][0];
+        try {
+            const result = await connection.execute(
+                `SELECT 
+                    CASE 
+                        WHEN GDP < 1 THEN '0-1'
+                        WHEN GDP BETWEEN 1 AND 5 THEN '1-5'
+                        WHEN GDP BETWEEN 5 AND 10 THEN '5-10'
+                        WHEN GDP BETWEEN 10 AND 15 THEN '10-15'
+                        ELSE '15+'
+                    END AS GDPRange,
+                    COUNT(*) AS CountryCount
+                 FROM COUNTRY
+                 GROUP BY 
+                    CASE
+                        WHEN GDP < 1 THEN '0-1'
+                        WHEN GDP BETWEEN 1 AND 5 THEN '1-5'
+                        WHEN GDP BETWEEN 5 AND 10 THEN '5-10'
+                        WHEN GDP BETWEEN 10 AND 15 THEN '10-15'
+                        ELSE '15+'
+                    END
+                 ORDER BY GDPRange`,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            return result.rows;
+        } catch (err) {
+            console.error('Error in countCountry:', err);
+            throw err;
+        }
     }).catch(() => {
-        return -1;
+        return [];
     });
 }
+
 
 async function fetchPortFromDb() {
     return await withOracleDB(async (connection) => {
@@ -1784,6 +1821,24 @@ async function deletePort(addy) {
             { autoCommit: true }
         );
 
+        await connection.execute( `
+                    UPDATE HomeCountry
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
+            `,
+            [addy],
+            { autoCommit: true }
+        );
+
+        await connection.execute( `
+                    UPDATE ForeignCountry
+                    SET PortAddress = 'No ports from this country are currently monitored.'
+                    WHERE PortAddress =:addy
+            `,
+            [addy],
+            { autoCommit: true }
+        );
+
 
         const deletion = await connection.execute( `
         DELETE FROM Port WHERE PortAddress =:addy
@@ -2309,11 +2364,10 @@ module.exports = {
 //-X- DIVISION
 //  -> must do division (no shit)
 //  -> must provide an interface (e.g., button, dropdown, etc.)
-
-
-//SELECT -- Search through all attributes --- SHIP
+//-X- SELECT -- Search through all attributes --- SHIP
 //  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
 //  -> using a dynamically generated dropdown of AND/OR options or parsing user string
+
 //PROJECTION -- Choose which attributes to view on this table --- Shipping Route done in backend
 //  -> The user can choose any number of attributes to view from this relation
 //  -> Non-selected attributes must not appear in the result
@@ -2328,15 +2382,16 @@ module.exports = {
 
 //------------------OTHER REQUIREMENTS------------------
 //-X-NOT ALL ON ONE PAGE
-//sufficient user data? - NEED MORE
+//-X- basic error handling
+//  -> user errors such as trying to insert a duplicate value, invalid input (e.g., invalid characters or an int when only strings are allowed)
+//-X- user notification
+//  -> The user will receive a success or failure notification upon the completion of an insert,
+//      update, delete action and will have a way to verify the action's effect on the database.
+// sufficient user data? - NEED MORE
 // basic security practices
 //  -> values from the user are not directly used in the database
 //  -> prevent injection and rainbow attacks
-// basic error handling
-//  -> user errors such as trying to insert a duplicate value, invalid input (e.g., invalid characters or an int when only strings are allowed)
-// user notification
-//  -> The user will receive a success or failure notification upon the completion of an insert,
-//      update, delete action and will have a way to verify the action's effect on the database.
+
 //ADD MILESTONE 4 PDF
 //  -> cover page
 //  -> description of what we accomplished

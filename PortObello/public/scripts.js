@@ -287,23 +287,64 @@ async function numShip(event){
     }
 }
 
-// Counts rows in country.
-// Modify the function accordingly if using different aggregate functions or procedures.
+// // Counts rows in country.
+// // Modify the function accordingly if using different aggregate functions or procedures.
+// async function countCountry() {
+//     const response = await fetch("/count-country", {
+//         method: 'GET'
+//     });
+//
+//     const responseData = await response.json();
+//     const messageElement = document.getElementById('countResultMsg');
+//
+//     if (responseData.success) {
+//         const tupleCount = responseData.count;
+//         messageElement.textContent = `The number of tuples in country: ${tupleCount}`;
+//     } else {
+//         alert("Error in count country!");
+//     }
+// }
+
 async function countCountry() {
-    const response = await fetch("/count-country", {
-        method: 'GET'
-    });
+    const messageElement = document.getElementById('countriesByGDPMessage');
+    const tableElement = document.getElementById('countriesByGDPTable');
+    const tableBody = tableElement.querySelector('tbody');
 
-    const responseData = await response.json();
-    const messageElement = document.getElementById('countResultMsg');
+    try {
+        const response = await fetch('/count-country', { method: 'GET' });
 
-    if (responseData.success) {
-        const tupleCount = responseData.count;
-        messageElement.textContent = `The number of tuples in country: ${tupleCount}`;
-    } else {
-        alert("Error in count country!");
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+
+        if (responseData.success && Array.isArray(responseData.data)) {
+            tableBody.innerHTML = ''; // Clear old content
+
+            responseData.data.forEach(row => {
+                const tableRow = tableBody.insertRow();
+                const gdpRangeCell = tableRow.insertCell();
+                gdpRangeCell.textContent = row.GDPRANGE;
+
+                const countCell = tableRow.insertCell();
+                countCell.textContent = row.COUNTRYCOUNT;
+            });
+
+            tableElement.style.display = 'table';
+            messageElement.textContent = 'Data loaded successfully!';
+            messageElement.style.color = 'green';
+        } else {
+            throw new Error('Unexpected response format or data');
+        }
+    } catch (error) {
+        console.error('Error fetching countries by GDP range:', error);
+        messageElement.textContent = 'Failed to load data.';
+        messageElement.style.color = 'red';
     }
 }
+
+
 
 // Fetches data from PORT and displays it. CL1
 async function fetchAndDisplayPort() {
@@ -1067,6 +1108,52 @@ async function runDynamicShipQuery(event) {
     }
 }
 
+async function joinCompanyShipment(event) {
+    event.preventDefault();
+
+    const companyName = document.getElementById('inputCompanyName').value;
+    const companyCEO = document.getElementById('inputCompanyCEO').value;
+
+    try {
+            const response = await fetch('/join-Company-Shipment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    companyName: companyName,
+                    companyCEO: companyCEO,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            const tableBody = document.getElementById('joinCompanyShipmentResultsTable').querySelector('tbody');
+
+            // Clear old results
+            tableBody.innerHTML = '';
+
+            if (responseData.success && Array.isArray(responseData.data)) {
+                responseData.data.forEach(company => {
+                    const row = tableBody.insertRow();
+                    ['CEO', 'NAME', 'INDUSTRY', 'YEARLYREVENUE', 'COUNTRYNAME'].forEach(attr => {
+                        const cell = row.insertCell();
+                        cell.textContent = company[attr] || 'N/A';
+                    });
+                });
+            } else {
+                const row = tableBody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 5;
+                cell.textContent = 'No results found';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -1130,7 +1217,6 @@ window.onload = async function() {
     });
 
 
-
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
         await insertCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after insert
@@ -1159,7 +1245,9 @@ window.onload = async function() {
         await maxAverage(e);
     });
 
-    document.getElementById("countCountry").addEventListener("click", countCountry);
+    // document.getElementById("countCountry").addEventListener("click", countCountry);
+    document.getElementById('countCountriesByGDPButton').addEventListener('click', countCountry);
+
 
     document.getElementById("fetchHomeCountriesWithAllTradeAgreements").addEventListener("click", async (e) => {
         await fetchAndDisplayHomeCountriesWithAllTradeAgreements(e);
@@ -1168,28 +1256,32 @@ window.onload = async function() {
 
     document.getElementById('shipQueryForm').addEventListener('submit', runDynamicShipQuery);
 
+    document.getElementById("joinCompanyShipmentInput").addEventListener("submitButton", async (e) => {
+        await joinCompanyShipment(e);
+    });
 }
 
 // General function to refresh the displayed table data.
 // You can invoke this after any table-modifying operation to keep consistency.
-async function fetchTableData() {
-    await fetchAndDisplayCountry();
-    await fetchAndDisplayPort();
-    await fetchAndDisplayWarehouse();
-    await fetchAndDisplayHomeCountry();
-    await fetchAndDisplayForeignCountry();
-    await fetchAndDisplayTariff();
-    await fetchAndDisplayShippingRoute();
-    await fetchAndDisplayShip();
-    await fetchAndDisplayCompany();
-    await fetchAndDisplayShipmentContainer();
-}
+    async function fetchTableData() {
+        await fetchAndDisplayCountry();
+        await fetchAndDisplayPort();
+        await fetchAndDisplayWarehouse();
+        await fetchAndDisplayHomeCountry();
+        await fetchAndDisplayForeignCountry();
+        await fetchAndDisplayTariff();
+        await fetchAndDisplayShippingRoute();
+        await fetchAndDisplayShip();
+        await fetchAndDisplayCompany();
+        await fetchAndDisplayShipmentContainer();
+    }
 
-async function test() {
-    try {
-    incNumContainers(aa, aa)
-    } catch (error) {
-        if(error instanceof CapacityError) {
+    async function test() {
+        try {
+            incNumContainers(aa, aa)
+        } catch (error) {
+            if (error instanceof CapacityError) {
+            }
         }
     }
-}
+

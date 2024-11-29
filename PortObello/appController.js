@@ -68,18 +68,28 @@ router.post("/update-country", async (req, res) => {
     }
 });
 
+// router.get('/count-country', async (req, res) => {
+//     const tableCount = await appService.countCountry();
+//     if (tableCount >= 0) {
+//         res.json({
+//             success: true,
+//             count: tableCount
+//         });
+//     } else {
+//         res.status(500).json({
+//             success: false,
+//             count: tableCount
+//         });
+//     }
+// });
+
 router.get('/count-country', async (req, res) => {
-    const tableCount = await appService.countCountry();
-    if (tableCount >= 0) {
-        res.json({ 
-            success: true,  
-            count: tableCount
-        });
-    } else {
-        res.status(500).json({ 
-            success: false, 
-            count: tableCount
-        });
+    try {
+        const data = await appService.countCountry();
+        res.json({ success: true, data });
+    } catch (err) {
+        console.error('Error fetching countries by GDP ranges:', err);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 
@@ -331,16 +341,6 @@ router.post("/port-num-ship", async (req, res) => {
 router.post("/join-Company-Shipment", async (req, res) => {
     const { companyName, companyCEO } = req.body;
     const initiateResult = await appService.joinCompanyShipments(companyName, companyCEO)
-    if (initiateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
-});
-
-router.post("/project-Shipping-Route", async (req, res) => {
-    const { attributes } = req.body;
-    const initiateResult = await appService.projectShippingRoute(attributes)
     if (initiateResult) {
         res.json({ success: true });
     } else {
