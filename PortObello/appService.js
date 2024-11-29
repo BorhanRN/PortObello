@@ -2411,6 +2411,9 @@ module.exports = {
 //-X- SELECT -- Search through all attributes --- SHIP
 //  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
 //  -> using a dynamically generated dropdown of AND/OR options or parsing user string
+//-X- AGGREGATION WITH HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
+//  -> must include a HAVING clause.
+//  -> must provide an interface (e.g., button, dropdown, etc.)
 
 //PROJECTION -- Choose which attributes to view on this table --- Shipping Route done in backend
 //  -> The user can choose any number of attributes to view from this relation
@@ -2418,9 +2421,7 @@ module.exports = {
 //JOIN -- Find all shipments from a specific COMPANY -- backend done
 //  -> join at least two relations
 //  -> user must provide at least one value to qualify in the WHERE clause
-//AGGREGATION WITH HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
-//  -> must include a HAVING clause.
-//  -> must provide an interface (e.g., button, dropdown, etc.)
+
 
 
 
