@@ -348,16 +348,6 @@ router.post("/project-Shipping-Route", async (req, res) => {
     }
 });
 
-router.post("/project-Shipping-Route", async (req, res) => {
-    const { attributes } = req.body;
-    const initiateResult = await appService.projectShippingRoute(attributes)
-    if (initiateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
-});
-
 router.post("/remove-Shipment-Container", async (req, res) => {
     const { shipOwner, shipName, portAddress, section } = req.body;
     const initiateResult = await appService.removeShipmentContainer(shipOwner, shipName, portAddress, section)

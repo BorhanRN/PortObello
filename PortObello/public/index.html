@@ -23,7 +23,9 @@
     <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
 </h1>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <!-- TAB HTML CODE FOUND USING (WE LOVE CITING SOURCES!) https://www.w3schools.com/howto/howto_js_tabs.asp -->
 <!-- Show 'Country'.
@@ -35,74 +37,92 @@
     <button class="countryTab" onclick="openCountry(event, 'Country Functions')">Function</button>
 </div>
 <div id="Country Table" class="countryContent">
-<h2>Show Country</h2>
-<table id="country" border="1">
-    <thead>
-    <tr>
-        <!--Table head, need to be adjusted accordingly to align with your own.-->
-        <th>Name</th>
-        <th>Population</th>
-        <th>Government</th>
-        <th>GDP</th>
-        <th>PortAddress</th>
+    <h2>Show Country</h2>
+    <table id="country" border="1">
+        <thead>
+        <tr>
+            <!--Table head, need to be adjusted accordingly to align with your own.-->
+            <th>Name</th>
+            <th>Population</th>
+            <th>Government</th>
+            <th>GDP</th>
+            <th>PortAddress</th>
 
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
-<br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 
-<h2>Reset Country</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetCountry"> reset </button> <br>
-<!-- A placeholder to display messages related to the reset operation. -->
-<div id="resetCountryResultMsg"></div>
-<br><hr><br> <!-- ========================================================================= -->
+    <h2>Reset Country</h2>
+    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+        MUST use reset.</p>
+    <button id="resetCountry"> reset</button>
+    <br>
+    <!-- A placeholder to display messages related to the reset operation. -->
+    <div id="resetCountryResultMsg"></div>
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 </div>
 
 <div id="Insert Country" class="countryContent">
-<h2> Insert Values into Country </h2>
-<form id="insertCountry">
-    Name: <input type="text" id="insertCountryName" placeholder="Enter Name" maxlength="40"> <br><br>
-    Population: <input type="number" id="insertCountryPopulation" placeholder="Enter Population" required> <br><br>
-    Government: <input type="text" id="insertCountryGovernment" placeholder="Enter Government" maxlength="50"> <br><br>
-    GDP: <input type="number" id="insertCountryGDP" placeholder="Enter GDP" required> <br><br>
-    PortAddress: <input type="text" id="insertCountryPortAddress" placeholder="Enter Port Address" maxlength="60"> <br><br>
+    <h2> Insert Values into Country </h2>
+    <form id="insertCountry">
+        Name: <input type="text" id="insertCountryName" placeholder="Enter Name" maxlength="40"> <br><br>
+        Population: <input type="number" id="insertCountryPopulation" placeholder="Enter Population" required> <br><br>
+        Government: <input type="text" id="insertCountryGovernment" placeholder="Enter Government" maxlength="50">
+        <br><br>
+        GDP: <input type="number" id="insertCountryGDP" placeholder="Enter GDP" required> <br><br>
+        PortAddress: <input type="text" id="insertCountryPortAddress" placeholder="Enter Port Address" maxlength="60">
+        <br><br>
 
 
+        <button type="submit"> insert</button>
+        <br>
+    </form>
+    <div id="insertResultMsg"></div>
 
-    <button type="submit"> insert </button> <br>
-</form>
-<div id="insertResultMsg"></div>
-
-<br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 </div>
 
 <div id="Country Functions" class="countryContent">
-<h2>Update Name in Country</h2>
-<p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
+    <h2>Update Name in Country</h2>
+    <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
     <p>Write the name of the Country you want to update, and then enter the values you want to update it with.</p>
-<form id="updateCountry">
-    Name: <input type="text" id="updateName" placeholder="Enter New Name" maxlength="30"> <br><br>
-    Population: <input type="number" id="updatePopulation" placeholder="Enter Population" required> <br><br>
-    Government: <input type="text" id="updateGovernment" placeholder="Enter Government" maxlength="50"> <br><br>
-    PortAddress: <input type="text" id="updatePortAddress" placeholder="Enter Port Address" maxlength="100"> <br><br>
-    GDP: <input type="number" id="updateGDP" placeholder="Enter GDP" required> <br><br>
+    <form id="updateCountry">
+        Name: <input type="text" id="updateName" placeholder="Enter New Name" maxlength="30"> <br><br>
+        Population: <input type="number" id="updatePopulation" placeholder="Enter Population" required> <br><br>
+        Government: <input type="text" id="updateGovernment" placeholder="Enter Government" maxlength="50"> <br><br>
+        PortAddress: <input type="text" id="updatePortAddress" placeholder="Enter Port Address" maxlength="100">
+        <br><br>
+        GDP: <input type="number" id="updateGDP" placeholder="Enter GDP" required> <br><br>
 
-    <button type="submit"> update </button> <br>
-</form>
-<!-- A placeholder to display messages related to the update operation. -->
-<div id="updateResultMsg"></div>
+        <button type="submit"> update</button>
+        <br>
+    </form>
+    <!-- A placeholder to display messages related to the update operation. -->
+    <div id="updateResultMsg"></div>
 
-<br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 
-<h2>Count the Tuples in Country</h2>
-<button id="countCountry"> count </button> <br><br>
-<!-- A placeholder to display the count result. -->
-<div id="countResultMsg"></div> <br>
-<br><hr><br> <!-- ========================================================================= -->
+    <h2>Count the Tuples in Country</h2>
+    <button id="countCountry"> count</button>
+    <br><br>
+    <!-- A placeholder to display the count result. -->
+    <div id="countResultMsg"></div>
+    <br>
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 </div>
 
 <h1>Port</h1>
@@ -115,45 +135,55 @@
     Data will be fetched and inserted here dynamically using JavaScript. -->
 
 <div id="Port Table" class="portContent">
-<h2>Show Port</h2>
-<table id="port" border="1">
-    <thead>
-    <tr>
-        <!--Table head, need to be adjusted accordingly to align with your own.-->
-        <th>PortAddress</th>
-        <th>NumWorkers</th>
-        <th>DockedShips</th>
-        <th>CountryName</th>
+    <h2>Show Port</h2>
+    <table id="port" border="1">
+        <thead>
+        <tr>
+            <!--Table head, need to be adjusted accordingly to align with your own.-->
+            <th>PortAddress</th>
+            <th>NumWorkers</th>
+            <th>DockedShips</th>
+            <th>CountryName</th>
 
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
-<br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 
-<h2>Reset Port</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetPort"> reset </button> <br>
-<!-- A placeholder to display messages related to the reset operation. -->
-<div id="resetPortResultMsg"></div>
+    <h2>Reset Port</h2>
+    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+        MUST use reset.</p>
+    <button id="resetPort"> reset</button>
+    <br>
+    <!-- A placeholder to display messages related to the reset operation. -->
+    <div id="resetPortResultMsg"></div>
 
-<br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 </div>
 
 <div id="Delete Port" class="portContent">
-<h2>Delete Port</h2>
-<p>Please be exact when typing the address of the port that you would like to bomb.</p>
-<form id="deletePort">
-    Coordinates for Nuke: <input type="text" id="portAddress" placeholder="Port Address goes here." required> <br><br>
+    <h2>Delete Port</h2>
+    <p>Please be exact when typing the address of the port that you would like to bomb.</p>
+    <form id="deletePort">
+        Coordinates for Nuke: <input type="text" id="portAddress" placeholder="Port Address goes here." required>
+        <br><br>
 
-    <button type="submit"> Launch </button> <br>
-</form>
-<!-- A placeholder to display messages related to the update operation. -->
-<div id="deletePortResultsMsg"></div>
+        <button type="submit"> Launch</button>
+        <br>
+    </form>
+    <!-- A placeholder to display messages related to the update operation. -->
+    <div id="deletePortResultsMsg"></div>
 
-<br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 </div>
 
 <div id="Find Populated Ports" class="portContent">
@@ -162,7 +192,8 @@
     <form id="numShips">
         Minimum number of ships: <input type="number" id="numberOfShips" placeholder="Number here..." required> <br><br>
 
-        <button type="submit"> Find Ports </button> <br>
+        <button type="submit"> Find Ports</button>
+        <br>
     </form>
     <table id="populatedPorts" border="1" style="display: none;">
         <thead>
@@ -178,7 +209,9 @@
     <!-- A placeholder to display messages related to the update operation. -->
     <div id="portNumShipsMessage"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 </div>
 
 <h1>Warehouse</h1>
@@ -200,15 +233,21 @@
     </tbody>
 </table>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h2>Reset Warehouse</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetWarehouse"> reset </button> <br>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+    MUST use reset.</p>
+<button id="resetWarehouse"> reset</button>
+<br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetWarehouseResultMsg"></div>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h1>HomeCountry</h1>
 <div class="tab">
@@ -217,66 +256,79 @@
     <button class="homeCountryTab" onclick="openHomeCountry(event, 'Division')">Division</button>
 </div>
 <div id="HomeCountry Table" class="homeCountryContent">
-<!-- Show 'Warehouse'.
-    Data will be fetched and inserted here dynamically using JavaScript. -->
-<h2>Show HomeCountry</h2>
-<table id="homecountry" border="1">
-    <thead>
-    <tr>
-        <!--Table head, need to be adjusted accordingly to align with your own.-->
-        <th>Name</th>
-        <th>Population</th>
-        <th>GDP</th>
-        <th>Government</th>
-        <th>PortAddress</th>
+    <!-- Show 'Warehouse'.
+        Data will be fetched and inserted here dynamically using JavaScript. -->
+    <h2>Show HomeCountry</h2>
+    <table id="homecountry" border="1">
+        <thead>
+        <tr>
+            <!--Table head, need to be adjusted accordingly to align with your own.-->
+            <th>Name</th>
+            <th>Population</th>
+            <th>GDP</th>
+            <th>Government</th>
+            <th>PortAddress</th>
 
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
-<br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 
-<h2>Reset HomeCountry</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetHomeCountry"> reset </button> <br>
-<!-- A placeholder to display messages related to the reset operation. -->
-<div id="resetHomeCountryResultMsg"></div>
-<br><hr><br> <!-- ========================================================================= -->
+    <h2>Reset HomeCountry</h2>
+    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+        MUST use reset.</p>
+    <button id="resetHomeCountry"> reset</button>
+    <br>
+    <!-- A placeholder to display messages related to the reset operation. -->
+    <div id="resetHomeCountryResultMsg"></div>
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 </div>
 
 <div id="Insert HomeCountry" class="homeCountryContent">
     <h2> Insert Values into HomeCountry </h2>
     <form id="insertHomeCountry">
         Name: <input type="text" id="insertHomeCountryName" placeholder="Enter Name" maxlength="20"> <br><br>
-        Population: <input type="number" id="insertHomeCountryPopulation" placeholder="Enter Population" required> <br><br>
-        Government: <input type="text" id="insertHomeCountryGovernment" placeholder="Enter Government" maxlength="20"> <br><br>
+        Population: <input type="number" id="insertHomeCountryPopulation" placeholder="Enter Population" required>
+        <br><br>
+        Government: <input type="text" id="insertHomeCountryGovernment" placeholder="Enter Government" maxlength="20">
+        <br><br>
         GDP: <input type="number" id="insertHomeCountryGDP" placeholder="Enter GDP" required> <br><br>
-        PortAddress: <input type="text" id="insertHomeCountryPortAddress" placeholder="Enter Port Address" maxlength="20"> <br><br>
+        PortAddress: <input type="text" id="insertHomeCountryPortAddress" placeholder="Enter Port Address"
+                            maxlength="20"> <br><br>
 
 
-
-        <button type="submit"> insert </button> <br>
+        <button type="submit"> insert</button>
+        <br>
     </form>
     <div id="insertHomeResultMsg"></div>
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 
 </div>
 
 <div id="Division" class="homeCountryContent">
     <h2> All HomeCountries that have TradeAgreements with EVERY ForeignCountry </h2>
-        <button id="fetchHomeCountriesWithAllTradeAgreements">Fetch Data</button>
-        <table id="homeCountriesWithAllTradeAgreements" border="1" style="display: none;">
-            <thead>
-            <tr>
-                <th>Home Country</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <div id="homeCountriesWithAllTradeAgreementsMessage"></div>
-    <br><hr><br> <!-- ========================================================================= -->
+    <button id="fetchHomeCountriesWithAllTradeAgreements">Fetch Data</button>
+    <table id="homeCountriesWithAllTradeAgreements" border="1" style="display: none;">
+        <thead>
+        <tr>
+            <th>Home Country</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="homeCountriesWithAllTradeAgreementsMessage"></div>
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 
 </div>
 
@@ -302,15 +354,21 @@
     </tbody>
 </table>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h2>Reset ForeignCountry</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetForeignCountry"> reset </button> <br>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+    MUST use reset.</p>
+<button id="resetForeignCountry"> reset</button>
+<br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetForeignCountryResultMsg"></div>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h1>Tariff</h1>
 <!-- Show 'Tariff'.
@@ -333,16 +391,22 @@
     </tbody>
 </table>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h2>Reset Tariff</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetTariff"> reset </button> <br>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+    MUST use reset.</p>
+<button id="resetTariff"> reset</button>
+<br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetTariffResultMsg"></div>
 
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h1>ShippingRoute</h1>
 <!-- Show 'ShippingRoute'.
@@ -364,15 +428,21 @@
     </tbody>
 </table>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h2>Reset ShippingRoute</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetShippingRoute"> reset </button> <br>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+    MUST use reset.</p>
+<button id="resetShippingRoute"> reset</button>
+<br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetShippingRouteResultMsg"></div>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 <h1>Ship</h1>
 <div class="tab">
     <button class="shipTab" onclick="openShip(event, 'Ship Table')">Table</button>
@@ -381,108 +451,192 @@
 </div>
 
 <div id="Ship Table" class="shipContent">
-<!-- Show 'Ship'.
-    Data will be fetched and inserted here dynamically using JavaScript. -->
-<h2>Show Ship</h2>
-<table id="ship" border="1">
-    <thead>
-    <tr>
-        <!--Table head, need to be adjusted accordingly to align with your own.-->
-        <th>Onwer</th>
-        <th>ShipName</th>
-        <th>ShippingRouteName</th>
-        <th>DockedAtPortAddress</th>
-        <th>ShipSize</th>
-        <th>Capacity</th>
+    <!-- Show 'Ship'.
+        Data will be fetched and inserted here dynamically using JavaScript. -->
+    <h2>Show Ship</h2>
+    <table id="ship" border="1">
+        <thead>
+        <tr>
+            <!--Table head, need to be adjusted accordingly to align with your own.-->
+            <th>Onwer</th>
+            <th>ShipName</th>
+            <th>ShippingRouteName</th>
+            <th>DockedAtPortAddress</th>
+            <th>ShipSize</th>
+            <th>Capacity</th>
 
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
-<br><hr><br> <!-- ========================================================================= -->
-
-
-<h2>Reset Ship</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetShip"> reset </button> <br>
-<!-- A placeholder to display messages related to the reset operation. -->
-<div id="resetShipResultMsg"></div>
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 
 
-<br><hr><br> <!-- ========================================================================= -->
+    <h2>Reset Ship</h2>
+    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+        MUST use reset.</p>
+    <button id="resetShip"> reset</button>
+    <br>
+    <!-- A placeholder to display messages related to the reset operation. -->
+    <div id="resetShipResultMsg"></div>
+
+
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 </div>
 
 <div id="Highest Value" class="shipContent">
-    <p>If you would like to calculate the ship with the highest average shipment container value, please click this magic button!</p>
+    <p>If you would like to calculate the ship with the highest average shipment container value, please click this
+        magic button!</p>
     <form id="groupBy">
-    <button type="submit" value="getMax">It's not magic, it's just good SQL!</button>
+        <button type="submit" value="getMax">It's not magic, it's just good SQL!</button>
     </form>
     <!-- A placeholder to display messages related to the group by operation. -->
     <div id="getMaxMessage"></div>
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr>
+    <br> <!-- ========================================================================= -->
 </div>
 
 <div id="Select" class="shipContent">
-<h2>Dynamic Ship Query</h2>
-<p>Enter your search conditions for Ship attributes (e.g., `ShipSize > 150 AND Owner = 'Maersk' OR Capacity < 1000`).</p>
-<form id="shipQueryForm">
-    <label for="shipQueryInput">Search Conditions:</label>
-    <textarea id="shipQueryInput" placeholder="Enter your conditions here..." rows="4" cols="50"></textarea>
-    <br><br>
-    <button type="submit">Run Query</button>
-</form>
-<div id="shipQueryResults">
-    <h3>Results:</h3>
-    <table border="1" id="shipQueryResultsTable">
-        <thead>
-        <tr>
-            <th>Owner</th>
-            <th>ShipName</th>
-            <th>ShipSize</th>
-            <th>Capacity</th>
-            <th>ShippingRouteName</th>
-            <th>DockedAtPortAddress</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    <br><hr><br> <!-- ========================================================================= -->
+    <h2>Dynamic Ship Query</h2>
+    <p>Enter your search conditions for Ship attributes (e.g., `ShipSize > 150 AND Owner = 'Maersk' OR Capacity <
+        1000`).</p>
+    <form id="shipQueryForm">
+        <label for="shipQueryInput">Search Conditions:</label>
+        <textarea id="shipQueryInput" placeholder="Enter your conditions here..." rows="4" cols="50"></textarea>
+        <br><br>
+        <button type="submit">Run Query</button>
+    </form>
+    <div id="shipQueryResults">
+        <h3>Results:</h3>
+        <table border="1" id="shipQueryResultsTable">
+            <thead>
+            <tr>
+                <th>Owner</th>
+                <th>ShipName</th>
+                <th>ShipSize</th>
+                <th>Capacity</th>
+                <th>ShippingRouteName</th>
+                <th>DockedAtPortAddress</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <br>
+        <hr>
+        <br> <!-- ========================================================================= -->
+    </div>
 </div>
 
+<div class="Company Contents">
+    <h1>Company</h1>
+    <!-- Show 'Company'.
+        Data will be fetched and inserted here dynamically using JavaScript. -->
+    <h2>Show Company</h2>
 
-<h1>Company</h1>
-<!-- Show 'Company'.
-    Data will be fetched and inserted here dynamically using JavaScript. -->
-<h2>Show Company</h2>
-<table id="company" border="1">
-    <thead>
-    <tr>
-        <!--Table head, need to be adjusted accordingly to align with your own.-->
-        <th>CEO</th>
-        <th>Name</th>
-        <th>Industry</th>
-        <th>YearlyRevenue</th>
-        <th>CountryName</th>
+    <table id="company" border="1">
+        <thead>
+        <tr>
+            <!--Table head, need to be adjusted accordingly to align with your own.-->
+            <th>CEO</th>
+            <th>Name</th>
+            <th>Industry</th>
+            <th>YearlyRevenue</th>
+            <th>CountryName</th>
 
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
-<br><hr><br> <!-- ========================================================================= -->
+    <h2>Find Shipments by Company</h2>
 
-<h2>Reset Company</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetCompany"> reset </button> <br>
-<!-- A placeholder to display messages related to the reset operation. -->
-<div id="resetCompanyResultMsg"></div>
+    <button id="showInputButton">Find Shipments</button>
 
+    <form id="joinCompanyShipmentInput" style="display: none;">
+        <input type="text" id="inputCompanyName" placeholder="Enter Company Name">
+        <input type="text" id="inputCompanyCEO" placeholder="Enter Company CEO">
+        <button id="submitButton">Submit</button>
+    </form>
 
+    <script>
+    // Display the input fields when the button is pressed
+    document.getElementById("showInputButton").addEventListener("click", () => {
+        document.getElementById("joinCompanyShipmentInput").style.display = "block";
+    });
 
-<br><hr><br> <!-- ========================================================================= -->
+    // Handle the form
+    document.getElementById("submitButton").addEventListener("click", async () => {
+        const companyName = document.getElementById("inputCompanyName").value;
+        const companyCEO = document.getElementById("inputCompanyCEO").value;
+
+        if (!companyName || !companyCEO) {
+            alert("Please fill in both fields.");
+            return;
+        }
+
+<!--        try {-->
+<!--            const response = await fetch("/create-company-shipments", {-->
+<!--                method: "POST",-->
+<!--                headers: {-->
+<!--                    "Content-Type": "application/json",-->
+<!--                },-->
+<!--                body: JSON.stringify({ companyName, companyCEO }),-->
+<!--            });-->
+
+<!--            const result = await response.json();-->
+<!--            if (result.success) {-->
+<!--                alert("Company Shipments table created successfully!");-->
+<!--            } else {-->
+<!--                alert("Failed to create Company Shipments table.");-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error("Error:", error);-->
+<!--            alert("An error occurred. Please try again.");-->
+<!--        }-->
+    });
+    </script>
+
+    <div id="joinCompanyShipmentResults">
+        <h3>Results:</h3>
+        <table border="1" id="joinCompanyShipmentResultsTable">
+            <thead>
+            <tr>
+                <th>CEO</th>
+                <th>Name</th>
+                <th>Industry</th>
+                <th>Yearly Revenue</th>
+                <th>Country Name</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <br>
+        <hr>
+        <br> <!-- ========================================================================= -->
+    </div>
+
+    <br> <!-- ========================================================================= -->
+
+    <h2>Reset Company</h2>
+    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+        MUST use reset.</p>
+    <button id="resetCompany"> reset</button>
+    <br>
+    <!-- A placeholder to display messages related to the reset operation. -->
+    <div id="resetCompanyResultMsg"></div>
+</div>
+
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h1>ShipmentContainer</h1>
 <!-- Show 'ShipmentContainer'.
@@ -512,19 +666,27 @@
     </tbody>
 </table>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h2>Reset ShipmentContainer</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="resetShipmentContainer"> reset </button> <br>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+    MUST use reset.</p>
+<button id="resetShipmentContainer"> reset</button>
+<br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetShipmentContainerResultMsg"></div>
 
-<br><hr><br> <!-- ========================================================================= -->
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h2>Reset All</h2>
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset.</p>
-<button id="initiateAll"> reset </button> <br>
+<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+    MUST use reset.</p>
+<button id="initiateAll"> reset</button>
+<br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="initiateAllResultMsg"></div>
 </div>
@@ -605,6 +767,10 @@
         const table = document.getElementById('populatedPorts');
         table.style.display = 'block';
     });
+
+
+
+
 </script>
 
 <style>
@@ -662,4 +828,8 @@
         from {opacity: 0;}
         to {opacity: 1;}
     }
+
+
+
+
 </style>
