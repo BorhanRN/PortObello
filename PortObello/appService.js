@@ -2173,7 +2173,8 @@ async function runDynamicShipQuery(userInput) {
 // Utility to parse and validate user input
 function parseShipQuery(input) {
     const allowedOperators = ['=', '<', '<=', '>', '>=', '!=', 'AND', 'OR'];
-    const allowedAttributes = ['Owner', 'ShipName', 'ShipSize', 'Capacity', 'ShippingRouteName', 'DockedAtPortAddress'];
+    const ship1Attributes = ['Owner', 'ShipName', 'ShipSize', 'ShippingRouteName', 'DockedAtPortAddress'];
+    const ship2Attributes = ['ShipSize', 'Capacity'];
 
     const tokens = input.split(/\s+/);
     const whereParts = [];
@@ -2184,8 +2185,10 @@ function parseShipQuery(input) {
     tokens.forEach(token => {
         if (allowedOperators.includes(token.toUpperCase())) {
             whereParts.push(token.toUpperCase());
-        } else if (allowedAttributes.includes(token)) {
-            whereParts.push(token);
+        } else if (ship1Attributes.includes(token)) {
+            whereParts.push(`s1.${token}`);
+        } else if (ship2Attributes.includes(token)) {
+            whereParts.push(`s2.${token}`);
         } else if (/^'.*'$/.test(token) || /^\d+(\.\d+)?$/.test(token)) { // Strings or numbers
             const bindKey = `:param${bindIndex++}`;
             bindParams[bindKey] = token.startsWith("'") ? token.slice(1, -1) : Number(token);
