@@ -580,48 +580,8 @@
     <form id="joinCompanyShipmentInput" style="display: none;">
         <input type="text" id="inputCompanyName" placeholder="Enter Company Name">
         <input type="text" id="inputCompanyCEO" placeholder="Enter Company CEO">
-        <button id="submitButton">Submit</button>
+        <button id="submitButton" type="submit">Submit</button>
     </form>
-
-    <script>
-    // Display the input fields when the button is pressed
-    document.getElementById("showInputButton").addEventListener("click", () => {
-        document.getElementById("joinCompanyShipmentInput").style.display = "block";
-    });
-
-    // Handle the form
-    document.getElementById("submitButton").addEventListener("click", async () => {
-        const companyName = document.getElementById("inputCompanyName").value;
-        const companyCEO = document.getElementById("inputCompanyCEO").value;
-
-        if (!companyName || !companyCEO) {
-            alert("Please fill in both fields.");
-            return;
-        }
-
-<!--        try {-->
-<!--            const response = await fetch("/create-company-shipments", {-->
-<!--                method: "POST",-->
-<!--                headers: {-->
-<!--                    "Content-Type": "application/json",-->
-<!--                },-->
-<!--                body: JSON.stringify({ companyName, companyCEO }),-->
-<!--            });-->
-
-<!--            const result = await response.json();-->
-<!--            if (result.success) {-->
-<!--                alert("Company Shipments table created successfully!");-->
-<!--            } else {-->
-<!--                alert("Failed to create Company Shipments table.");-->
-<!--            }-->
-<!--        } catch (error) {-->
-<!--            console.error("Error:", error);-->
-<!--            alert("An error occurred. Please try again.");-->
-<!--        }-->
-    });
-
-
-    </script>
 
     <div id="joinCompanyShipmentResults">
         <h3>Results:</h3>
