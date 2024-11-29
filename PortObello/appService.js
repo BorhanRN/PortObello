@@ -2143,6 +2143,9 @@ async function runDynamicShipQuery(userInput) {
             // Parse userInput to construct a safe WHERE clause
             const { whereClause, bindParams } = parseShipQuery(userInput);
 
+            console.log('parsed whereClause:', whereClause);
+
+
             const query = `
                 SELECT
                     s1.Owner AS Owner,
@@ -2154,6 +2157,9 @@ async function runDynamicShipQuery(userInput) {
                 FROM Ship1 s1
                          LEFT JOIN Ship2 s2 ON s1.ShipSize = s2.ShipSize
                 WHERE ${whereClause}`;
+
+            console.log('Final Query:', query);
+            console.log('Bind Parameters:', bindParams);
 
             const result = await connection.execute(query, bindParams, { outFormat: oracledb.OUT_FORMAT_OBJECT });
             return result.rows;
