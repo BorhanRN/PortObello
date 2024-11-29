@@ -1976,26 +1976,40 @@ async function deleteTariff(tName) {
         });
 
 }
+
+async function createNumShips() {
+    return await withOracleDB(async (connection) => {
+      await connection.execute( `
+                    CREATE TABLE shipPorts (
+                       PortAddress VARCHAR2(200) NOT NULL,
+                       NumShips NUMBER,
+                       PRIMARY KEY (PortAddress)
+                    )
+            `,
+            {autoCommit : true}
+        );
+
+        return true;
+    })
+        .catch((error) => {
+            console.error("Error creating shipPorts table:", error);
+            console.error("Detailed error:", error.message, error.stack);
+            return false;
+        });
+}
 //aggregation with having
 async function portsNumShips(min, max) {
     return await withOracleDB(async (connection) => {
-        // Create the shipPorts table (no min/max involved here compiler HAHAHAHHAHAH)
-        await connection.execute(`
-            CREATE TABLE shipPorts (
-            PortAddress VARCHAR2(255),
-             NumShips INT
-            )
-        `, { autoCommit: true });
-
         await connection.execute(`
             INSERT INTO shipPorts (PortAddress, NumShips)
-            SELECT 
-                S.DockedAtPortAddress AS PortAddress, 
+            SELECT
+                S.DockedAtPortAddress AS PortAddress,
                 COUNT(S.ShipName) AS NumShips
             FROM Ship1 S
             GROUP BY S.DockedAtPortAddress
             HAVING COUNT(S.ShipName) > 0
-        `, { autoCommit: true });
+        `,
+            { autoCommit: true });
 
         // Update the shipPorts table with ships that fall within the min and max size range
         await connection.execute(`
@@ -2011,17 +2025,18 @@ async function portsNumShips(min, max) {
                 FROM Ship1 S
                 WHERE S.DockedAtPortAddress = sp.PortAddress
             )
-        `, { min, max, autoCommit: true });
+        `,
+            { min, max},
+            {autoCommit: true });
 
         return true;
     })
         .catch((error) => {
-            console.error("Error creating or updating shipPorts table:", error);
+            console.error("Error updating shipPorts table:", error);
             console.error("Detailed error:", error.message, error.stack);
             return false;
         });
 }
-
 
 //group by
 async function maxAvgContainer() {
@@ -2350,6 +2365,7 @@ module.exports = {
 
     shipToPort,
     portsNumShips,
+    createNumShips,
 
     deleteCompany,
     deleteShippingRoute,
