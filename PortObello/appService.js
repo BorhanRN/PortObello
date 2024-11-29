@@ -2187,28 +2187,52 @@ async function updateNumContainers(portAddress, section, n) {
         });
 }
 
-//Finds all shipments from a specific COMPANY
+// //Finds all shipments from a specific COMPANY
+// async function joinCompanyShipments(companyName, companyCEO) {
+//     return await withOracleDB(async (connection) => {
+//             await connection.execute(`
+//             CREATE TABLE CompanyShipments AS (
+//             SELECT sc.ShipOwner, sc.ShipName, sc.GoodType, sc.TrackingNumber, sc.CompanyName, sc.CompanyCEO,
+//                    c.Industry, c.YearlyRevenue
+//             FROM ShipmentContainer2 sc
+//             JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
+//             WHERE sc.CompanyName = companyName AND sc.CompanyCEO = companyCEO)
+//             `,
+//             {companyName, companyCEO}
+//             );
+//
+//             await connection.commit();
+//         })
+//         .catch((error) => {
+//             console.error("company / shipment not found", error);
+//             return false;
+//         });
+//
+// }
+
 async function joinCompanyShipments(companyName, companyCEO) {
     return await withOracleDB(async (connection) => {
-            await connection.execute(`
-            CREATE TABLE CompanyShipments AS (
-            SELECT sc.ShipOwner, sc.ShipName, sc.GoodType, sc.TrackingNumber, sc.CompanyName, sc.CompanyCEO,
-                   c.Industry, c.YearlyRevenue
-            FROM ShipmentContainer2 sc
-            JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
-            WHERE sc.CompanyName = companyName AND sc.CompanyCEO = companyCEO)
-            `,
-            {companyName, companyCEO}
+        try {
+            const result = await connection.execute(
+                `
+                SELECT sc.ShipOwner, sc.ShipName, sc.GoodType, sc.TrackingNumber, sc.CompanyName, sc.CompanyCEO,
+                       c.Industry, c.YearlyRevenue
+                FROM ShipmentContainer2 sc
+                JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
+                WHERE sc.CompanyName = :companyName AND sc.CompanyCEO = :companyCEO
+                `,
+                { companyName, companyCEO },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT } // Ensure results are returned as an array of objects
             );
 
-            await connection.commit();
-        })
-        .catch((error) => {
-            console.error("company / shipment not found", error);
-            return false;
-        });
-
+            return result.rows; // Return the query results
+        } catch (error) {
+            console.error("Error fetching shipments for company:", error);
+            throw new Error("Failed to fetch shipments for the specified company.");
+        }
+    });
 }
+
 
 // displays any number of attributes selected from Shipping Route
 async function projectShippingRoute(attributes) {

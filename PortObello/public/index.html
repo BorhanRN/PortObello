@@ -573,34 +573,66 @@
         </tbody>
     </table>
 
+<!--    <h2>Find Shipments by Company</h2>-->
+
+<!--    <button id="showInputButton">Find Shipments</button>-->
+
+<!--    <form id="joinCompanyShipmentInput" style="display: none;">-->
+<!--        <input type="text" id="inputCompanyName" placeholder="Enter Company Name">-->
+<!--        <input type="text" id="inputCompanyCEO" placeholder="Enter Company CEO">-->
+<!--        <button id="submitButton" type="submit">Submit</button>-->
+<!--    </form>-->
+
+<!--    <div id="joinCompanyShipmentResults">-->
+<!--        <h3>Results:</h3>-->
+<!--        <table border="1" id="joinCompanyShipmentResultsTable">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>CEO</th>-->
+<!--                <th>Name</th>-->
+<!--                <th>Industry</th>-->
+<!--                <th>Yearly Revenue</th>-->
+<!--                <th>Country Name</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody></tbody>-->
+<!--        </table>-->
+<!--        <br>-->
+<!--        <hr>-->
+<!--        <br> &lt;!&ndash; ========================================================================= &ndash;&gt;-->
+<!--    </div>-->
     <h2>Find Shipments by Company</h2>
 
+    <!-- Button to show the input form -->
     <button id="showInputButton">Find Shipments</button>
 
+    <!-- Input form for company and CEO -->
     <form id="joinCompanyShipmentInput" style="display: none;">
-        <input type="text" id="inputCompanyName" placeholder="Enter Company Name">
-        <input type="text" id="inputCompanyCEO" placeholder="Enter Company CEO">
+        <input type="text" id="inputCompanyName" placeholder="Enter Company Name" required>
+        <input type="text" id="inputCompanyCEO" placeholder="Enter Company CEO" required>
         <button id="submitButton" type="submit">Submit</button>
     </form>
 
+    <!-- Table to display the results -->
     <div id="joinCompanyShipmentResults">
         <h3>Results:</h3>
         <table border="1" id="joinCompanyShipmentResultsTable">
             <thead>
             <tr>
-                <th>CEO</th>
-                <th>Name</th>
+                <th>Ship Owner</th>
+                <th>Ship Name</th>
+                <th>Good Type</th>
+                <th>Tracking Number</th>
+                <th>Company Name</th>
+                <th>Company CEO</th>
                 <th>Industry</th>
                 <th>Yearly Revenue</th>
-                <th>Country Name</th>
             </tr>
             </thead>
             <tbody></tbody>
         </table>
-        <br>
-        <hr>
-        <br> <!-- ========================================================================= -->
     </div>
+
 
     <br> <!-- ========================================================================= -->
 

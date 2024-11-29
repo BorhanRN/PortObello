@@ -342,15 +342,35 @@ router.post("/port-num-ship", async (req, res) => {
     }
 });
 
-router.post("/join-Company-Shipment", async (req, res) => {
+// router.post("/join-Company-Shipment", async (req, res) => {
+//     const { companyName, companyCEO } = req.body;
+//     const initiateResult = await appService.joinCompanyShipments(companyName, companyCEO)
+//     if (initiateResult) {
+//         res.json({ success: true });
+//     } else {
+//         res.status(500).json({ success: false });
+//     }
+// });
+router.post('/join-Company-Shipment', async (req, res) => {
     const { companyName, companyCEO } = req.body;
-    const initiateResult = await appService.joinCompanyShipments(companyName, companyCEO)
-    if (initiateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
+
+    if (!companyName || !companyCEO) {
+        return res.status(400).json({ success: false, message: "Both companyName and companyCEO are required." });
+    }
+
+    try {
+        const shipments = await appService.joinCompanyShipments(companyName, companyCEO);
+        if (shipments && shipments.length > 0) {
+            res.json({ success: true, data: shipments });
+        } else {
+            res.json({ success: true, data: [], message: "No shipments found for the specified company." });
+        }
+    } catch (error) {
+        console.error("Error in /join-Company-Shipment route:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
     }
 });
+
 
 router.post("/project-Shipping-Route", async (req, res) => {
     const { attributes } = req.body;
