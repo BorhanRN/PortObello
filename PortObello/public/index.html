@@ -175,10 +175,11 @@
 
 <div id="Find Populated Ports" class="portContent">
     <h2>Find Populated Ports</h2>
-    <p>This page allows you to find all ports with a certain (or more) number of ships docked.</p>
+    <p>This page allows you to find all ports with ships between a certain size, as well as shows you the number of ships within this range.</p>
     <form id="numShips">
-        Minimum number of ships: <input type="number" id="numberOfShips" placeholder="Number here..." required> <br><br>
-
+        Size range of ships:
+        <input type="number" id="minNumb" placeholder="Minimum size here..." required>
+        <input type="number" id="maxNumb" placeholder="Maximum size here..." required> <br><br>
         <button type="submit"> Find Ports </button> <br>
     </form>
     <table id="populatedPorts" border="1" style="display: none;">
