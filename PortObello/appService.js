@@ -1979,11 +1979,18 @@ async function deleteTariff(tName) {
 
 async function createNumShips() {
     return await withOracleDB(async (connection) => {
+        try{
+            connection.execute(`
+            DROP TABLE shipPorts`,
+                {autoCommit : true});
+        }catch (e) {
+
+        }
       await connection.execute( `
                     CREATE TABLE shipPorts (
-                       PortAddress VARCHAR2(200) NOT NULL,
-                       NumShips NUMBER,
-                       PRIMARY KEY (PortAddress)
+                       PortLocation VARCHAR2(200) NOT NULL,
+                       NumOfShips NUMBER,
+                       PRIMARY KEY (PortLocation)
                     )
             `,
             {autoCommit : true}
@@ -2001,33 +2008,22 @@ async function createNumShips() {
 async function portsNumShips(min, max) {
     return await withOracleDB(async (connection) => {
         await connection.execute(`
-            INSERT INTO shipPorts (PortAddress, NumShips)
-            SELECT
-                S.DockedAtPortAddress AS PortAddress,
-                COUNT(S.ShipName) AS NumShips
-            FROM Ship1 S
-            GROUP BY S.DockedAtPortAddress
-            HAVING COUNT(S.ShipName) > 0
+            INSERT INTO shipPorts (PortLocation, NumOfShips)
+            SELECT 
+                P.PortAddress AS PortLocation, 
+                COUNT(S.ShipName) AS NumOfShips
+            FROM 
+                Ship1 S
+                JOIN Port P ON S.DockedAtPortAddress = P.PortAddress
+            WHERE 
+                S.ShipSize BETWEEN :min AND :max
+            GROUP BY 
+                P.PortAddress
+            HAVING 
+                COUNT(S.ShipName) > 0
         `,
+            { min, max },
             { autoCommit: true });
-
-        // Update the shipPorts table with ships that fall within the min and max size range
-        await connection.execute(`
-            UPDATE shipPorts sp
-            SET sp.NumShips = (
-                SELECT COUNT(S.ShipName)
-                FROM Ship1 S
-                WHERE S.DockedAtPortAddress = sp.PortAddress
-                AND S.ShipSize >= :min AND S.ShipSize <= :max
-            )
-            WHERE EXISTS (
-                SELECT 1
-                FROM Ship1 S
-                WHERE S.DockedAtPortAddress = sp.PortAddress
-            )
-        `,
-            { min, max},
-            {autoCommit: true });
 
         return true;
     })
