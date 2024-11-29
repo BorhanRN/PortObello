@@ -2028,11 +2028,12 @@ async function portsNumShips(min, max) {
 
             console.log("Query executed successfully. Results:", result.rows);
             return result.rows; // Return the selected rows
-        }catch((error) => {
+        } catch (error) {
             console.error("Error updating shipPorts table:", error);
             console.error("Detailed error:", error.message, error.stack);
             return false;
-        });
+        }
+    });
 }
 
 //group by
