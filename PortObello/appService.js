@@ -309,14 +309,51 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
 }
 
 
+// async function countCountry() {
+//     return await withOracleDB(async (connection) => {
+//         const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
+//         return result.rows[0][0];
+//     }).catch(() => {
+//         return -1;
+//     });
+// }
+
 async function countCountry() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
-        return result.rows[0][0];
+        try {
+            const result = await connection.execute(
+                `SELECT 
+                    CASE 
+                        WHEN GDP < 1 THEN '0-1'
+                        WHEN GDP BETWEEN 1 AND 5 THEN '1-5'
+                        WHEN GDP BETWEEN 5 AND 10 THEN '5-10'
+                        WHEN GDP BETWEEN 10 AND 15 THEN '10-15'
+                        ELSE '15+'
+                    END AS GDPRange,
+                    COUNT(*) AS CountryCount
+                 FROM COUNTRY
+                 GROUP BY 
+                    CASE
+                        WHEN GDP < 1 THEN '0-1'
+                        WHEN GDP BETWEEN 1 AND 5 THEN '1-5'
+                        WHEN GDP BETWEEN 5 AND 10 THEN '5-10'
+                        WHEN GDP BETWEEN 10 AND 15 THEN '10-15'
+                        ELSE '15+'
+                    END
+                 ORDER BY GDPRange`,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            return result.rows;
+        } catch (err) {
+            console.error('Error in countCountry:', err);
+            throw err;
+        }
     }).catch(() => {
-        return -1;
+        return [];
     });
 }
+
 
 async function fetchPortFromDb() {
     return await withOracleDB(async (connection) => {

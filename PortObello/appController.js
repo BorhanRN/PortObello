@@ -68,18 +68,28 @@ router.post("/update-country", async (req, res) => {
     }
 });
 
+// router.get('/count-country', async (req, res) => {
+//     const tableCount = await appService.countCountry();
+//     if (tableCount >= 0) {
+//         res.json({
+//             success: true,
+//             count: tableCount
+//         });
+//     } else {
+//         res.status(500).json({
+//             success: false,
+//             count: tableCount
+//         });
+//     }
+// });
+
 router.get('/count-country', async (req, res) => {
-    const tableCount = await appService.countCountry();
-    if (tableCount >= 0) {
-        res.json({ 
-            success: true,  
-            count: tableCount
-        });
-    } else {
-        res.status(500).json({ 
-            success: false, 
-            count: tableCount
-        });
+    try {
+        const data = await appService.countCountry();
+        res.json({ success: true, data });
+    } catch (err) {
+        console.error('Error fetching countries by GDP ranges:', err);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 
