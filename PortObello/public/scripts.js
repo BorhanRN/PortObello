@@ -262,7 +262,8 @@ async function maxAverage(event) {
 
 async function numShip(event){
     event.preventDefault();
-    const num = document.getElementById('numberOfShips').value;
+    const min = document.getElementById('minNumb').value;
+    const max = document.getElementById('maxNumb').value;
 
     const response = await fetch('/port-num-ship', {
         method: 'POST',
@@ -270,7 +271,8 @@ async function numShip(event){
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            num: num,
+            min: min,
+            max: max,
         })
     });
 
