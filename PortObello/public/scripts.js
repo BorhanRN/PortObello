@@ -1217,7 +1217,6 @@ window.onload = async function() {
     });
 
 
-
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
         await insertCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after insert
@@ -1250,7 +1249,6 @@ window.onload = async function() {
     document.getElementById('countCountriesByGDPButton').addEventListener('click', countCountry);
 
 
-
     document.getElementById("fetchHomeCountriesWithAllTradeAgreements").addEventListener("click", async (e) => {
         await fetchAndDisplayHomeCountriesWithAllTradeAgreements(e);
         await fetchTableData();
@@ -1259,29 +1257,31 @@ window.onload = async function() {
     document.getElementById('shipQueryForm').addEventListener('submit', runDynamicShipQuery);
 
     document.getElementById("joinCompanyShipmentInput").addEventListener("submitButton", async (e) => {
-            await joinCompanyShipment(e);
-        });
+        await joinCompanyShipment(e);
+    });
 
 // General function to refresh the displayed table data.
 // You can invoke this after any table-modifying operation to keep consistency.
-async function fetchTableData() {
-    await fetchAndDisplayCountry();
-    await fetchAndDisplayPort();
-    await fetchAndDisplayWarehouse();
-    await fetchAndDisplayHomeCountry();
-    await fetchAndDisplayForeignCountry();
-    await fetchAndDisplayTariff();
-    await fetchAndDisplayShippingRoute();
-    await fetchAndDisplayShip();
-    await fetchAndDisplayCompany();
-    await fetchAndDisplayShipmentContainer();
-}
+    async function fetchTableData() {
+        await fetchAndDisplayCountry();
+        await fetchAndDisplayPort();
+        await fetchAndDisplayWarehouse();
+        await fetchAndDisplayHomeCountry();
+        await fetchAndDisplayForeignCountry();
+        await fetchAndDisplayTariff();
+        await fetchAndDisplayShippingRoute();
+        await fetchAndDisplayShip();
+        await fetchAndDisplayCompany();
+        await fetchAndDisplayShipmentContainer();
+    }
 
-async function test() {
-    try {
-    incNumContainers(aa, aa)
-    } catch (error) {
-        if(error instanceof CapacityError) {
+    async function test() {
+        try {
+            incNumContainers(aa, aa)
+        } catch (error) {
+            if (error instanceof CapacityError) {
+            }
         }
     }
+
 }
