@@ -2386,15 +2386,16 @@ module.exports = {
 
 //------------------OTHER REQUIREMENTS------------------
 //-X-NOT ALL ON ONE PAGE
-//sufficient user data? - NEED MORE
+//-X- basic error handling
+//  -> user errors such as trying to insert a duplicate value, invalid input (e.g., invalid characters or an int when only strings are allowed)
+//-X- user notification
+//  -> The user will receive a success or failure notification upon the completion of an insert,
+//      update, delete action and will have a way to verify the action's effect on the database.
+// sufficient user data? - NEED MORE
 // basic security practices
 //  -> values from the user are not directly used in the database
 //  -> prevent injection and rainbow attacks
-// basic error handling
-//  -> user errors such as trying to insert a duplicate value, invalid input (e.g., invalid characters or an int when only strings are allowed)
-// user notification
-//  -> The user will receive a success or failure notification upon the completion of an insert,
-//      update, delete action and will have a way to verify the action's effect on the database.
+
 //ADD MILESTONE 4 PDF
 //  -> cover page
 //  -> description of what we accomplished
