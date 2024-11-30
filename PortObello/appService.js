@@ -2422,7 +2422,7 @@ module.exports = {
     addShipmentContainer,
     removeShipmentContainer,
     updateNumContainers,
-   CapacityError,
+    CapacityError,
 
     projectShippingRoute,
     joinCompanyShipments
