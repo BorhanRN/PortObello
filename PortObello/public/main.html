@@ -23,6 +23,15 @@
     <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
 </h1>
 
+<div class="headerContainer">
+
+    <h1>
+        <img src="favicon.ico">
+        PortObello
+        <img src="favicon.ico">
+    </h1>
+</div>
+
 <br>
 <hr>
 <br> <!-- ========================================================================= -->
@@ -59,7 +68,7 @@
     <br> <!-- ========================================================================= -->
 
     <h2>Reset Country</h2>
-    <button id="resetCountry"> reset</button>
+    <button id="resetCountry" class="button"> reset</button>
     <br>
     <!-- A placeholder to display messages related to the reset operation. -->
     <div id="resetCountryResultMsg"></div>
@@ -80,7 +89,7 @@
         <br><br>
 
 
-        <button type="submit"> insert</button>
+        <button type="submit" class="button"> insert</button>
         <br>
     </form>
     <div id="insertResultMsg"></div>
@@ -102,7 +111,7 @@
         <br><br>
         GDP: <input type="number" id="updateGDP" placeholder="Enter GDP" required> <br><br>
 
-        <button type="submit"> update</button>
+        <button type="submit" class="button"> update</button>
         <br>
     </form>
     <!-- A placeholder to display messages related to the update operation. -->
@@ -113,7 +122,7 @@
     <br> <!-- ========================================================================= -->
 
     <h1>Countries by GDP Range</h1>
-    <button id="countCountriesByGDPButton">Get GDP Ranges</button>
+    <button id="countCountriesByGDPButton" class="button">Get GDP Ranges</button>
 
     <table id="countriesByGDPTable" border="1" style="display: none;">
         <thead>
@@ -162,7 +171,7 @@
     <br> <!-- ========================================================================= -->
 
     <h2>Reset Port</h2>
-    <button id="resetPort"> reset</button>
+    <button id="resetPort" class="button"> reset</button>
     <br>
     <!-- A placeholder to display messages related to the reset operation. -->
     <div id="resetPortResultMsg"></div>
@@ -179,7 +188,7 @@
         Coordinates for Nuke: <input type="text" id="portAddress" placeholder="Port Address goes here." required>
         <br><br>
 
-        <button type="submit"> Launch</button>
+        <button type="submit" class="button"> Launch</button>
         <br>
     </form>
     <!-- A placeholder to display messages related to the update operation. -->
@@ -198,7 +207,7 @@
         Size range of ships:
         <input type="number" id="minNumb" placeholder="Minimum size here..." required>
         <input type="number" id="maxNumb" placeholder="Maximum size here..." required> <br><br>
-        <button type="submit"> Find Ports</button>
+        <button type="submit" class="button"> Find Ports</button>
         <br>
     </form>
     <table id="populatedPorts" border="1" style="display: none;">
@@ -244,7 +253,7 @@
 <br> <!-- ========================================================================= -->
 
 <h2>Reset Warehouse</h2>
-<button id="resetWarehouse"> reset</button>
+<button id="resetWarehouse" class="button"> reset</button>
 <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetWarehouseResultMsg"></div>
@@ -284,7 +293,7 @@
     <br> <!-- ========================================================================= -->
 
     <h2>Reset HomeCountry</h2>
-    <button id="resetHomeCountry"> reset</button>
+    <button id="resetHomeCountry" class="button"> reset</button>
     <br>
     <!-- A placeholder to display messages related to the reset operation. -->
     <div id="resetHomeCountryResultMsg"></div>
@@ -306,7 +315,7 @@
                             maxlength="20"> <br><br>
 
 
-        <button type="submit"> insert</button>
+        <button type="submit" class="button"> insert</button>
         <br>
     </form>
     <div id="insertHomeResultMsg"></div>
@@ -318,7 +327,7 @@
 
 <div id="Division" class="homeCountryContent">
     <h2> All HomeCountries that have TradeAgreements with EVERY ForeignCountry </h2>
-    <button id="fetchHomeCountriesWithAllTradeAgreements">Fetch Data</button>
+    <button id="fetchHomeCountriesWithAllTradeAgreements" class="button">Fetch Data</button>
     <table id="homeCountriesWithAllTradeAgreements" border="1" style="display: none;">
         <thead>
         <tr>
@@ -361,7 +370,7 @@
 <br> <!-- ========================================================================= -->
 
 <h2>Reset ForeignCountry</h2>
-<button id="resetForeignCountry"> reset</button>
+<button id="resetForeignCountry" class="button"> reset</button>
 <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetForeignCountryResultMsg"></div>
@@ -396,7 +405,7 @@
 <br> <!-- ========================================================================= -->
 
 <h2>Reset Tariff</h2>
-<button id="resetTariff"> reset</button>
+<button id="resetTariff" class="button"> reset</button>
 <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetTariffResultMsg"></div>
@@ -429,17 +438,6 @@
 <br>
 <hr>
 <br> <!-- ========================================================================= -->
-
-<h2>Reset ShippingRoute</h2>
-<button id="resetShippingRoute"> reset</button>
-<br>
-<!-- A placeholder to display messages related to the reset operation. -->
-<div id="resetShippingRouteResultMsg"></div>
-
-<br>
-<hr>
-<br> <!-- ========================================================================= -->
-
 <h2>Project Shipping Route</h2>
 
 <!-- Form to select attributes -->
@@ -467,7 +465,7 @@
             Route Length
         </label>
         <br><br>
-        <button type="submit">Project</button>
+        <button type="submit" class="button">Project</button>
     </fieldset>
 </form>
 
@@ -481,6 +479,17 @@
         <tbody></tbody>
     </table>
 </div>
+<br> <!-- ========================================================================= -->
+
+<h2>Reset ShippingRoute</h2>
+<button id="resetShippingRoute" class="button"> reset</button>
+<br>
+<!-- A placeholder to display messages related to the reset operation. -->
+<div id="resetShippingRouteResultMsg"></div>
+
+<br>
+<hr>
+<br> <!-- ========================================================================= -->
 
 <h1>Ship</h1>
 <div class="tab">
@@ -520,7 +529,7 @@
 
 
     <h2>Reset Ship</h2>
-    <button id="resetShip"> reset</button>
+    <button id="resetShip" class="button"> reset</button>
     <br>
     <!-- A placeholder to display messages related to the reset operation. -->
     <div id="resetShipResultMsg"></div>
@@ -535,7 +544,7 @@
     <p>If you would like to calculate the ship with the highest average shipment container value, please click this
         magic button!</p>
     <form id="groupBy">
-        <button type="submit" value="getMax">It's not magic, it's just good SQL!</button>
+        <button type="submit" class="button" value="getMax">It's not magic, it's just good SQL!</button>
     </form>
     <!-- A placeholder to display messages related to the group by operation. -->
     <div id="getMaxMessage"></div>
@@ -552,7 +561,7 @@
         <label for="shipQueryInput">Search Conditions:</label>
         <textarea id="shipQueryInput" placeholder="Enter your conditions here..." rows="4" cols="50"></textarea>
         <br><br>
-        <button type="submit">Run Query</button>
+        <button type="submit" class="button">Run Query</button>
     </form>
     <div id="shipQueryResults">
         <h3>Results:</h3>
@@ -600,13 +609,13 @@
     <h2>Find Shipments by Company</h2>
 
     <!-- Button to show the input form -->
-    <button id="showInputButton">Find Shipments</button>
+    <button id="showInputButton" class="button">Find Shipments</button>
 
     <!-- Input form for company and CEO -->
     <form id="joinCompanyShipmentInput" style="display: none;">
         <input type="text" id="inputCompanyName" placeholder="Enter Company Name" required>
         <input type="text" id="inputCompanyCEO" placeholder="Enter Company CEO" required>
-        <button id="submitButton" type="submit">Submit</button>
+        <button id="submitButton" class="button" type="submit">Submit</button>
     </form>
 
     <!-- Table to display the results -->
@@ -634,7 +643,7 @@
 
     <h2>Reset Company</h2>
         MUST use reset.</p>
-    <button id="resetCompany"> reset</button>
+    <button id="resetCompany" class="button"> reset</button>
     <br>
     <!-- A placeholder to display messages related to the reset operation. -->
     <div id="resetCompanyResultMsg"></div>
@@ -677,7 +686,7 @@
 <br> <!-- ========================================================================= -->
 
 <h2>Reset ShipmentContainer</h2>
-<button id="resetShipmentContainer"> reset</button>
+<button id="resetShipmentContainer" class="button"> reset</button>
 <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="resetShipmentContainerResultMsg"></div>
@@ -687,7 +696,7 @@
 <br> <!-- ========================================================================= -->
 
 <h2>Reset All</h2>
-<button id="initiateAll"> reset</button>
+<button id="initiateAll" class="button"> reset</button>
 <br>
 <!-- A placeholder to display messages related to the reset operation. -->
 <div id="initiateAllResultMsg"></div>
@@ -774,48 +783,56 @@
 </script>
 
 <style>
-    .portTab button.active {
-        background-color: #ccc;
+     body {font-family: Arial;}
+
+    /* Style the buttons inside the tab */
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        font-size: 17px;
     }
 
-    .portContent {
-        display: none;
-        padding: 6px 12px;
-        -webkit-animation: fadeEffect 1s;
-        animation: fadeEffect 1s;
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+        background-color: blue;
+        color: white;
     }
 
-    .countryTab button.active {
-        background-color: #ccc;
+    /* Create an active/current tablink class */
+    .tab button.active {
+        background-color: darkblue;
+        color: white;
     }
 
+    /* Style the tab content */
     .countryContent {
         display: none;
         padding: 6px 12px;
-        -webkit-animation: fadeEffect 1s;
-        animation: fadeEffect 1s;
+        border: 1px solid #ccc;
+        border-top: none;
     }
-
-    .shipTab button.active {
-        background-color: #ccc;
-    }
-
-    .shipContent {
+    .portContent{
         display: none;
         padding: 6px 12px;
-        -webkit-animation: fadeEffect 1s;
-        animation: fadeEffect 1s;
+        border: 1px solid #ccc;
+        border-top: none;
     }
-
-    .homeCountryTab button.active {
-        background-color: #ccc;
-    }
-
     .homeCountryContent {
         display: none;
         padding: 6px 12px;
-        -webkit-animation: fadeEffect 1s;
-        animation: fadeEffect 1s;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+    .shipContent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
     }
 
     /* Fade in tabs */
@@ -828,4 +845,15 @@
         from {opacity: 0;}
         to {opacity: 1;}
     }
+
+     . {
+         background-color: #04AA6D; /* Green */
+         border: none;
+         color: white;
+         padding: 15px 32px;
+         text-align: center;
+         text-decoration: none;
+         display: inline-block;
+         font-size: 16px;
+     }
 </style>

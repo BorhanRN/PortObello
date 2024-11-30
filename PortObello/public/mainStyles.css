@@ -1,0 +1,63 @@
+body {
+    margin: 0;
+    background: linear-gradient(to bottom, #daeff5, #87ceeb);
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+}
+
+* {
+    font-family: font-family: Monospace, Ludica-Console;
+}
+
+.button {
+    font-family: font-family: Monospace, Ludica-Console;
+    background-color: darkblue; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    width: 135px;
+}
+
+table, td, th {
+    border: 1px solid black;
+    text-align: left;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    align-self: center;
+
+}
+
+th, td {
+    padding: 15px;
+    background-color: white;
+}
+
+br, hr {
+    align-self: stretch;
+    margin: 10px 0;
+}
+
+.button:hover {
+    background-color: blue;
+    color: white;
+}
+
+img {
+    height: 80px;
+    vertical-align: middle;
+    margin: 0 10px;
+}
+
+.headerContainer {
+    text-align: center;
+    font-size: 40px;
+    align-self: center;
+}
