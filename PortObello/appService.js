@@ -852,6 +852,7 @@ async function fetchHomeCountriesWithAllTradeAgreements() {
     });
 }
 
+// post tariff table from TARIFF1 and TARIFF2
 async function fetchTariffFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -887,6 +888,7 @@ async function fetchTariffFromDb() {
     });
 }
 
+// creates Tariff table
 async function initiateTariff() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1054,6 +1056,7 @@ async function initiateTariff() {
     });
 }
 
+// Posts Shipping route table
 async function fetchShippingRouteFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1086,6 +1089,7 @@ async function fetchShippingRouteFromDb() {
     });
 }
 
+// creates shipping route table
 async function initiateShippingRoute() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1211,6 +1215,7 @@ async function initiateShippingRoute() {
     });
 }
 
+// posts ship table
 async function fetchShipFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1243,6 +1248,7 @@ async function fetchShipFromDb() {
     });
 }
 
+// creates ship table
 async function initiateShip() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1368,6 +1374,7 @@ async function initiateShip() {
     });
 }
 
+// posts company table
 async function fetchCompanyFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1392,6 +1399,7 @@ async function fetchCompanyFromDb() {
     });
 }
 
+// creates company table
 async function initiateCompany() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1478,6 +1486,7 @@ async function initiateCompany() {
     });
 }
 
+// posts shipment container
 async function fetchShipmentContainerFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1517,6 +1526,7 @@ async function fetchShipmentContainerFromDb() {
     });
 }
 
+// creates shipment container table
 async function initiateShipmentContainer() {
     return await withOracleDB(async (connection) => {
         try {
@@ -1655,65 +1665,7 @@ async function initiateShipmentContainer() {
     });
 }
 
-//sets Ship.PortAddress to the DestinationAddress of ship.ShippingRoute
-async function shipToPort(Owner, ShipName) {
-    return await  withOracleDB( async (connection) => {
-        const shipUpdate = await connection.execute(
-            `UPDATE Ship1 h
-             SET DockedAtPortAddress = (
-                 SELECT c.portAddress
-                 FROM ShippingRoute2 s
-                          JOIN Country c ON s.DestinationCountry = c.Country
-                          JOIN Ship1 h2 ON s.Name = c.ShippingRoute
-                 WHERE h2.Owner = :Owner
-                   AND h2.ShipName = :ShipName
-                   AND h2.Owner = :Owner
-             )
-             WHERE Owner = :Owner AND ShipName = :ShipName`,
-            [Owner, ShipName]
-        );
-
-        await connection.execute(
-            `UPDATE Ship1
-             SET DockedAtPortAddress = 'Ship is currently at sea.'
-             WHERE DocketAtPortAddress = 'No ports from this country are currently monitored.'
-            `
-        );
-
-
-        if (shipUpdate.rowsAffected === 0) {
-            throw new Error("Ship update failed: No rows affected.");
-        }
-
-        const portUpdate = await connection.execute(
-            `UPDATE Port p
-             SET NumDockedShips = (NumDockedShips + 1)
-             WHERE PortAddress = (
-                 SELECT c.portAddress
-                 FROM ShippingRoute2 s
-                          JOIN Country c ON s.DestinationCountry = c.Country
-                          JOIN Ship1 h2 ON s.Name = h2.ShippingRoute
-                 WHERE h2.Owner = :Owner
-                   AND h2.ShipName = :ShipName
-             )`,
-            [Owner, ShipName]
-        );
-
-        if (portUpdate.rowsAffected === 0) {
-            throw new Error("Port update failed: No rows affected.");
-        }
-
-        // Commit both updates
-        await connection.commit();
-
-        return true; // Both updates succeeded
-    }).catch((error) => {
-        console.error("Error updating ship's port:", error);
-        return false;
-    });
-
-}
-
+// deletes port from table based on address
 async function deletePort(addy) {
     return await withOracleDB(async (connection) =>  {
         await connection.execute( `
@@ -1768,6 +1720,7 @@ async function deletePort(addy) {
         });
 }
 
+// delete shipping route based on name
 async function deleteShippingRoute(sName) {
     return await withOracleDB(async (connection) =>  {
         const deletion = await connection.execute( `
@@ -1785,6 +1738,7 @@ async function deleteShippingRoute(sName) {
 
 }
 
+// delete ship based on ship owner and name
 async function deleteShip(sOwner, sName) {
     return await withOracleDB(async (connection) =>  {
         const deletion1 = await connection.execute( `
@@ -1818,6 +1772,7 @@ async function deleteShip(sOwner, sName) {
 
 }
 
+// deletes warehouse based on port address and warehouse section
 async function deleteWarehouse(pAddy, wSection) {
     return await withOracleDB(async (connection) =>  {
         const deletion = await connection.execute( `
@@ -1835,6 +1790,7 @@ async function deleteWarehouse(pAddy, wSection) {
 
 }
 
+// deletes company based on company name and ceo
 async function deleteCompany(cName, ceo) {
     return await withOracleDB(async (connection) =>  {
         const deletion = await connection.execute( `
@@ -1852,6 +1808,7 @@ async function deleteCompany(cName, ceo) {
 
 }
 
+// deletes tariff based on name
 async function deleteTariff(tName) {
     return await withOracleDB(async (connection) =>  {
         const deletion1 = await connection.execute( `
@@ -1888,36 +1845,8 @@ async function deleteTariff(tName) {
         });
 
 }
-
-// async function createNumShips() {
-//     return await withOracleDB(async (connection) => {
-//         try{
-//         try{
-//             connection.execute(`
-//             DROP TABLE shipPorts`,
-//                 {autoCommit : true});
-//         }catch (e) {
-//
-//         }
-//       await connection.execute( `
-//                     CREATE TABLE shipPorts (
-//                        PortLocation VARCHAR2(200) NOT NULL,
-//                        NumOfShips NUMBER,
-//                        PRIMARY KEY (PortLocation)
-//                     )
-//             `);
-//
-//         await connection.commit();
-//
-//         console.log("shipPorts table created successfully.");
-//         return true;
-//     }catch (error) {
-//             console.error("Error creating shipPorts table:", error);
-//             return false;
-//         }
-//     });
-// }
-//aggregation with having
+// aggregation with having
+// finds the number of ships between a certain size (min, max)
 async function portsNumShips(min, max) {
     return await withOracleDB(async (connection) => {
         try {
@@ -1945,7 +1874,8 @@ async function portsNumShips(min, max) {
     });
 }
 
-//group by
+// group by
+// finds the ship with the highest average shipment container value and displays that value with name
 async function maxAvgContainer() {
     return await withOracleDB(async (connection) =>  {
         const result = await connection.execute(`
@@ -1979,7 +1909,7 @@ async function maxAvgContainer() {
         });
 }
 
-//helper for updating the
+//helper for updating the ship values
 async function updateShipValues() {
     return await withOracleDB(async (connection) => {
         await connection.execute(`
@@ -2070,6 +2000,7 @@ async function updateNumContainers(portAddress, section, n) {
                 return false;
             }
 
+    // extracts desired values from result array
     const rowResult = result.rows[0];
     const num = rowResult[0];
     const capacity = rowResult[1];
@@ -2094,29 +2025,8 @@ async function updateNumContainers(portAddress, section, n) {
         });
 }
 
-// //Finds all shipments from a specific COMPANY
-// async function joinCompanyShipments(companyName, companyCEO) {
-//     return await withOracleDB(async (connection) => {
-//             await connection.execute(`
-//             CREATE TABLE CompanyShipments AS (
-//             SELECT sc.ShipOwner, sc.ShipName, sc.GoodType, sc.TrackingNumber, sc.CompanyName, sc.CompanyCEO,
-//                    c.Industry, c.YearlyRevenue
-//             FROM ShipmentContainer2 sc
-//             JOIN Company c ON sc.CompanyName = c.Name AND sc.CompanyCEO = c.CEO
-//             WHERE sc.CompanyName = companyName AND sc.CompanyCEO = companyCEO)
-//             `,
-//             {companyName, companyCEO}
-//             );
-//
-//             await connection.commit();
-//         })
-//         .catch((error) => {
-//             console.error("company / shipment not found", error);
-//             return false;
-//         });
-//
-// }
-
+// join requirement
+// finds all shipments from a specific company based on name and ceo
 async function joinCompanyShipments(companyName, companyCEO) {
     return await withOracleDB(async (connection) => {
         try {
@@ -2132,7 +2042,7 @@ async function joinCompanyShipments(companyName, companyCEO) {
                 { outFormat: oracledb.OUT_FORMAT_OBJECT } // Ensure results are returned as an array of objects
             );
 
-            return result.rows; // Return the query results
+            return result.rows;
         } catch (error) {
             console.error("Error fetching shipments for company:", error);
             throw new Error("Failed to fetch shipments for the specified company.");
@@ -2140,44 +2050,7 @@ async function joinCompanyShipments(companyName, companyCEO) {
     });
 }
 
-
-// // displays any number of attributes selected from Shipping Route
-// async function projectShippingRoute(attributes) {
-//     // list of possible attributes
-//     const validAttributes = [
-//           "ShippingRoute1.AnnualVolumeOfGoods",
-//           "ShippingRoute1.OriginCountryName",
-//           "ShippingRoute1.TerminalPortAddress",
-//           "ShippingRoute2.ShippingRouteName",
-//           "ShippingRoute2.Length",
-//         ];
-//
-//         //filter selected attributes
-//         const selectedAttributes = attributes.filter(attr => validAttributes.includes(attr));
-//         //make sure they are valid
-//         if (selectedAttributes.length === 0) {
-//               throw new Error("No valid attributes selected.");
-//             }
-//         //append for the select clause
-//         const selectClause = selectedAttributes.join(", ");
-//         //query
-//         return await withOracleDB(async (connection) => {
-//                     await connection.execute(`
-//                         SELECT ${selectClause}
-//                         FROM ShippingRoute1
-//                         JOIN ShippingRoute2
-//                         ON ShippingRoute1.OriginCountryName = ShippingRoute2.OriginCountryName
-//                         AND ShippingRoute1.TerminalPortAddress = ShippingRoute2.TerminalPortAddress
-//                     `,
-//                     { autoCommit: true }
-//                     );
-//                 })
-//         .catch((error) => {
-//             console.error(error);
-//             return false;
-//         });
-// }
-
+// projections requirement
 // displays any number of attributes selected from Shipping Route
 async function projectShippingRoute(attributes) {
     // List of possible attributes
@@ -2200,7 +2073,7 @@ async function projectShippingRoute(attributes) {
         throw new Error("No valid attributes selected.");
     }
 
-    // Build SELECT clause safely
+    // Appends attributes to pass into select
     const selectClause = selectedAttributes.join(", ");
 
     // Query the database
@@ -2218,7 +2091,7 @@ async function projectShippingRoute(attributes) {
                 { outFormat: oracledb.OUT_FORMAT_OBJECT } // Ensure results are returned as objects
             );
             console.log("Query Results:", result.rows);
-            return result.rows; // Return query results
+            return result.rows;
         } catch (error) {
             console.error("Error in projectShippingRoute:", error);
             throw new Error("Failed to project shipping routes.");
@@ -2226,8 +2099,8 @@ async function projectShippingRoute(attributes) {
     });
 }
 
-
-
+// select requirement
+// searches for ships based on arbitrary number of user inputs
 async function runDynamicShipQuery(userInput) {
     return await withOracleDB(async (connection) => {
         try {
@@ -2235,7 +2108,6 @@ async function runDynamicShipQuery(userInput) {
             const { whereClause, bindParams } = parseShipQuery(userInput);
 
             console.log('parsed whereClause:', whereClause);
-
 
             const query = `
                 SELECT
@@ -2292,11 +2164,6 @@ function parseShipQuery(input) {
     return { whereClause: whereParts.join(' '), bindParams };
 }
 
-
-
-class CapacityError extends Error {
-}
-
 module.exports = {
     testOracleConnection,
     initiateAll,
@@ -2313,7 +2180,6 @@ module.exports = {
     fetchHomeCountryFromDb,
     insertHomeCountry,
     initiateHomeCountry,
-
 
     fetchForeignCountryFromDb,
     initiateForeignCountry,
@@ -2339,7 +2205,6 @@ module.exports = {
     updateShipValues,
 
     insertCountry,
-    //updateNameCountry,
     updateCountry,
     countCountry,
 
@@ -2356,82 +2221,7 @@ module.exports = {
     addShipmentContainer,
     removeShipmentContainer,
     updateNumContainers,
-   CapacityError,
 
     projectShippingRoute,
     joinCompanyShipments
 };
-
-//!!TODO
-//------------------REQUIRED------------------
-//-X- INSERT (implement on HOMECOUNTRY)
-//  -> specify what values to insert
-//  -> affects more than one relationship
-//  -> handle the case where the foreign key value in the tuple being inserted does not exist in the relation that is being referred to
-//      -> user notification - rejection
-//-X- UPDATE
-//  -> relation must have at least 2 non-primary-key attributes
-//  -> At least one non-primary key attribute must have either a UNIQUE constraint or be a foreign key that references another relation.
-//  -> display the tuples that are available for the relation so the user can select which tuple they want to update (just show table? probably)
-//-X- DELETE (implemented on PORT and cascades to related tables)
-//  -> cascade-on-delete situation
-//-X- AGGREGATION with GROUP BY (count implemented on COUNTRY)
-//  -> e.g., min, max, average, or count
-//  -> must provide an interface (e.g., button, dropdown, etc.)
-//-X- NESTED AGGREGATION WITH GROUP BY
-//  -> must find some aggregated value for each group
-//  -> must provide an interface (e.g., button, dropdown, etc.)
-//  -> can use VIEW if easier
-//  -> see pdf for example
-//-X- DIVISION
-//  -> must do division (no shit)
-//  -> must provide an interface (e.g., button, dropdown, etc.)
-//-X- SELECT -- Search through all attributes --- SHIP
-//  -> search for tuples using any number of AND/OR clauses and combinations of attributes.
-//  -> using a dynamically generated dropdown of AND/OR options or parsing user string
-//-X- AGGREGATION WITH HAVING — Find and return all PORT with a certain (user-inputted?) number of ships
-//  -> must include a HAVING clause.
-//  -> must provide an interface (e.g., button, dropdown, etc.)
-
-//PROJECTION -- Choose which attributes to view on this table --- Shipping Route done in backend
-//  -> The user can choose any number of attributes to view from this relation
-//  -> Non-selected attributes must not appear in the result
-//JOIN -- Find all shipments from a specific COMPANY -- backend done
-//  -> join at least two relations
-//  -> user must provide at least one value to qualify in the WHERE clause
-
-
-
-
-//------------------OTHER REQUIREMENTS------------------
-//-X-NOT ALL ON ONE PAGE
-//-X- basic error handling
-//  -> user errors such as trying to insert a duplicate value, invalid input (e.g., invalid characters or an int when only strings are allowed)
-//-X- user notification
-//  -> The user will receive a success or failure notification upon the completion of an insert,
-//      update, delete action and will have a way to verify the action's effect on the database.
-// sufficient user data? - NEED MORE
-// basic security practices
-//  -> values from the user are not directly used in the database
-//  -> prevent injection and rainbow attacks
-
-//ADD MILESTONE 4 PDF
-//  -> cover page
-//  -> description of what we accomplished
-//  -> what we changed compared to final schema
-//      -> destination country instead of destination port in shipping route
-//      -> ISA relationship is not disjoint, it is inclusive
-//      -> added unique constraint to country government
-//  -> A list of all SQL queries used to satisfy the rubric items and where each query can
-//      be found in the code (file name and line number(s)).
-//  -> For SQL queries 2.1.7 through 2.1.10 inclusive, include a copy of your SQL query
-//      and a maximum of 1-2 sentences describing what that query does. You can embed
-//      this in your above list of queries.
-// Cite the work that we used from the demo
-
-
-
-
-//------------------NICE-TO-HAVES------------------
-//MAKE IT LOOK NOT ASS
-//TAB ICON
