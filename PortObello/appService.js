@@ -1908,25 +1908,6 @@ async function maxAvgContainer() {
         });
 }
 
-//helper for updating the ship values
-async function updateShipValues() {
-    return await withOracleDB(async (connection) => {
-        await connection.execute(`
-        UPDATE Ship1
-        SET value = (
-            SELECT SUM(s2.goodvalue)
-            FROM ShipmentContainer2 s2
-            WHERE Ship.Owner = s2.ShipOwner AND Ship.Name = s2.ShipName
-        `,
-        { autoCommit: true }
-        );
-    })
-        .catch((error) => {
-            console.error("Error finding", error);
-            return false;
-        });
-}
-
 // assigns shipment container to warehouse, increments warehouse numContainers
 async function addShipmentContainer(shipOwner, shipName, portAddress, section) {
     const wSection = await withOracleDB(async (connection) => {
@@ -2201,13 +2182,11 @@ module.exports = {
     initiateShipmentContainer,
 
     maxAvgContainer,
-    updateShipValues,
 
     insertCountry,
     updateCountry,
     countCountry,
 
-    shipToPort,
     portsNumShips,
 
     deleteCompany,
