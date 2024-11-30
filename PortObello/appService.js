@@ -76,6 +76,7 @@ async function testOracleConnection() {
     });
 }
 
+// initiates all tables
 async function initiateAll() {
     return await withOracleDB(async (connection) => {
         try {
@@ -112,6 +113,7 @@ async function initiateAll() {
     });
 }
 
+// fetches country table from database
 async function fetchCountryFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -137,10 +139,11 @@ async function fetchCountryFromDb() {
     });
 }
 
+// initiates country table in database
 async function initiateCountry() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing COUNTRY
+            // find foreign key constraints referencing COUNTRY
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -154,7 +157,7 @@ async function initiateCountry() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign keys
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -165,7 +168,7 @@ async function initiateCountry() {
                 }
             }
 
-            // Now try to drop the COUNTRY table
+            // drop COUNTRY table
             try {
                 await connection.execute('DROP TABLE COUNTRY PURGE');
                 console.log('Existing COUNTRY table dropped');
@@ -200,7 +203,7 @@ async function initiateCountry() {
 
         ];
 
-            // Use bind variables for safer insertion
+            // bind variables for safer insertion
             const insertSQL = `
                 INSERT INTO COUNTRY (Name, Population, Government, GDP, PortAddress) 
                 VALUES (:1, :2, :3, :4, :5)`;
@@ -224,6 +227,7 @@ async function initiateCountry() {
     });
 }
 
+// insert value into country table
 async function insertCountry(name, population, government, gdp, portaddress) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -238,20 +242,7 @@ async function insertCountry(name, population, government, gdp, portaddress) {
     });
 }
 
-// async function updateNameCountry(oldName, newName) {
-//     return await withOracleDB(async (connection) => {
-//         const result = await connection.execute(
-//             `UPDATE COUNTRY SET name=:newName where name=:oldName`,
-//             [newName, oldName],
-//             { autoCommit: true }
-//         );
-//
-//         return result.rowsAffected && result.rowsAffected > 0;
-//     }).catch(() => {
-//         return false;
-//     });
-// }
-
+// update values in country table based on name
 async function updateCountry(cname, population, government, portaddress, gdp) {
     return await withOracleDB(async (connection) => {
 
@@ -308,16 +299,7 @@ async function updateCountry(cname, population, government, portaddress, gdp) {
     });
 }
 
-
-// async function countCountry() {
-//     return await withOracleDB(async (connection) => {
-//         const result = await connection.execute('SELECT Count(*) FROM COUNTRY');
-//         return result.rows[0][0];
-//     }).catch(() => {
-//         return -1;
-//     });
-// }
-
+// counts the tuples in country and put them in bins
 async function countCountry() {
     return await withOracleDB(async (connection) => {
         try {
@@ -354,7 +336,7 @@ async function countCountry() {
     });
 }
 
-
+// fetches port table from database
 async function fetchPortFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -380,10 +362,12 @@ async function fetchPortFromDb() {
     });
 }
 
+// initiates port table in the database
 async function initiatePort() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing WAREHOUSE
+            // find foreign key constraints referencing WAREHOUSE
+            // find foreign key constraints referencing COUNTRY
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -397,7 +381,7 @@ async function initiatePort() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign key constraints
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -408,7 +392,7 @@ async function initiatePort() {
                 }
             }
 
-            // Now try to drop the PORT table
+            // drop PORT table
             try {
                 await connection.execute('DROP TABLE PORT PURGE');
                 console.log('Existing PORT table dropped');
@@ -463,6 +447,7 @@ async function initiatePort() {
     });
 }
 
+// fetches warehouse table from database
 async function fetchWarehouseFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -488,10 +473,11 @@ async function fetchWarehouseFromDb() {
     });
 }
 
+// initiates warehouse table in database
 async function initiateWarehouse() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing WAREHOUSE
+            // find foreign key constraints referencing WAREHOUSE
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -505,7 +491,7 @@ async function initiateWarehouse() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign key constraints
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -516,7 +502,7 @@ async function initiateWarehouse() {
                 }
             }
 
-            // Now try to drop the WAREHOUSE table
+            // drop WAREHOUSE table
             try {
                 await connection.execute('DROP TABLE WAREHOUSE PURGE');
                 console.log('Existing WAREHOUSE table dropped');
@@ -571,7 +557,7 @@ async function initiateWarehouse() {
     });
 }
 
-
+// fetches homecountry table from database
 async function fetchHomeCountryFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -597,10 +583,11 @@ async function fetchHomeCountryFromDb() {
     });
 }
 
+// initiates homecountry table in database
 async function initiateHomeCountry() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing HOMECOUNTRY
+            // find foreign key constraints referencing HOMECOUNTRY
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -614,7 +601,7 @@ async function initiateHomeCountry() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign key constraints
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -625,7 +612,7 @@ async function initiateHomeCountry() {
                 }
             }
 
-            // Now try to drop the PORT table
+            // drop PORT table
             try {
                 await connection.execute('DROP TABLE HOMECOUNTRY PURGE');
                 console.log('Existing HOMECOUNTRY table dropped');
@@ -685,43 +672,7 @@ async function initiateHomeCountry() {
     });
 }
 
-// async function insertHomeCountry(name, population, government, gdp, portaddress) {
-//     return await withOracleDB(async (connection) => {
-//         // Check if the entity exists in the COUNTRY table
-//         const checkResult = await connection.execute(
-//             `SELECT COUNT(*) AS COUNT
-//              FROM COUNTRY
-//              WHERE Name = :name`,
-//             [name]
-//         );
-//
-//         const exists = checkResult.rows[0].COUNT > 0;
-//
-//         if (!exists) {
-//             throw new Error(`Entity '${name}' does not exist in the COUNTRY table.`);
-//         }
-//
-//         // Insert into HOMECOUNTRY table
-//         const result = await connection.execute(
-//             `INSERT INTO HOMECOUNTRY (Name, Population, Government, GDP, PortAddress)
-//              VALUES (:name, :population, :government, :gdp, :portaddress)`,
-//             [name, population, government, gdp, portaddress],
-//             {autoCommit: true}
-//         );
-//
-//         // // Insert into FOREIGNCOUNTRY table
-//         // const result2 = await connection.execute(
-//         //     `INSERT INTO FOREIGNCOUNTRY (Name, Population, Government, GDP, DockingFee, PortAddress)
-//         //      VALUES (:name, :population, :government, :gdp, :500.0, :portaddress)`,
-//         //     [name, population, government, gdp, 500.0, portaddress],
-//         //     {autoCommit: true}
-//         // );
-//
-//         return result.rowsAffected && result.rowsAffected > 0;// && result2.rowsAffected && result2.rowsAffected > 0;
-//     }).catch(() => {
-//         return false;
-//     });
-// }
+// inserts homecountry tuples into the table
 async function insertHomeCountry(name, population, government, gdp, portaddress) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -760,7 +711,7 @@ async function insertHomeCountry(name, population, government, gdp, portaddress)
     });
 }
 
-
+// fetches foreigncountry from the database
 async function fetchForeignCountryFromDb() {
     return await withOracleDB(async (connection) => {
         try {
@@ -789,7 +740,7 @@ async function fetchForeignCountryFromDb() {
 async function initiateForeignCountry() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing FOREIGNCOUNTRY
+            // find foreign key constraints referencing FOREIGNCOUNTRY
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -803,7 +754,7 @@ async function initiateForeignCountry() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign key constraints
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -814,7 +765,7 @@ async function initiateForeignCountry() {
                 }
             }
 
-            // Now try to drop the PORT table
+            // drop PORT table
             try {
                 await connection.execute('DROP TABLE FOREIGNCOUNTRY PURGE');
                 console.log('Existing FOREIGNCOUNTRY table dropped');
@@ -940,7 +891,7 @@ async function fetchTariffFromDb() {
 async function initiateTariff() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing TARIFF1 or TARIFF2
+            // find foreign key constraints referencing TARIFF1 or TARIFF2
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -954,7 +905,7 @@ async function initiateTariff() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign key constraints
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -965,7 +916,7 @@ async function initiateTariff() {
                 }
             }
 
-            // Now try to drop the TARIFF tables
+            // drop TARIFF tables
             try {
                 await connection.execute('DROP TABLE TARIFF1 PURGE');
                 console.log('Existing TARIFF1 table dropped');
@@ -1139,7 +1090,7 @@ async function fetchShippingRouteFromDb() {
 async function initiateShippingRoute() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing SHIPPINGROUTE1 or SHIPPINGROUTE2
+            // find foreign key constraints referencing SHIPPINGROUTE1 or SHIPPINGROUTE2
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -1153,7 +1104,7 @@ async function initiateShippingRoute() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign key constraints
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -1164,7 +1115,7 @@ async function initiateShippingRoute() {
                 }
             }
 
-            // Now try to drop the TARIFF tables
+            // drop TARIFF tables
             try {
                 await connection.execute('DROP TABLE SHIPPINGROUTE1 PURGE');
                 console.log('Existing SHIPPINGROUTE1 table dropped');
@@ -1296,7 +1247,7 @@ async function fetchShipFromDb() {
 async function initiateShip() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing SHIP1 or SHIP2
+            // find foreign key constraints referencing SHIP1 or SHIP2
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -1310,7 +1261,7 @@ async function initiateShip() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign key constraints
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -1321,7 +1272,7 @@ async function initiateShip() {
                 }
             }
 
-            // Now try to drop the SHIP tables
+            // drop SHIP tables
             try {
                 await connection.execute('DROP TABLE SHIP1 PURGE');
                 console.log('Existing SHIP1 table dropped');
@@ -1445,7 +1396,7 @@ async function fetchCompanyFromDb() {
 async function initiateCompany() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing SHIP1 or SHIP2
+            // find foreign key constraints referencing SHIP1 or SHIP2
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -1459,7 +1410,7 @@ async function initiateCompany() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign key constraints
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -1470,7 +1421,7 @@ async function initiateCompany() {
                 }
             }
 
-            // Now try to drop the COMPANY table
+            // drop COMPANY table
             try {
                 await connection.execute('DROP TABLE COMPANY PURGE');
                 console.log('Existing COMPANY table dropped');
@@ -1570,7 +1521,7 @@ async function fetchShipmentContainerFromDb() {
 async function initiateShipmentContainer() {
     return await withOracleDB(async (connection) => {
         try {
-            // First, try to find any foreign key constraints referencing SHIPMENTCONTAINER1 or SHIPMENTCONTAINER2
+            // find foreign key constraints referencing SHIPMENTCONTAINER1 or SHIPMENTCONTAINER2
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
@@ -1584,7 +1535,7 @@ async function initiateShipmentContainer() {
             console.log('Checking for foreign key constraints...');
             const fkResult = await connection.execute(findFKsQuery);
 
-            // Drop any foreign key constraints found
+            // drop foreign key constraints
             for (let fk of fkResult.rows || []) {
                 try {
                     const dropFKQuery = `ALTER TABLE ${fk[0]} DROP CONSTRAINT ${fk[1]}`;
@@ -1595,7 +1546,7 @@ async function initiateShipmentContainer() {
                 }
             }
 
-            // Now try to drop the SHIPMENTCONTAINER tables
+            // drop SHIPMENTCONTAINER tables
             try {
                 await connection.execute('DROP TABLE SHIPMENTCONTAINER1 PURGE');
                 console.log('Existing SHIPMENTCONTAINER1 table dropped');
@@ -1773,22 +1724,6 @@ async function deletePort(addy) {
            [addy],
             { autoCommit: true }
         );
-
-        // await connection.execute(`
-        //             UPDATE Ship1
-        //             SET DockedAtPortAddress = 'International Waters.'
-        //             WHERE DockedAtPortAddress =:addy
-        //     `,
-        //     [addy],
-        //     { autoCommit: true }
-        // );
-        //
-        // await connection.execute(`
-        //             DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
-        //          `,
-        //     [addy],
-        //     { autoCommit: true }
-        // );
 
         await connection.execute( `
                     UPDATE Country
