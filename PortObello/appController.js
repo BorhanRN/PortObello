@@ -364,15 +364,31 @@ router.post('/join-Company-Shipment', async (req, res) => {
 });
 
 
-router.post("/project-Shipping-Route", async (req, res) => {
+// router.post("/project-Shipping-Route", async (req, res) => {
+//     const { attributes } = req.body;
+//     const initiateResult = await appService.projectShippingRoute(attributes)
+//     if (initiateResult) {
+//         res.json({ success: true });
+//     } else {
+//         res.status(500).json({ success: false });
+//     }
+// });
+router.post('/project-shipping-route', async (req, res) => {
     const { attributes } = req.body;
-    const initiateResult = await appService.projectShippingRoute(attributes)
-    if (initiateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
+
+    if (!Array.isArray(attributes) || attributes.length === 0) {
+        return res.status(400).json({ success: false, message: "Invalid or missing attributes." });
+    }
+
+    try {
+        const results = await appService.projectShippingRoute(attributes);
+        res.json({ success: true, data: results });
+    } catch (error) {
+        console.error("Error in /project-shipping-route route:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
     }
 });
+
 
 router.post("/remove-Shipment-Container", async (req, res) => {
     const { shipOwner, shipName, portAddress, section } = req.body;

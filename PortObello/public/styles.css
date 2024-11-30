@@ -1,0 +1,14 @@
+body {
+    margin: 0;
+    font-family: Monospace, Ludica-Console;
+    background: linear-gradient(to bottom, #c9eaf3, #87ceeb);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+}

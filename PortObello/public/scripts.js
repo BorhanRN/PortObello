@@ -1213,6 +1213,100 @@ async function joinCompanyShipment({ companyName, companyCEO }) {
     }
 }
 
+// // frontned working but only displaying N/A
+// async function projectShippingRoute(attributes) {
+//     try {
+//         const response = await fetch('/project-shipping-route', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({ attributes }),
+//         });
+//
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//
+//         const responseData = await response.json();
+//         const tableBody = document.getElementById('shippingRouteResultsTable').querySelector('tbody');
+//
+//         // Clear old results
+//         tableBody.innerHTML = '';
+//
+//         if (responseData.success && Array.isArray(responseData.data)) {
+//             if (responseData.data.length === 0) {
+//                 const row = tableBody.insertRow();
+//                 const cell = row.insertCell();
+//                 cell.colSpan = attributes.length; // Number of selected columns
+//                 cell.textContent = "No results found.";
+//             } else {
+//                 responseData.data.forEach(rowData => {
+//                     const row = tableBody.insertRow();
+//                     attributes.forEach(attr => {
+//                         const cell = row.insertCell();
+//                         cell.textContent = rowData[attr.split('.').pop()] || 'N/A'; // Use attribute alias
+//                     });
+//                 });
+//             }
+//         } else {
+//             const row = tableBody.insertRow();
+//             const cell = row.insertCell();
+//             cell.colSpan = attributes.length; // Number of selected columns
+//             cell.textContent = 'Failed to retrieve data.';
+//         }
+//     } catch (error) {
+//         console.error('Error in projectShippingRoute:', error);
+//         alert("An error occurred while fetching data. Please try again.");
+//     }
+// }
+async function projectShippingRoute(attributes) {
+    try {
+        const response = await fetch('/project-shipping-route', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ attributes }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        const tableBody = document.getElementById('shippingRouteResultsTable').querySelector('tbody');
+
+        // Clear old results
+        tableBody.innerHTML = '';
+
+        if (responseData.success && Array.isArray(responseData.data)) {
+            if (responseData.data.length === 0) {
+                const row = tableBody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = attributes.length; // Number of selected columns
+                cell.textContent = "No results found.";
+            } else {
+                responseData.data.forEach(rowData => {
+                    const row = tableBody.insertRow();
+                    attributes.forEach(attr => {
+                        const key = attr.split('.').pop().toUpperCase(); // Convert to uppercase to match Oracle keys
+                        const value = rowData[key];
+                        console.log(`Key: ${key}, Value: ${value}`); // Debugging output
+                        const cell = row.insertCell();
+                        cell.textContent = value !== null && value !== undefined ? value : 'N/A';
+                    });
+                });
+            }
+        } else {
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = attributes.length; // Number of selected columns
+            cell.textContent = 'Failed to retrieve data.';
+        }
+    } catch (error) {
+        console.error('Error in projectShippingRoute:', error);
+        alert("An error occurred while fetching data. Please try again.");
+    }
+}
+
+
 
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
@@ -1368,6 +1462,23 @@ window.onload = async function() {
 // Show input fields when the button is clicked
     document.getElementById("showInputButton").addEventListener("click", () => {
         document.getElementById("joinCompanyShipmentInput").style.display = "block";
+    });
+
+    // Handle form submission
+    document.getElementById('shippingRouteForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        // Get selected attributes
+        const checkboxes = document.querySelectorAll('input[name="attribute"]:checked');
+        const selectedAttributes = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+        if (selectedAttributes.length === 0) {
+            alert("Please select at least one attribute.");
+            return;
+        }
+
+        // Fetch and display results
+        await projectShippingRoute(selectedAttributes);
     });
 }
 
