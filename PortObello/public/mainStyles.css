@@ -3,17 +3,15 @@ body {
     background: linear-gradient(to bottom, #daeff5, #87ceeb);
     display: flex;
     flex-direction: column;
-    align-items: left;
     justify-content: center;
 }
 
 * {
-    font-family: font-family: Monospace, Ludica-Console;
+    font-family: Monospace, Ludica-Console;
 }
 
 .button {
-    font-family: font-family: Monospace, Ludica-Console;
-    background-color: darkblue; /* Green */
+    background-color: darkblue;
     border: none;
     color: white;
     padding: 15px 32px;
