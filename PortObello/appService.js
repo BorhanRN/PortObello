@@ -1773,23 +1773,6 @@ async function deletePort(addy) {
            [addy],
             { autoCommit: true }
         );
-
-        // await connection.execute(`
-        //             UPDATE Ship1
-        //             SET DockedAtPortAddress = 'International Waters.'
-        //             WHERE DockedAtPortAddress =:addy
-        //     `,
-        //     [addy],
-        //     { autoCommit: true }
-        // );
-        //
-        // await connection.execute(`
-        //             DELETE FROM Ship1 WHERE DockedAtPortAddress =:addy
-        //          `,
-        //     [addy],
-        //     { autoCommit: true }
-        // );
-
         await connection.execute( `
                     UPDATE Country
                     SET PortAddress = 'No ports from this country are currently monitored.'
@@ -1997,7 +1980,7 @@ async function portsNumShips(min, max) {
                     GROUP BY P.PortAddress
                     HAVING COUNT(S.ShipName) > 0
                 `,
-                {min, max}, // Bind variables for the range
+                {min, max},
                 {outFormat: oracledb.OUT_FORMAT_OBJECT} // Return rows as objects
             );
 
