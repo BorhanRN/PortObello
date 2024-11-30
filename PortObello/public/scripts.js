@@ -145,35 +145,6 @@ async function insertCountry(event) {
     }
 }
 
-// // Updates names in country.
-// async function updateCountry(event) {
-//     event.preventDefault();
-//
-//     const oldNameValue = document.getElementById('updateOldName').value;
-//     const newNameValue = document.getElementById('updateNewName').value;
-//
-//     const response = await fetch('/update-name-country', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             oldName: oldNameValue,
-//             newName: newNameValue
-//         })
-//     });
-//
-//     const responseData = await response.json();
-//     const messageElement = document.getElementById('updateNameResultMsg');
-//
-//     if (responseData.success) {
-//         messageElement.textContent = "Name updated successfully!";
-//         fetchTableData();
-//     } else {
-//         messageElement.textContent = "Error updating name!";
-//     }
-// }
-
 async function updateCountry(event) {
     event.preventDefault();
 
@@ -260,6 +231,7 @@ async function maxAverage(event) {
     }
 }
 
+// processes numShips with HTML input
 async function numShip(event) {
     event.preventDefault();
 
@@ -307,24 +279,7 @@ async function numShip(event) {
     }
 }
 
-// // Counts rows in country.
-// // Modify the function accordingly if using different aggregate functions or procedures.
-// async function countCountry() {
-//     const response = await fetch("/count-country", {
-//         method: 'GET'
-//     });
-//
-//     const responseData = await response.json();
-//     const messageElement = document.getElementById('countResultMsg');
-//
-//     if (responseData.success) {
-//         const tupleCount = responseData.count;
-//         messageElement.textContent = `The number of tuples in country: ${tupleCount}`;
-//     } else {
-//         alert("Error in count country!");
-//     }
-// }
-
+// Sorts countries countries based on GDP
 async function countCountry() {
     const messageElement = document.getElementById('countriesByGDPMessage');
     const tableElement = document.getElementById('countriesByGDPTable');
@@ -363,8 +318,6 @@ async function countCountry() {
         messageElement.style.color = 'red';
     }
 }
-
-
 
 // Fetches data from PORT and displays it. CL1
 async function fetchAndDisplayPort() {
@@ -543,6 +496,7 @@ async function resetHomeCountry() {
     }
 }
 
+// Adds new tuple in Home Country table
 async function insertHomeCountry(event) {
     event.preventDefault();
 
@@ -578,79 +532,6 @@ async function insertHomeCountry(event) {
         messageElement.style.color = "red";
     }
 }
-
-
-// async function insertHomeCountry(event) {
-//     event.preventDefault();
-//
-//     const name = document.getElementById('insertHomeCountryName').value;
-//     const population = document.getElementById('insertHomeCountryPopulation').value;
-//     const government = document.getElementById('insertHomeCountryGovernment').value;
-//     const gdp = document.getElementById('insertHomeCountryGDP').value;
-//     const portaddress = document.getElementById('insertHomeCountryPortAddress').value;
-//
-//     const response = await fetch('/insert-homecountry', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             name: name,
-//             population: population,
-//             government: government,
-//             gdp: gdp,
-//             portaddress: portaddress
-//         })
-//     });
-//
-//     const messageElement = document.getElementById('insertHomeResultMsg');
-//     const responseData = await response.json();
-//
-//     if (response.ok && responseData.success) {
-//         messageElement.textContent = "Data inserted successfully!";
-//         messageElement.style.color = "green";
-//         fetchTableData(); // Update the table if required
-//     } else {
-//         const errorMessage = responseData.error || "Unknown error occurred.";
-//         messageElement.textContent = `Error: ${errorMessage}`;
-//         messageElement.style.color = "red";
-//     }
-// }
-
-// // Inserts new records into HOMECOUNTRY.
-// async function insertHomeCountry(event) {
-//     event.preventDefault();
-//
-//     const name = document.getElementById('insertHomeCountryName').value;
-//     const population = document.getElementById('insertHomeCountryPopulation').value;
-//     const government = document.getElementById('insertHomeCountryGovernment').value;
-//     const gdp = document.getElementById('insertHomeCountryGDP').value;
-//     const portaddress = document.getElementById('insertHomeCountryPortAddress').value;
-//
-//     const response = await fetch('/insert-homecountry', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             name: name,
-//             population: population,
-//             government: government,
-//             gdp: gdp,
-//             portaddress: portaddress
-//         })
-//     });
-//
-//     const responseData = await response.json();
-//     const messageElement = document.getElementById('insertHomeResultMsg');
-//
-//     if (responseData.success) {
-//         messageElement.textContent = "Data inserted successfully!";
-//         fetchTableData();
-//     } else {
-//         messageElement.textContent = "Error inserting data!";
-//     }
-// }
 
 // Fetches data from FOREIGNCOUNTRY and displays it. CL1
 async function fetchAndDisplayForeignCountry() {
@@ -1009,6 +890,7 @@ async function resetShipmentContainer() {
     }
 }
 
+// as function name suggests
 async function fetchAndDisplayHomeCountriesWithAllTradeAgreements() {
     const messageElement = document.getElementById('homeCountriesWithAllTradeAgreementsMessage');
     const tableElement = document.getElementById('homeCountriesWithAllTradeAgreements');
@@ -1044,6 +926,7 @@ async function fetchAndDisplayHomeCountriesWithAllTradeAgreements() {
     }
 }
 
+// asses user input from HTML to appService to run function
 async function runDynamicShipQuery(event) {
     event.preventDefault();
 
@@ -1085,89 +968,7 @@ async function runDynamicShipQuery(event) {
     }
 }
 
-// async function joinCompanyShipment(event) {
-//     event.preventDefault();
-//
-//     const companyName = document.getElementById('inputCompanyName').value;
-//     const companyCEO = document.getElementById('inputCompanyCEO').value;
-//
-//     try {
-//             const response = await fetch('/join-Company-Shipment', {
-//                 method: 'POST',
-//                 headers: { 'Content-Type': 'application/json' },
-//                 body: JSON.stringify({
-//                     companyName: companyName,
-//                     companyCEO: companyCEO,
-//                 }),
-//             });
-//
-//             if (!response.ok) {
-//                 throw new Error(`HTTP error! status: ${response.status}`);
-//             }
-//
-//             const responseData = await response.json();
-//             const tableBody = document.getElementById('joinCompanyShipmentResultsTable').querySelector('tbody');
-//
-//             // Clear old results
-//             tableBody.innerHTML = '';
-//
-//             if (responseData.success && Array.isArray(responseData.data)) {
-//                 responseData.data.forEach(company => {
-//                     const row = tableBody.insertRow();
-//                     ['CEO', 'NAME', 'INDUSTRY', 'YEARLYREVENUE', 'COUNTRYNAME'].forEach(attr => {
-//                         const cell = row.insertCell();
-//                         cell.textContent = company[attr] || 'N/A';
-//                     });
-//                 });
-//             } else {
-//                 const row = tableBody.insertRow();
-//                 const cell = row.insertCell();
-//                 cell.colSpan = 5;
-//                 cell.textContent = 'No results found';
-//             }
-//         } catch (error) {
-//             console.error('Error:', error);
-//         }
-//
-// }
-
-// async function joinCompanyShipment({ companyName, companyCEO }) {
-//     try {
-//         const response = await fetch('/join-Company-Shipment', {
-//             method: 'POST',
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify({ companyName, companyCEO }),
-//         });
-//
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-//
-//         const responseData = await response.json();
-//         const tableBody = document.getElementById('joinCompanyShipmentResultsTable').querySelector('tbody');
-//
-//         // Clear old results
-//         tableBody.innerHTML = '';
-//
-//         if (responseData.success && Array.isArray(responseData.data)) {
-//             responseData.data.forEach(company => {
-//                 const row = tableBody.insertRow();
-//                 ['CEO', 'NAME', 'INDUSTRY', 'YEARLYREVENUE', 'COUNTRYNAME'].forEach(attr => {
-//                     const cell = row.insertCell();
-//                     cell.textContent = company[attr] || 'N/A';
-//                 });
-//             });
-//         } else {
-//             const row = tableBody.insertRow();
-//             const cell = row.insertCell();
-//             cell.colSpan = 5;
-//             cell.textContent = 'No results found';
-//         }
-//     } catch (error) {
-//         console.error('Error:', error);
-//     }
-// }
-
+// passes user input for join to appService
 async function joinCompanyShipment({ companyName, companyCEO }) {
     try {
         const response = await fetch('/join-Company-Shipment', {
@@ -1190,7 +991,7 @@ async function joinCompanyShipment({ companyName, companyCEO }) {
             if (responseData.data.length === 0) {
                 const row = tableBody.insertRow();
                 const cell = row.insertCell();
-                cell.colSpan = 7; // Adjust this to match the total number of columns
+                cell.colSpan = 7;
                 cell.textContent = responseData.message || "No results found.";
             } else {
                 responseData.data.forEach(shipment => {
@@ -1213,51 +1014,7 @@ async function joinCompanyShipment({ companyName, companyCEO }) {
     }
 }
 
-// // frontned working but only displaying N/A
-// async function projectShippingRoute(attributes) {
-//     try {
-//         const response = await fetch('/project-shipping-route', {
-//             method: 'POST',
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify({ attributes }),
-//         });
-//
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-//
-//         const responseData = await response.json();
-//         const tableBody = document.getElementById('shippingRouteResultsTable').querySelector('tbody');
-//
-//         // Clear old results
-//         tableBody.innerHTML = '';
-//
-//         if (responseData.success && Array.isArray(responseData.data)) {
-//             if (responseData.data.length === 0) {
-//                 const row = tableBody.insertRow();
-//                 const cell = row.insertCell();
-//                 cell.colSpan = attributes.length; // Number of selected columns
-//                 cell.textContent = "No results found.";
-//             } else {
-//                 responseData.data.forEach(rowData => {
-//                     const row = tableBody.insertRow();
-//                     attributes.forEach(attr => {
-//                         const cell = row.insertCell();
-//                         cell.textContent = rowData[attr.split('.').pop()] || 'N/A'; // Use attribute alias
-//                     });
-//                 });
-//             }
-//         } else {
-//             const row = tableBody.insertRow();
-//             const cell = row.insertCell();
-//             cell.colSpan = attributes.length; // Number of selected columns
-//             cell.textContent = 'Failed to retrieve data.';
-//         }
-//     } catch (error) {
-//         console.error('Error in projectShippingRoute:', error);
-//         alert("An error occurred while fetching data. Please try again.");
-//     }
-// }
+// formats and sends user input from html to appService
 async function projectShippingRoute(attributes) {
     try {
         const response = await fetch('/project-shipping-route', {
@@ -1370,16 +1127,12 @@ window.onload = async function() {
         await fetchAndDisplayShipmentContainer();  // Refresh table after reset
     });
 
-
     document.getElementById("insertCountry").addEventListener("submit", async (e) => {
         await insertCountry(e);
         await fetchAndDisplayCountry();  // Refresh table after insert
     });
     document.getElementById("insertHomeCountry").addEventListener("submit", async (e) => {
         await insertHomeCountry(e);
-        // await fetchAndDisplayCountry();  // Refresh table after insert
-        // await fetchAndDisplayHomeCountry();
-        // await fetchAndDisplayForeignCountry();
     });
     document.getElementById("updateCountry").addEventListener("submit", async (e) => {
         await updateCountry(e);
@@ -1401,7 +1154,6 @@ window.onload = async function() {
     // document.getElementById("countCountry").addEventListener("click", countCountry);
     document.getElementById('countCountriesByGDPButton').addEventListener('click', countCountry);
 
-
     document.getElementById("fetchHomeCountriesWithAllTradeAgreements").addEventListener("click", async (e) => {
         await fetchAndDisplayHomeCountriesWithAllTradeAgreements(e);
         await fetchTableData();
@@ -1409,41 +1161,6 @@ window.onload = async function() {
 
     document.getElementById('shipQueryForm').addEventListener('submit', runDynamicShipQuery);
 
-    // document.getElementById("joinCompanyShipmentInput").addEventListener("submitButton", async (e) => {
-    //     await joinCompanyShipment(e);
-    // // });
-    // document.getElementById("submitButton").addEventListener("click", async (event) => {
-    //     event.preventDefault(); // Prevent the default form submission behavior
-    //
-    //     const companyName = document.getElementById("inputCompanyName").value;
-    //     const companyCEO = document.getElementById("inputCompanyCEO").value;
-    //
-    //     if (!companyName || !companyCEO) {
-    //         alert("Please fill in both fields.");
-    //         return;
-    //     }
-    //
-    //     // Call the function to process the form
-    //     joinCompanyShipment(event);
-    // });
-    // document.getElementById('joinCompanyShipmentInput').addEventListener('submit', async (event) => {
-    //     event.preventDefault(); // Prevent the default form submission behavior
-    //
-    //     const companyName = document.getElementById('inputCompanyName').value;
-    //     const companyCEO = document.getElementById('inputCompanyCEO').value;
-    //
-    //     if (!companyName || !companyCEO) {
-    //         alert("Please fill in both fields.");
-    //         return;
-    //     }
-    //
-    //     // Call the joinCompanyShipment function
-    //     await joinCompanyShipment({ companyName, companyCEO });
-    // });
-    //
-    // document.getElementById("showInputButton").addEventListener("click", () => {
-    //     document.getElementById("joinCompanyShipmentInput").style.display = "block";
-    // });
     // Event listener for form submission
     document.getElementById('joinCompanyShipmentInput').addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -1459,7 +1176,7 @@ window.onload = async function() {
         await joinCompanyShipment({ companyName, companyCEO });
     });
 
-// Show input fields when the button is clicked
+    // Show input fields when the button is clicked
     document.getElementById("showInputButton").addEventListener("click", () => {
         document.getElementById("joinCompanyShipmentInput").style.display = "block";
     });

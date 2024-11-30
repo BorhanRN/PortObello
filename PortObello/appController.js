@@ -5,7 +5,8 @@ const router = express.Router();
 
 // ----------------------------------------------------------
 // API endpoints
-// Modify or extend these routes based on your project's needs.
+// Functions for posting or getting appService.js data
+// Called by scripts.js
 router.get('/check-db-connection', async (req, res) => {
     const isConnect = await appService.testOracleConnection();
     if (isConnect) {
@@ -68,21 +69,6 @@ router.post("/update-country", async (req, res) => {
     }
 });
 
-// router.get('/count-country', async (req, res) => {
-//     const tableCount = await appService.countCountry();
-//     if (tableCount >= 0) {
-//         res.json({
-//             success: true,
-//             count: tableCount
-//         });
-//     } else {
-//         res.status(500).json({
-//             success: false,
-//             count: tableCount
-//         });
-//     }
-// });
-
 router.get('/count-country', async (req, res) => {
     try {
         const data = await appService.countCountry();
@@ -135,24 +121,6 @@ router.post("/initiate-homecountry", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
-
-// router.post("/insert-homecountry", async (req, res) => {
-//     try {
-//         const { name, population, government, gdp, portaddress } = req.body;
-//         console.log('Received request:', req.body);
-//
-//         const insertResult = await appService.insertHomeCountry(name, population, government, gdp, portaddress);
-//
-//         if (insertResult) {
-//             res.json({ success: true });
-//         } else {
-//             res.status(400).json({ success: false, error: "Failed to insert record." });
-//         }
-//     } catch (err) {
-//         console.error("Insert error:", err.message); // Log error for debugging
-//         res.status(500).json({ success: false, error: err.message || "Unknown server error." });
-//     }
-// });
 
 router.post("/insert-homecountry", async (req, res) => {
     console.log('Received request:', req.body);
@@ -334,15 +302,6 @@ router.post("/port-num-ship", async (req, res) => {
     }
 });
 
-// router.post("/join-Company-Shipment", async (req, res) => {
-//     const { companyName, companyCEO } = req.body;
-//     const initiateResult = await appService.joinCompanyShipments(companyName, companyCEO)
-//     if (initiateResult) {
-//         res.json({ success: true });
-//     } else {
-//         res.status(500).json({ success: false });
-//     }
-// });
 router.post('/join-Company-Shipment', async (req, res) => {
     const { companyName, companyCEO } = req.body;
 
@@ -363,16 +322,6 @@ router.post('/join-Company-Shipment', async (req, res) => {
     }
 });
 
-
-// router.post("/project-Shipping-Route", async (req, res) => {
-//     const { attributes } = req.body;
-//     const initiateResult = await appService.projectShippingRoute(attributes)
-//     if (initiateResult) {
-//         res.json({ success: true });
-//     } else {
-//         res.status(500).json({ success: false });
-//     }
-// });
 router.post('/project-shipping-route', async (req, res) => {
     const { attributes } = req.body;
 
