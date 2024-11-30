@@ -366,8 +366,7 @@ async function fetchPortFromDb() {
 async function initiatePort() {
     return await withOracleDB(async (connection) => {
         try {
-            // find foreign key constraints referencing WAREHOUSE
-            // find foreign key constraints referencing COUNTRY
+            // find foreign key constraints referencing PORT
             const findFKsQuery = `
                 SELECT table_name, constraint_name 
                 FROM user_constraints 
