@@ -12,6 +12,38 @@ It simulates how:
 
 ---
 
+## What Makes This Project Interesting
+
+This project goes beyond basic CRUD and demonstrates more advanced relational design and query patterns.
+
+### Database design concepts
+- **Foreign keys + referential integrity**
+- **Composite primary keys** (e.g., Warehouse location keys)
+- **Subtype modeling** (Country → HomeCountry / ForeignCountry)
+- **Cascading behavior** in updates/deletes (depending on your schema rules)
+
+### Query patterns / analytics
+- **Aggregation queries** (grouping, averages, max/min)
+- **Join queries** (e.g., Company ↔ ShipmentContainer)
+- **Projection queries** (returning selected attributes only)
+- **Division-style query** (trade agreements with all partners)
+- **Dynamic filtering** (ship querying based on user inputs)
+
+---
+
+## Typical Application Flow
+
+1. User opens the dashboard UI
+2. User (optionally) initializes all tables (drop/create/seed)
+3. UI fetches each table via REST endpoints and renders results dynamically
+4. User can:
+   - Insert/update records (e.g., countries)
+   - Delete domain entities (ports, ships, companies, routes, etc.)
+   - Run analytical queries and relational demonstrations
+   - Explore how entities relate across the schema
+  
+---
+
 ## Core Domain Model
 
 The system models 10 interconnected entities (tables) that represent the “smart port management” domain.
@@ -129,38 +161,6 @@ Typical fields:
 
 This acts as a key “bridge” entity linking:
 - **Ship ↔ Warehouse ↔ Company**
-
----
-
-## What Makes This Project Interesting
-
-This project goes beyond basic CRUD and demonstrates more advanced relational design and query patterns.
-
-### Database design concepts
-- **Foreign keys + referential integrity**
-- **Composite primary keys** (e.g., Warehouse location keys)
-- **Subtype modeling** (Country → HomeCountry / ForeignCountry)
-- **Cascading behavior** in updates/deletes (depending on your schema rules)
-
-### Query patterns / analytics
-- **Aggregation queries** (grouping, averages, max/min)
-- **Join queries** (e.g., Company ↔ ShipmentContainer)
-- **Projection queries** (returning selected attributes only)
-- **Division-style query** (trade agreements with all partners)
-- **Dynamic filtering** (ship querying based on user inputs)
-
----
-
-## Typical Application Flow
-
-1. User opens the dashboard UI
-2. User (optionally) initializes all tables (drop/create/seed)
-3. UI fetches each table via REST endpoints and renders results dynamically
-4. User can:
-   - Insert/update records (e.g., countries)
-   - Delete domain entities (ports, ships, companies, routes, etc.)
-   - Run analytical queries and relational demonstrations
-   - Explore how entities relate across the schema
 
 ---
 
